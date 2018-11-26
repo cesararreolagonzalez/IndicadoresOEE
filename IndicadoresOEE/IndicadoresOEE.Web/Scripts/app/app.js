@@ -3,8 +3,8 @@
 
     angular.module('indicadoresoeeapp', ['ngMaterial', 'ngMessages', 'ngSanitize', 'angularMoment'])
 
-        .config(['$mdIconProvider', '$mdDateLocaleProvider', '$mdThemingProvider', '$routeProvider', '$urlRouterProvider', '$stateProvider',
-            function ($mdIconProvider, $mdDateLocaleProvider, $mdThemingProvider, $routeProvider, $urlRouterProvider, $stateProvider) {
+        .config(['$mdIconProvider', '$mdDateLocaleProvider', '$mdThemingProvider',
+            function ($mdIconProvider, $mdDateLocaleProvider, $mdThemingProvider) {
                 $mdIconProvider.icon('md-close', '../img/icons/ic_close_24px.svg', 24);
 
                 // Example of a Spanish localization.
@@ -34,31 +34,5 @@
 
                     return '';
                 };
-                
-                //$urlRouterProvider.otherwise("inicio");
-
-                //$stateProvider
-                //    .state('inicio', {
-                //        url: "/",
-                //        templateUrl: "/Inicio/Inicio"
-                //    })
-                //    .state('crear-indicador', {
-                //        url: "/indicador/captura-individual",
-                //        templateUrl: "/Indicadores/Captura",
-                //        controller: "CapturaIndicadoresController"
-                //    });
-
-                ////$routeProvider
-                ////    .when('/', {
-                ////        templateUrl: '/Inicio/Inicio',
-                ////        controller: ''
-                ////    })
-                ////    .when('/indicadores/captura-individual', {
-                ////        templateUrl: '/Indicadores/Captura',
-                ////        controller: 'CapturaIndicadoresController'
-                ////    })
-                ////    .otherwise({
-                ////        redirectTo: '/'
-                ////    });
             }]);
 })();
