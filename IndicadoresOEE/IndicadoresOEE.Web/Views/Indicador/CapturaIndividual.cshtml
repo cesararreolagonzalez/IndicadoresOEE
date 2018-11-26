@@ -38,7 +38,7 @@
     <md-card md-theme="{{ showDarkTheme ? 'dark-grey' : 'default' }}" md-theme-watch ng-cloak>
         <md-card-title>
             <md-card-title-text>
-                <span class="md-headline">Datos generales</span>
+                <span class="md-headline text-muted">Datos generales</span>
                 <span class="md-subhead">Parámetros</span>
             </md-card-title-text>
             @*<md-card-title-media>
@@ -75,7 +75,6 @@
                         <label>Departamento</label>
                         <md-select id="departamentoSeleccionable"
                                    name="departamentoSeleccionable"
-                                   md-on-open="ObtenerDepartamentos()"
                                    ng-disabled="DatosGenerales.IndiceCentro === null"
                                    ng-model="DatosGenerales.IndiceDepartamento"
                                    md-container-class="selectdemoSelectHeader"
@@ -98,7 +97,6 @@
                         <label>Línea</label>
                         <md-select id="lineaSeleccionable"
                                    name="lineaSeleccionable"
-                                   md-on-open="ObtenerLineas()"
                                    ng-disabled="DatosGenerales.IndiceDepartamento === null"
                                    ng-model="DatosGenerales.IndiceLinea"
                                    md-container-class="selectdemoSelectHeader"
@@ -121,7 +119,6 @@
                         <label>Proceso</label>
                         <md-select id="procesoSeleccionable"
                                    name="procesoSeleccionable"
-                                   md-on-open="ObtenerProcesos()"
                                    ng-disabled="DatosGenerales.IndiceLinea === null"
                                    ng-model="DatosGenerales.IndiceProceso"
                                    md-container-class="selectdemoSelectHeader"
@@ -141,8 +138,52 @@
                         </md-select>
                     </md-input-container>
                 </div>
-                <div layout="column" layout-align="center center" flex="50">
-
+                <md-content class="md-padding" layout="column" layout-align="center" flex="50">
+                </md-content>
+            </div>
+        </md-card-content>
+        <md-card-actions layout="row" layout-align="end center">
+            <md-button>
+                SIGUIENTE
+                <md-icon md-svg-src="~/Content/Icons/arrow-forward.svg"
+                         aria-label="Insert Drive Icon">
+                </md-icon>
+            </md-button>
+        </md-card-actions>
+    </md-card>
+    <md-card md-theme="{{ showDarkTheme ? 'dark-grey' : 'default' }}" md-theme-watch ng-cloak>
+        <md-card-title>
+            <md-card-title-text>
+                <span class="md-headline text-muted">Datos generales</span>
+                <span class="md-subhead">Parámetros</span>
+            </md-card-title-text>
+        </md-card-title>
+        <md-card-content>
+            <br />
+            <div layout="row" flex>
+                <div layout="column" layout-align="center" flex="50">
+                </div>
+                <div layout="column" layout-align="center" flex="50">
+                    <md-input-container class="md-block">
+                        <label>Orden</label>
+                        <input ng-model="DatosGenerales.Orden">
+                    </md-input-container>
+                    <md-input-container class="md-block">
+                        <label>Lote</label>
+                        <input ng-model="DatosGenerales.Lote">
+                    </md-input-container>
+                    <md-input-container class="md-block">
+                        <label>Material</label>
+                        <input ng-model="DatosGenerales.Material">
+                    </md-input-container>
+                    <md-input-container class="md-block">
+                        <label>Descripción</label>
+                        <input ng-model="DatosGenerales.Descripcion">
+                    </md-input-container>
+                    <md-input-container class="md-block">
+                        <label>Velocidad</label>
+                        <input ng-model="DatosGenerales.Velocidad">
+                    </md-input-container>
                 </div>
             </div>
         </md-card-content>
