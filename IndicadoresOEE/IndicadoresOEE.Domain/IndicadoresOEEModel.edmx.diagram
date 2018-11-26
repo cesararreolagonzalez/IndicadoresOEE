@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+ <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <!-- Diagram content (shape and connector positions) -->
+    <edmx:Diagrams>
+      <Diagram DiagramId="44fc7ae6a2bb491fa3f0b707734eb689" Name="Diagram1">
+        <EntityTypeShape EntityType="IndicadoresOEEModel.Almacen" Width="1.5" PointX="3" PointY="5" IsExpanded="true" />
+        <EntityTypeShape EntityType="IndicadoresOEEModel.Almacen_UnidadMedida" Width="1.5" PointX="8.25" PointY="5.25" IsExpanded="true" />
+        <EntityTypeShape EntityType="IndicadoresOEEModel.Bitacora" Width="1.5" PointX="15" PointY="20.375" IsExpanded="true" />
+        <EntityTypeShape EntityType="IndicadoresOEEModel.Centro" Width="1.5" PointX="0.75" PointY="23.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="IndicadoresOEEModel.Departamento" Width="1.5" PointX="3" PointY="23.5" IsExpanded="true" />
+        <EntityTypeShape EntityType="IndicadoresOEEModel.Equipo" Width="1.5" PointX="6" PointY="5" IsExpanded="true" />
+        <EntityTypeShape EntityType="IndicadoresOEEModel.Indicador" Width="1.5" PointX="12" PointY="31.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="IndicadoresOEEModel.Indicador_Capacidad" Width="1.5" PointX="5.25" PointY="1" IsExpanded="true" />
+        <EntityTypeShape EntityType="IndicadoresOEEModel.Indicador_Laboratorio" Width="1.5" PointX="11.25" PointY="4.375" IsExpanded="true" />
+        <EntityTypeShape EntityType="IndicadoresOEEModel.Indicador_Paro" Width="1.5" PointX="17.25" PointY="33.875" IsExpanded="true" />
+        <EntityTypeShape EntityType="IndicadoresOEEModel.Indicador_Rechazo" Width="1.5" PointX="14.25" PointY="38.625" IsExpanded="true" />
+        <EntityTypeShape EntityType="IndicadoresOEEModel.Indicador_Tiempo" Width="1.5" PointX="9.75" PointY="18.5" IsExpanded="true" />
+        <EntityTypeShape EntityType="IndicadoresOEEModel.Indicador_V2" Width="1.5" PointX="12" PointY="26.25" IsExpanded="true" />
+        <EntityTypeShape EntityType="IndicadoresOEEModel.IndicadorParo_V2" Width="1.5" PointX="14.25" PointY="31" IsExpanded="true" />
+        <EntityTypeShape EntityType="IndicadoresOEEModel.IndicadorRechazo_V2" Width="1.5" PointX="14.25" PointY="35.875" IsExpanded="true" />
+        <EntityTypeShape EntityType="IndicadoresOEEModel.IndicadorTiempo_V2" Width="1.5" PointX="9.75" PointY="27.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="IndicadoresOEEModel.IndicadorVelocidad_V2" Width="1.5" PointX="9.75" PointY="30.125" IsExpanded="true" />
+        <EntityTypeShape EntityType="IndicadoresOEEModel.Laboratorio" Width="1.5" PointX="3.75" PointY="9.25" IsExpanded="true" />
+        <EntityTypeShape EntityType="IndicadoresOEEModel.Linea" Width="1.5" PointX="5.25" PointY="23.625" IsExpanded="true" />
+        <EntityTypeShape EntityType="IndicadoresOEEModel.Logs" Width="1.5" PointX="7.75" PointY="0.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="IndicadoresOEEModel.Paro" Width="1.5" PointX="9.75" PointY="34.5" IsExpanded="true" />
+        <EntityTypeShape EntityType="IndicadoresOEEModel.ParosPlaneadosMes_V2" Width="1.5" PointX="9.75" PointY="23" IsExpanded="true" />
+        <EntityTypeShape EntityType="IndicadoresOEEModel.ParosPlanificados_V2" Width="1.5" PointX="0.75" PointY="8.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="IndicadoresOEEModel.Perfil" Width="1.5" PointX="10.5" PointY="15.875" IsExpanded="true" />
+        <EntityTypeShape EntityType="IndicadoresOEEModel.Planta" Width="1.5" PointX="0.75" PointY="5.25" IsExpanded="true" />
+        <EntityTypeShape EntityType="IndicadoresOEEModel.Proceso" Width="1.5" PointX="7.5" PointY="22.625" IsExpanded="true" />
+        <EntityTypeShape EntityType="IndicadoresOEEModel.Proceso_UsuariosMensaje" Width="1.5" PointX="9.75" PointY="38.875" IsExpanded="true" />
+        <EntityTypeShape EntityType="IndicadoresOEEModel.Proceso_Velocidad" Width="1.5" PointX="9.75" PointY="42.5" IsExpanded="true" />
+        <EntityTypeShape EntityType="IndicadoresOEEModel.Rechazo" Width="1.5" PointX="9.75" PointY="45.625" IsExpanded="true" />
+        <EntityTypeShape EntityType="IndicadoresOEEModel.Seccion" Width="1.5" PointX="12.75" PointY="15.875" IsExpanded="true" />
+        <EntityTypeShape EntityType="IndicadoresOEEModel.Servicio" Width="1.5" PointX="5.75" PointY="8.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="IndicadoresOEEModel.sysdiagrams" Width="1.5" PointX="7.75" PointY="8.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="IndicadoresOEEModel.TipoAlmacen" Width="1.5" PointX="0.75" PointY="2.375" IsExpanded="true" />
+        <EntityTypeShape EntityType="IndicadoresOEEModel.UnidadMedida" Width="1.5" PointX="3" PointY="1.375" IsExpanded="true" />
+        <EntityTypeShape EntityType="IndicadoresOEEModel.Usuario" Width="1.5" PointX="12.75" PointY="20.875" IsExpanded="true" />
+        <EntityTypeShape EntityType="IndicadoresOEEModel.UsuarioCapacidad" Width="1.5" PointX="15" PointY="23.25" IsExpanded="true" />
+        <EntityTypeShape EntityType="IndicadoresOEEModel.Equipo_Servicio" Width="1.5" PointX="9.75" PointY="0.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="IndicadoresOEEModel.Indicador_Servicio" Width="1.5" PointX="9.75" PointY="9.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="IndicadoresOEEModel.vw_grafica_indicadores" Width="1.5" PointX="0.75" PointY="11.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="IndicadoresOEEModel.vw_grafica_indicadores_paros_programados" Width="1.5" PointX="5.75" PointY="11.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="IndicadoresOEEModel.vw_grafica_indicadores_paros_programados_V2" Width="1.5" PointX="11.75" PointY="9.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="IndicadoresOEEModel.vw_grafica_indicadores_V2" Width="1.5" PointX="2.75" PointY="12.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="IndicadoresOEEModel.vw_paros" Width="1.5" PointX="13.75" PointY="0.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="IndicadoresOEEModel.vw_paros_programados" Width="1.5" PointX="13.75" PointY="4.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="IndicadoresOEEModel.vw_paros_programados_V2" Width="1.5" PointX="13.75" PointY="7.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="IndicadoresOEEModel.vw_paros_V2" Width="1.5" PointX="7.75" PointY="13.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="IndicadoresOEEModel.vw_usuarios" Width="1.5" PointX="13.75" PointY="10.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="IndicadoresOEEModel.vw_usuarios_procesos" Width="1.5" PointX="15.75" PointY="0.75" IsExpanded="true" />
+        <AssociationConnector Association="IndicadoresOEEModel.FK_Almacen_Planta" ManuallyRouted="false" />
+        <AssociationConnector Association="IndicadoresOEEModel.FK_Almacen_TipoAlmacen" ManuallyRouted="false" />
+        <AssociationConnector Association="IndicadoresOEEModel.FK_Almacen_UnidadMedida_Almacen" ManuallyRouted="false" />
+        <AssociationConnector Association="IndicadoresOEEModel.FK_Indicador_Capacidad_Almacen" ManuallyRouted="false" />
+        <AssociationConnector Association="IndicadoresOEEModel.FK_Almacen_UnidadMedida_UnidadMedida" ManuallyRouted="false" />
+        <AssociationConnector Association="IndicadoresOEEModel.FK_Bitacora_Usuario" ManuallyRouted="false" />
+        <AssociationConnector Association="IndicadoresOEEModel.FK_Centro_ParosPlaneadosV2" ManuallyRouted="false" />
+        <AssociationConnector Association="IndicadoresOEEModel.FK_Departamento_Centro" ManuallyRouted="false" />
+        <AssociationConnector Association="IndicadoresOEEModel.FK_Departamento_ParosPlaneadosV2" ManuallyRouted="false" />
+        <AssociationConnector Association="IndicadoresOEEModel.FK_Linea_Departamento" ManuallyRouted="false" />
+        <AssociationConnector Association="IndicadoresOEEModel.FK_Equipo_Laboratorio" ManuallyRouted="false" />
+        <AssociationConnector Association="IndicadoresOEEModel.FK_Equipo_Planta" ManuallyRouted="false" />
+        <AssociationConnector Association="IndicadoresOEEModel.FK_Indicador_Laboratorio_Equipo" ManuallyRouted="false" />
+        <AssociationConnector Association="IndicadoresOEEModel.FK_Indicador_Paro_Indicador" ManuallyRouted="false" />
+        <AssociationConnector Association="IndicadoresOEEModel.FK_Indicador_Proceso" ManuallyRouted="false" />
+        <AssociationConnector Association="IndicadoresOEEModel.FK_Indicador_Proceso_Velocidad" ManuallyRouted="false" />
+        <AssociationConnector Association="IndicadoresOEEModel.FK_Indicador_Rechazo_Indicador" ManuallyRouted="false" />
+        <AssociationConnector Association="IndicadoresOEEModel.FK_Indicador_Capacidad_UnidadMedida" ManuallyRouted="false" />
+        <AssociationConnector Association="IndicadoresOEEModel.FK_Indicador_Laboratorio_Laboratorio" ManuallyRouted="false" />
+        <AssociationConnector Association="IndicadoresOEEModel.FK_Indicador_Paro_Paro" ManuallyRouted="false" />
+        <AssociationConnector Association="IndicadoresOEEModel.FK_Indicador_Rechazo_Rechazo" ManuallyRouted="false" />
+        <AssociationConnector Association="IndicadoresOEEModel.FK_Indicador_Tiempo_Proceso" ManuallyRouted="false" />
+        <AssociationConnector Association="IndicadoresOEEModel.FK_Indicador_V2_IndicadorVelocidad_V2" ManuallyRouted="false" />
+        <AssociationConnector Association="IndicadoresOEEModel.FK_IndicadorParoV2_IndicadorV2" ManuallyRouted="false" />
+        <AssociationConnector Association="IndicadoresOEEModel.FK_IndicadorRechazoV2_IndicadorV2" ManuallyRouted="false" />
+        <AssociationConnector Association="IndicadoresOEEModel.FK_IndicadorV2_Proceso" ManuallyRouted="false" />
+        <AssociationConnector Association="IndicadoresOEEModel.FK_IndicadorParoV2_Paro" ManuallyRouted="false" />
+        <AssociationConnector Association="IndicadoresOEEModel.FK_IndicadorRechazoV2_Rechazo" ManuallyRouted="false" />
+        <AssociationConnector Association="IndicadoresOEEModel.FK_IndicadorTiempoV2_Proceso" ManuallyRouted="false" />
+        <AssociationConnector Association="IndicadoresOEEModel.FK_Proceso_V2_IndicadorVelocidad_V2" ManuallyRouted="false" />
+        <AssociationConnector Association="IndicadoresOEEModel.FK_Linea_ParosPlaneadosV2" ManuallyRouted="false" />
+        <AssociationConnector Association="IndicadoresOEEModel.FK_Proceso_Linea" ManuallyRouted="false" />
+        <AssociationConnector Association="IndicadoresOEEModel.FK_Paro_Paro" ManuallyRouted="false" />
+        <AssociationConnector Association="IndicadoresOEEModel.FK_Paro_Proceso" ManuallyRouted="false" />
+        <AssociationConnector Association="IndicadoresOEEModel.FK_ParosPlaneadosPorMes_V2_Paro" ManuallyRouted="false" />
+        <AssociationConnector Association="IndicadoresOEEModel.FK_ParosPlaneadosPorMes_V2_Proceso" ManuallyRouted="false" />
+        <AssociationConnector Association="IndicadoresOEEModel.FK_Usuario_Perfil" ManuallyRouted="false" />
+        <AssociationConnector Association="IndicadoresOEEModel.FK_Proceso_UsuariosMensaje_Proceso" ManuallyRouted="false" />
+        <AssociationConnector Association="IndicadoresOEEModel.FK_Proceso_Velocidad_Proceso" ManuallyRouted="false" />
+        <AssociationConnector Association="IndicadoresOEEModel.FK_UsuarioCapacidad_UsuarioCapacidad" ManuallyRouted="false" />
+        <AssociationConnector Association="IndicadoresOEEModel.Perfil_Seccion" ManuallyRouted="false" />
+        <AssociationConnector Association="IndicadoresOEEModel.Proceso_Departamento" ManuallyRouted="false" />
+        <AssociationConnector Association="IndicadoresOEEModel.Proceso_Rechazo" ManuallyRouted="false" />
+        <AssociationConnector Association="IndicadoresOEEModel.Proceso_Usuario" ManuallyRouted="false" />
+      </Diagram>
+    </edmx:Diagrams>
+  </edmx:Designer>
+</edmx:Edmx>
