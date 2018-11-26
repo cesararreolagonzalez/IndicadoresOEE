@@ -3,21 +3,158 @@
     ViewBag.Title = "CapturaIndividual";
 }
 
+<style>
+    .selectdemoSelectHeader {
+        /* Please note: All these selectors are only applied to children of elements with the 'selectdemoSelectHeader' class */
+    }
+
+        .selectdemoSelectHeader .demo-header-searchbox {
+            border: none;
+            outline: none;
+            height: 100%;
+            width: 100%;
+            padding: 0;
+        }
+
+        .selectdemoSelectHeader .demo-select-header {
+            box-shadow: 0 1px 0 0 rgba(0, 0, 0, 0.1), 0 0 0 0 rgba(0, 0, 0, 0.14), 0 0 0 0 rgba(0, 0, 0, 0.12);
+            padding-left: 10.667px;
+            height: 48px;
+            cursor: pointer;
+            position: relative;
+            display: flex;
+            align-items: center;
+            width: auto;
+        }
+
+        .selectdemoSelectHeader md-content._md {
+            max-height: 240px;
+        }
+</style>
+
 <h3 class="display-5" style="color:#4285F4">Captura de indicador</h3>
 
-<md-card md-theme="{{ showDarkTheme ? 'dark-grey' : 'default' }}" md-theme-watch>
-    <md-card-title>
-        <md-card-title-text>
-            <span class="md-headline">Datos generales</span>
-            <span class="md-subhead">Large</span>
-        </md-card-title-text>
-        <md-card-title-media>
-            <div class="md-media-lg card-media"></div>
-        </md-card-title-media>
-    </md-card-title>
-    <md-card-actions layout="row" layout-align="end center">
-        <md-button>Action 1</md-button>
-        <md-button>SIGUIENTE</md-button>
-    </md-card-actions>
-</md-card>
+<div ng-controller="CapturaIndicadorController" ng-cloak>
+    <md-card md-theme="{{ showDarkTheme ? 'dark-grey' : 'default' }}" md-theme-watch ng-cloak>
+        <md-card-title>
+            <md-card-title-text>
+                <span class="md-headline">Datos generales</span>
+                <span class="md-subhead">Parámetros</span>
+            </md-card-title-text>
+            @*<md-card-title-media>
+                <div class="md-media-lg card-media"></div>
+            </md-card-title-media>*@
+        </md-card-title>
+        <md-card-content>
+            <br />
+            <div layout="row" flex>
+                <div layout="column" layout-align="center" flex="50">
+                    <md-input-container class="md-block" flex>
+                        <label>Centro</label>
+                        <md-select id="centroSeleccionable"
+                                   name="centroSeleccionable"
+                                   md-on-open="ObtenerCentros()"
+                                   ng-model="DatosGenerales.IndiceCentro"
+                                   md-container-class="selectdemoSelectHeader"
+                                   md-autofocus
+                                   ng-cloak>
+                            <md-select-header class="demo-select-header">
+                                <input ng-model="TerminoBusqueda"
+                                       type="search"
+                                       placeholder="Busca un centro"
+                                       class="demo-header-searchbox md-text">
+                            </md-select-header>
+                            <md-optgroup label="Centros disponibles">
+                                <md-option ng-repeat="Centro in ListaCentros" ng-value="Centro.Indice">
+                                    {{ Centro.Nombre }}
+                                </md-option>
+                            </md-optgroup>
+                        </md-select>
+                    </md-input-container>
+                    <md-input-container class="md-block" flex>
+                        <label>Departamento</label>
+                        <md-select id="departamentoSeleccionable"
+                                   name="departamentoSeleccionable"
+                                   md-on-open="ObtenerDepartamentos()"
+                                   ng-disabled="DatosGenerales.IndiceCentro === null"
+                                   ng-model="DatosGenerales.IndiceDepartamento"
+                                   md-container-class="selectdemoSelectHeader"
+                                   md-autofocus
+                                   ng-cloak>
+                            <md-select-header class="demo-select-header">
+                                <input ng-model="TerminoBusqueda"
+                                       type="search"
+                                       placeholder="Busca un departamento"
+                                       class="demo-header-searchbox md-text">
+                            </md-select-header>
+                            <md-optgroup label="Centros disponibles">
+                                <md-option ng-repeat="Departamento in ListaDepartamentos" ng-value="Departamento.Indice">
+                                    {{ Departamento.Nombre }}
+                                </md-option>
+                            </md-optgroup>
+                        </md-select>
+                    </md-input-container>
+                    <md-input-container class="md-block" flex>
+                        <label>Línea</label>
+                        <md-select id="lineaSeleccionable"
+                                   name="lineaSeleccionable"
+                                   md-on-open="ObtenerLineas()"
+                                   ng-disabled="DatosGenerales.IndiceDepartamento === null"
+                                   ng-model="DatosGenerales.IndiceLinea"
+                                   md-container-class="selectdemoSelectHeader"
+                                   md-autofocus
+                                   ng-cloak>
+                            <md-select-header class="demo-select-header">
+                                <input ng-model="TerminoBusqueda"
+                                       type="search"
+                                       placeholder="Busca una línea"
+                                       class="demo-header-searchbox md-text">
+                            </md-select-header>
+                            <md-optgroup label="Lineas disponibles">
+                                <md-option ng-repeat="Linea in ListaLineas" ng-value="Linea.Indice">
+                                    {{ Linea.Nombre }}
+                                </md-option>
+                            </md-optgroup>
+                        </md-select>
+                    </md-input-container>
+                    <md-input-container class="md-block" flex>
+                        <label>Proceso</label>
+                        <md-select id="procesoSeleccionable"
+                                   name="procesoSeleccionable"
+                                   md-on-open="ObtenerProcesos()"
+                                   ng-disabled="DatosGenerales.IndiceLinea === null"
+                                   ng-model="DatosGenerales.IndiceProceso"
+                                   md-container-class="selectdemoSelectHeader"
+                                   md-autofocus
+                                   ng-cloak>
+                            <md-select-header class="demo-select-header">
+                                <input ng-model="TerminoBusqueda"
+                                       type="search"
+                                       placeholder="Busca un proceso"
+                                       class="demo-header-searchbox md-text">
+                            </md-select-header>
+                            <md-optgroup label="Lineas disponibles">
+                                <md-option ng-repeat="Proceso in ListaProcesos" ng-value="Proceso.Indice">
+                                    {{ Proceso.Nombre }}
+                                </md-option>
+                            </md-optgroup>
+                        </md-select>
+                    </md-input-container>
+                </div>
+                <div layout="column" layout-align="center center" flex="50">
+
+                </div>
+            </div>
+        </md-card-content>
+        <md-card-actions layout="row" layout-align="end center">
+            <md-button>
+                SIGUIENTE
+                <md-icon md-svg-src="~/Content/Icons/arrow-forward.svg"
+                         aria-label="Insert Drive Icon">
+                </md-icon>
+            </md-button>
+        </md-card-actions>
+    </md-card>
+</div>
+
 

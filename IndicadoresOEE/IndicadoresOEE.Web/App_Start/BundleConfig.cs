@@ -16,7 +16,7 @@ namespace IndicadoresOEE.Web
 
             bundles.Add(new ScriptBundle("~/bundles/angularapp")
                 .Include("~/Scripts/app/app.js",
-                "~/Scripts/app/controllers/CapturaIndicadoresController.js"));
+                "~/Scripts/app/controllers/CapturaIndicadorController.js"));
 
             bundles.Add(new ScriptBundle("~/bundles/jqueryval").Include("~/Scripts/jquery.validate*"));
 

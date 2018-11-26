@@ -189,11 +189,16 @@
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="App_Start\Startup.Auth.cs" />
     <Compile Include="Controllers\AccountController.cs" />
+    <Compile Include="Controllers\CentroController.cs" />
     <Compile Include="Controllers\CuentaController.cs" />
+    <Compile Include="Controllers\DepartamentoController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\IndicadorController.cs" />
+    <Compile Include="Controllers\LineaController.cs" />
     <Compile Include="Controllers\ManageController.cs" />
     <Compile Include="Controllers\PrincipalController.cs" />
+    <Compile Include="Controllers\ProcesoController.cs" />
+    <Compile Include="Controllers\VelocidadController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
@@ -208,6 +213,15 @@
     <Content Include="Content\bootstrap-theme.min.css" />
     <Content Include="Content\bootstrap.css" />
     <Content Include="Content\bootstrap.min.css" />
+    <Content Include="Content\Icons\add.svg" />
+    <Content Include="Content\Icons\arrow-back.svg" />
+    <Content Include="Content\Icons\arrow-forward.svg" />
+    <Content Include="Content\Icons\cancel.svg" />
+    <Content Include="Content\Icons\check.svg" />
+    <Content Include="Content\Icons\close.svg" />
+    <Content Include="Content\Icons\edit.svg" />
+    <Content Include="Content\Icons\navigate-before.svg" />
+    <Content Include="Content\Icons\navigate-next.svg" />
     <Content Include="Content\Images\indicadoresoee-logo.jpg" />
     <Content Include="favicon.ico" />
     <Content Include="fonts\glyphicons-halflings-regular.svg" />
@@ -216,7 +230,7 @@
     <Content Include="Scripts\angular-moment.js" />
     <Content Include="Scripts\angular-moment.min.js" />
     <Content Include="Scripts\app\app.js" />
-    <Content Include="Scripts\app\controllers\CapturaIndicadoresController.js" />
+    <Content Include="Scripts\app\controllers\CapturaIndicadorController.js" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
     <Content Include="ApplicationInsights.config">
@@ -278,6 +292,11 @@
     <Content Include="Views\Indicador\Reporte.cshtml" />
     <Content Include="Views\Indicador\CapturaMasiva.cshtml" />
     <Content Include="Views\Indicador\CapturaIndividual.cshtml" />
+    <Content Include="Views\Proceso\Inicio.cshtml" />
+    <Content Include="Views\Centro\Inicio.cshtml" />
+    <Content Include="Views\Departamento\Inicio.cshtml" />
+    <Content Include="Views\Linea\Inicio.cshtml" />
+    <Content Include="Views\Velocidad\Inicio.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
@@ -299,6 +318,10 @@
     <Content Include="Scripts\jquery-3.3.1.min.map" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\IndicadoresOEE.Common\IndicadoresOEE.Common.csproj">
+      <Project>{ea9837e5-261b-4f27-8754-edd83575a537}</Project>
+      <Name>IndicadoresOEE.Common</Name>
+    </ProjectReference>
     <ProjectReference Include="..\IndicadoresOEE.Domain\IndicadoresOEE.Domain.csproj">
       <Project>{3a8ea748-111f-4075-b660-372dbef8148d}</Project>
       <Name>IndicadoresOEE.Domain</Name>

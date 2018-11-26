@@ -42,10 +42,15 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Models\CentroModel.cs" />
+    <Compile Include="Models\DepartamentoModel.cs" />
     <Compile Include="Models\IndicadorModel.cs" />
+    <Compile Include="Models\LineaModel.cs" />
     <Compile Include="Models\ParoModel.cs" />
+    <Compile Include="Models\ProcesoModel.cs" />
     <Compile Include="Models\RechazoModel.cs" />
     <Compile Include="Models\UsuarioModel.cs" />
+    <Compile Include="Models\VelocidadModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup />
