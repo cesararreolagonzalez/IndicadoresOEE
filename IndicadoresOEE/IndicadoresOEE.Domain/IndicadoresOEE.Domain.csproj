@@ -53,17 +53,198 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Almacen.cs">
+      <DependentUpon>IndicadoresOEEModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Almacen_UnidadMedida.cs">
+      <DependentUpon>IndicadoresOEEModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Bitacora.cs">
+      <DependentUpon>IndicadoresOEEModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Business\CentroBusiness.cs" />
+    <Compile Include="Business\DepartamentoBusiness.cs" />
+    <Compile Include="Business\IndicadorBusiness.cs" />
+    <Compile Include="Business\IndicadorTiempoBusiness.cs" />
+    <Compile Include="Business\LineaBusiness.cs" />
+    <Compile Include="Business\ProcesoBusiness.cs" />
+    <Compile Include="Business\VelocidadBusiness.cs" />
+    <Compile Include="Centro.cs">
+      <DependentUpon>IndicadoresOEEModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Departamento.cs">
+      <DependentUpon>IndicadoresOEEModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Equipo.cs">
+      <DependentUpon>IndicadoresOEEModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Equipo_Servicio.cs">
+      <DependentUpon>IndicadoresOEEModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="fn_acum_paros2_Result.cs">
+      <DependentUpon>IndicadoresOEEModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="fn_acum_paros_Result.cs">
+      <DependentUpon>IndicadoresOEEModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="fn_sumatoria_paro_folio_fechas_Result.cs">
+      <DependentUpon>IndicadoresOEEModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="fn_sumatoria_paro_folio_fechas_V2_Result.cs">
+      <DependentUpon>IndicadoresOEEModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="fn_sumatoria_paro_folio_Result.cs">
+      <DependentUpon>IndicadoresOEEModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="fn_sumatoria_paro_folio_V2_Result.cs">
+      <DependentUpon>IndicadoresOEEModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="fn_sumatoria_paro_Result.cs">
+      <DependentUpon>IndicadoresOEEModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="fn_sumatoria_paro_V2_Result.cs">
+      <DependentUpon>IndicadoresOEEModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Indicador.cs">
+      <DependentUpon>IndicadoresOEEModel.tt</DependentUpon>
+    </Compile>
     <Compile Include="IndicadoresOEEModel.Context.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>IndicadoresOEEModel.Context.tt</DependentUpon>
+    </Compile>
+    <Compile Include="IndicadoresOEEModel.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>IndicadoresOEEModel.tt</DependentUpon>
     </Compile>
     <Compile Include="IndicadoresOEEModel.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>IndicadoresOEEModel.edmx</DependentUpon>
     </Compile>
+    <Compile Include="IndicadorParo_V2.cs">
+      <DependentUpon>IndicadoresOEEModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="IndicadorRechazo_V2.cs">
+      <DependentUpon>IndicadoresOEEModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="IndicadorTiempo_V2.cs">
+      <DependentUpon>IndicadoresOEEModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="IndicadorVelocidad_V2.cs">
+      <DependentUpon>IndicadoresOEEModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Indicador_Capacidad.cs">
+      <DependentUpon>IndicadoresOEEModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Indicador_Laboratorio.cs">
+      <DependentUpon>IndicadoresOEEModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Indicador_Paro.cs">
+      <DependentUpon>IndicadoresOEEModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Indicador_Rechazo.cs">
+      <DependentUpon>IndicadoresOEEModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Indicador_Servicio.cs">
+      <DependentUpon>IndicadoresOEEModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Indicador_Tiempo.cs">
+      <DependentUpon>IndicadoresOEEModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Indicador_V2.cs">
+      <DependentUpon>IndicadoresOEEModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Laboratorio.cs">
+      <DependentUpon>IndicadoresOEEModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Linea.cs">
+      <DependentUpon>IndicadoresOEEModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Logs.cs">
+      <DependentUpon>IndicadoresOEEModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Paro.cs">
+      <DependentUpon>IndicadoresOEEModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="ParosPlaneadosMes_V2.cs">
+      <DependentUpon>IndicadoresOEEModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="ParosPlanificados_V2.cs">
+      <DependentUpon>IndicadoresOEEModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Perfil.cs">
+      <DependentUpon>IndicadoresOEEModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Planta.cs">
+      <DependentUpon>IndicadoresOEEModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Proceso.cs">
+      <DependentUpon>IndicadoresOEEModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Proceso_UsuariosMensaje.cs">
+      <DependentUpon>IndicadoresOEEModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Proceso_Velocidad.cs">
+      <DependentUpon>IndicadoresOEEModel.tt</DependentUpon>
+    </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Rechazo.cs">
+      <DependentUpon>IndicadoresOEEModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Seccion.cs">
+      <DependentUpon>IndicadoresOEEModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Servicio.cs">
+      <DependentUpon>IndicadoresOEEModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="sysdiagrams.cs">
+      <DependentUpon>IndicadoresOEEModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="TipoAlmacen.cs">
+      <DependentUpon>IndicadoresOEEModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="UnidadMedida.cs">
+      <DependentUpon>IndicadoresOEEModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Usuario.cs">
+      <DependentUpon>IndicadoresOEEModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="UsuarioCapacidad.cs">
+      <DependentUpon>IndicadoresOEEModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Util\Util.cs" />
+    <Compile Include="vw_grafica_indicadores.cs">
+      <DependentUpon>IndicadoresOEEModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="vw_grafica_indicadores_paros_programados.cs">
+      <DependentUpon>IndicadoresOEEModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="vw_grafica_indicadores_paros_programados_V2.cs">
+      <DependentUpon>IndicadoresOEEModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="vw_grafica_indicadores_V2.cs">
+      <DependentUpon>IndicadoresOEEModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="vw_paros.cs">
+      <DependentUpon>IndicadoresOEEModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="vw_paros_programados.cs">
+      <DependentUpon>IndicadoresOEEModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="vw_paros_programados_V2.cs">
+      <DependentUpon>IndicadoresOEEModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="vw_paros_V2.cs">
+      <DependentUpon>IndicadoresOEEModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="vw_usuarios.cs">
+      <DependentUpon>IndicadoresOEEModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="vw_usuarios_procesos.cs">
+      <DependentUpon>IndicadoresOEEModel.tt</DependentUpon>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <EntityDeploy Include="IndicadoresOEEModel.edmx">
@@ -80,6 +261,12 @@
     <Content Include="IndicadoresOEEModel.Context.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
       <LastGenOutput>IndicadoresOEEModel.Context.cs</LastGenOutput>
+      <DependentUpon>IndicadoresOEEModel.edmx</DependentUpon>
+    </Content>
+    <Content Include="IndicadoresOEEModel.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <DependentUpon>IndicadoresOEEModel.edmx</DependentUpon>
+      <LastGenOutput>IndicadoresOEEModel.cs</LastGenOutput>
     </Content>
   </ItemGroup>
   <ItemGroup>
@@ -87,6 +274,12 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Models\" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\IndicadoresOEE.Common\IndicadoresOEE.Common.csproj">
+      <Project>{ea9837e5-261b-4f27-8754-edd83575a537}</Project>
+      <Name>IndicadoresOEE.Common</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

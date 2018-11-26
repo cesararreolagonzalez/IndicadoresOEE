@@ -1,12 +1,19 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace IndicadoresOEE.Common.Models
+﻿namespace IndicadoresOEE.Common.Models
 {
-    class ParoModel
+    using System.Runtime.Serialization;
+
+    [DataContract]
+    public class ParoModel
     {
+        [DataMember]
+        public long Indice { get; set; }
+        [DataMember]
+        public string Nombre { get; set; }
+        [DataMember]
+        public int Cantidad { get; set; }
+        [DataMember]
+        public string Folio { get; set; }
+        [DataMember]
+        public bool EsParoPlanificado { get; set; }
     }
 }
