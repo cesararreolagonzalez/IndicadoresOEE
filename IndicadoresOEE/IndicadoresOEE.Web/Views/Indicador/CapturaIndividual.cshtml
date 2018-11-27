@@ -41,14 +41,11 @@
                 <span class="md-headline text-muted">Datos generales</span>
                 <span class="md-subhead">Parámetros</span>
             </md-card-title-text>
-            @*<md-card-title-media>
-                <div class="md-media-lg card-media"></div>
-            </md-card-title-media>*@
         </md-card-title>
         <md-card-content>
             <br />
-            <div layout="row" flex>
-                <div layout="column" layout-align="center" flex="50">
+            <md-content class="md-padding" layout="column" style="background-color: #FFF !important;">
+                <div layout="row">
                     <md-input-container class="md-block" flex>
                         <label>Centro</label>
                         <md-select id="centroSeleccionable"
@@ -71,6 +68,18 @@
                             </md-optgroup>
                         </md-select>
                     </md-input-container>
+
+                    <div flex="10" hide-xs hide-sm>
+                        <!-- Spacer //-->
+                    </div>
+
+                    <md-input-container class="md-block" flex="45">
+                        <label>Orden</label>
+                        <input ng-model="DatosGenerales.Orden">
+                        <md-icon md-svg-src="~/Content/Icons/check.svg" style="display:inline-block;"></md-icon>
+                    </md-input-container>
+                </div>
+                <div layout="row">
                     <md-input-container class="md-block" flex>
                         <label>Departamento</label>
                         <md-select id="departamentoSeleccionable"
@@ -93,6 +102,17 @@
                             </md-optgroup>
                         </md-select>
                     </md-input-container>
+
+                    <div flex="10" hide-xs hide-sm>
+                        <!-- Spacer //-->
+                    </div>
+
+                    <md-input-container class="md-block" flex>
+                        <label>Lote</label>
+                        <input ng-model="DatosGenerales.Lote">
+                    </md-input-container>
+                </div>
+                <div layout="row">
                     <md-input-container class="md-block" flex>
                         <label>Línea</label>
                         <md-select id="lineaSeleccionable"
@@ -115,6 +135,17 @@
                             </md-optgroup>
                         </md-select>
                     </md-input-container>
+
+                    <div flex="10" hide-xs hide-sm>
+                        <!-- Spacer //-->
+                    </div>
+
+                    <md-input-container class="md-block" flex>
+                        <label>Material</label>
+                        <input ng-model="DatosGenerales.Material">
+                    </md-input-container>
+                </div>
+                <div layout="row">
                     <md-input-container class="md-block" flex>
                         <label>Proceso</label>
                         <md-select id="procesoSeleccionable"
@@ -137,55 +168,32 @@
                             </md-optgroup>
                         </md-select>
                     </md-input-container>
-                </div>
-                <md-content class="md-padding" layout="column" layout-align="center" flex="50">
-                </md-content>
-            </div>
-        </md-card-content>
-        <md-card-actions layout="row" layout-align="end center">
-            <md-button>
-                SIGUIENTE
-                <md-icon md-svg-src="~/Content/Icons/arrow-forward.svg"
-                         aria-label="Insert Drive Icon">
-                </md-icon>
-            </md-button>
-        </md-card-actions>
-    </md-card>
-    <md-card md-theme="{{ showDarkTheme ? 'dark-grey' : 'default' }}" md-theme-watch ng-cloak>
-        <md-card-title>
-            <md-card-title-text>
-                <span class="md-headline text-muted">Datos generales</span>
-                <span class="md-subhead">Parámetros</span>
-            </md-card-title-text>
-        </md-card-title>
-        <md-card-content>
-            <br />
-            <div layout="row" flex>
-                <div layout="column" layout-align="center" flex="50">
-                </div>
-                <div layout="column" layout-align="center" flex="50">
-                    <md-input-container class="md-block">
-                        <label>Orden</label>
-                        <input ng-model="DatosGenerales.Orden">
-                    </md-input-container>
-                    <md-input-container class="md-block">
-                        <label>Lote</label>
-                        <input ng-model="DatosGenerales.Lote">
-                    </md-input-container>
-                    <md-input-container class="md-block">
-                        <label>Material</label>
-                        <input ng-model="DatosGenerales.Material">
-                    </md-input-container>
-                    <md-input-container class="md-block">
+
+                    <div flex="10" hide-xs hide-sm>
+                        <!-- Spacer //-->
+                    </div>
+
+                    <md-input-container class="md-block" flex>
                         <label>Descripción</label>
                         <input ng-model="DatosGenerales.Descripcion">
                     </md-input-container>
-                    <md-input-container class="md-block">
-                        <label>Velocidad</label>
-                        <input ng-model="DatosGenerales.Velocidad">
-                    </md-input-container>
                 </div>
-            </div>
+                <div layout="row">
+                    <div layout="column" layout-align="center" flex="45"></div>
+
+                    <div flex="10" hide-xs hide-sm>
+                        <!-- Spacer //-->
+                    </div>
+
+                    <div layout="column" layout-align="center" flex="45">
+
+                        <md-input-container class="md-block">
+                            <label>Velocidad</label>
+                            <input ng-model="DatosGenerales.Velocidad">
+                        </md-input-container>
+                    </div>
+                </div>
+            </md-content>
         </md-card-content>
         <md-card-actions layout="row" layout-align="end center">
             <md-button>
