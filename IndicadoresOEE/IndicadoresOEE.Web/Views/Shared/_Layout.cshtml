@@ -82,13 +82,9 @@
             </div>
         </div>
     </div>*@
-    <div class="container body-content">
+    <md-content layout="column" layout-align="center center" layout-padding>
         @RenderBody()
-        <hr />
-        <footer>
-            <p>&copy; @DateTime.Now.Year - Indicadores OEE</p>
-        </footer>
-    </div>
+    </md-content>
 
     @Scripts.Render("~/bundles/jquery")
     @*@Scripts.Render("~/bundles/bootstrap")*@
