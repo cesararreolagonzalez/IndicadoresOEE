@@ -31,7 +31,10 @@
         }
 </style>
 
-<h3 class="display-5" style="color:#4285F4">Captura de indicador</h3>
+<h3 style=" color: rgb(63, 81, 181); font-weight: 300; letter-spacing: .5px; text-align: center; margin-top: 5rem; margin-bottom: 3rem;">
+    Captura de indicadores
+</h3>
+
 
 <br />
 <br />
@@ -213,7 +216,7 @@
 
 
 
-    <md-card md-theme="{{ showDarkTheme ? 'dark-grey' : 'default' }}" md-theme-watch ng-cloak style=" max-width: 60rem !important;">
+    <md-card md-theme="{{ showDarkTheme ? 'dark-grey' : 'default' }}" md-theme-watch ng-cloak style="max-width: 60rem !important;">
         <md-card-title>
             <md-card-title-text>
                 <span class="md-title text-muted" style="padding-left: 2.5rem;">Datos del indicador</span>
@@ -238,19 +241,67 @@
                         </md-radio-group>
                     </md-input-container>
 
-                    <md-input-container class="md-block md-subhead" flex style="padding: 0 !important; margin: 0.4rem !important;">
+                    <md-input-container class="md-block md-subhead" flex style="padding: 0 !important; margin-right: 0.4rem !important;margin-left: 0.4rem !important;margin-top: 1rem !important;">
                         <label>Ciclo</label>
                         <input ng-model="DatosIndicador.Ciclo">
                     </md-input-container>
 
-                    <md-input-container class="md-block md-subhead" flex style="padding: 0 !important; margin: 0.4rem !important;">
+                    <md-input-container class="md-block md-subhead" flex style="padding: 0 !important;  margin-right: 0.4rem !important;margin-left: 0.4rem !important;margin-top: 1rem !important;">
                         <label>Piezas</label>
                         <input ng-model="DatosIndicador.Piezas">
                     </md-input-container>
 
-                    <md-datepicker class="md-block" ng-model="DatosIndicador.Fecha" md-placeholder="Fecha" flex></md-datepicker>
+                    <div layout="row">
+                        <md-datepicker class="md-block" 
+                                       ng-model="DatosIndicador.Fecha" 
+                                       md-placeholder="Fecha" 
+                                       flex
+                                       style="margin-top: 1.3rem;">
+                        </md-datepicker>
+
+                        <div style="display: inline-flex">
+                            <div style="margin-top: 1.5rem;">
+                                <button class="md-icon-button md-button md-ink-ripple" type="button" ng-click="!readOnly && showPicker($event)" ng-disabled="readOnly">
+                                    <md-icon title="Hora" md-svg-src="../Content/Icons/time.svg" aria-label="Hora"></md-icon>
+                                    <div class="md-ripple-container"></div>
+                                </button>
+                            </div>
+                            <div>
+                                <md-input-container class="md-subhead">
+                                    <md-select ng-model="Hora.HoraInicial" md-selected-text="" aria-label="hora" ng-disabled="true">
+                                        <md-optgroup label="hora">
+                                            <md-option ng-repeat="n in [].constructor(24) track by $index"
+                                                       ng-value="$index">
+                                                {{ $index < 10 ? '0' + $index : $index }}
+                                            </md-option>
+                                        </md-optgroup>
+                                    </md-select>
+                                </md-input-container>
+                                <md-input-container>
+                                    <md-select ng-model="Hora.MinutoInicial" md-selected-text="" aria-label="minutos" ng-disabled="true">
+                                        <md-optgroup label="minuto">
+                                            <md-option ng-repeat="n in [].constructor(60) track by $index"
+                                                       ng-value="$index"
+                                                       ng-init="$index">
+                                                {{ $index < 10 ? '0' + $index : $index }}
+                                            </md-option>
+                                        </md-optgroup>
+                                    </md-select>
+                                </md-input-container>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-                <div layout="column" layout-aling="center center" flex>
+                <div layout="column" layout-aling="center center" flex style="margin-left:5rem !important;">
+                    <div layout="row" layout-aling="center center">
+                        <blockquote class="blockquote bq-success">
+                            <p class="bq-title">Correcto</p>
+                            <p>
+                                We <strong>highly recommend</strong> custom validation styles as native browser defaults are not announced to
+                                screen readers.
+                            </p>
+                        </blockquote>
+                    </div>
                 </div>
             </div>
         </md-card-content>
@@ -263,6 +314,20 @@
             </md-button>
         </md-card-actions>
     </md-card>
+    <div layout="row" layout-align="start" style="max-width: 60rem !important;" flex>
+        <div layout="column" layout-align="start" flex>
+            <md-button md-no-ink class="md-primary">
+                <md-icon md-svg-icon="~/Content/Icons/time.svg"></md-icon>
+                Agregar paro
+            </md-button>
+        </div>
+        <div layout="column" layout-align="start" flex>
+            <md-button md-no-ink class="md-primary">
+                <md-icon md-svg-icon="~/Content/Icons/time.svg"></md-icon>
+                Agregar rechazo
+            </md-button>
+        </div>
+    </div>
 </div>
 @*http://logbon72.github.io/angular-material-datetimepicker/*@
 @*https://eonasdan.github.io/bootstrap-datetimepicker/*@
