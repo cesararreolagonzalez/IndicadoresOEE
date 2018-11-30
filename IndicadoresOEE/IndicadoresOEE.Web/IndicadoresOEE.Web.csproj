@@ -189,6 +189,7 @@
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="App_Start\Startup.Auth.cs" />
     <Compile Include="Controllers\AccountController.cs" />
+    <Compile Include="Controllers\BitacoraController.cs" />
     <Compile Include="Controllers\CentroController.cs" />
     <Compile Include="Controllers\CuentaController.cs" />
     <Compile Include="Controllers\DepartamentoController.cs" />
@@ -297,6 +298,7 @@
     <Content Include="Views\Departamento\Inicio.cshtml" />
     <Content Include="Views\Linea\Inicio.cshtml" />
     <Content Include="Views\Velocidad\Inicio.cshtml" />
+    <Content Include="Views\Bitacora\Inicio.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
