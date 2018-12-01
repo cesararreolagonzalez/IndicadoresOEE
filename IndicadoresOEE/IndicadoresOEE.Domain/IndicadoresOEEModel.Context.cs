@@ -17,8 +17,7 @@ namespace IndicadoresOEE.Domain
     
     public partial class PrimaryConnection : DbContext
     {
-        public PrimaryConnection()
-            : base("name=PrimaryConnection")
+        public PrimaryConnection() : base("name=PrimaryConnection")
         {
         }
     

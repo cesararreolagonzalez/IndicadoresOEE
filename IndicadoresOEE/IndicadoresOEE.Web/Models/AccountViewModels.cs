@@ -1,8 +1,9 @@
-﻿using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-
-namespace IndicadoresOEE.Web.Models
+﻿namespace IndicadoresOEE.Web.Models
 {
+    using System;
+    using System.Collections.Generic;
+    using System.ComponentModel.DataAnnotations;
+
     public class ExternalLoginConfirmationViewModel
     {
         [Required]
@@ -57,6 +58,11 @@ namespace IndicadoresOEE.Web.Models
         [DataType(DataType.Password)]
         [Display(Name = "Contraseña")]
         public string Password { get; set; }
+
+        [Required]
+        [DataType(DataType.Password)]
+        [Display(Name = "Contraseña")]
+        public DateTime Fecha { get; set; } = DateTime.Now;
 
         [Display(Name = "¿Recordar cuenta?")]
         public bool RememberMe { get; set; }
