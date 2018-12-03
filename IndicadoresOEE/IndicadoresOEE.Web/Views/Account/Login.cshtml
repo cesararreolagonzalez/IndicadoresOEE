@@ -4,26 +4,52 @@
     ViewBag.Title = "Iniciar sesión";
 }
 
-<h2>@ViewBag.Title.</h2>
-<div layout="column" layout-align="center" style="min-width: 30rem !important; margin-top:2rem;">
-    @using (Html.BeginForm("Login", "Account", new { ReturnUrl = ViewBag.ReturnUrl }, FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
-    {
-        @Html.AntiForgeryToken()
+@{ 
+    User.
+}
 
-        <div class="md-form">
-            @Html.TextBoxFor(m => m.Email, new { @class = "form-control" })
-            @Html.LabelFor(m => m.Email, new { })
-            @Html.ValidationMessageFor(m => m.Email, "", new { @class = "text-danger" })
-        </div>
-        <div class="md-form">
-            @Html.PasswordFor(m => m.Password, new { @class = "form-control" })
-            @Html.LabelFor(m => m.Password, new { })
-            @Html.ValidationMessageFor(m => m.Password, "", new { @class = "text-danger" })
-        </div>
+<h2 class="titulo-seccion"><strong>@ViewBag.Title</strong></h2>
+<br />
 
-        <button type="submit" class="btn btn-primary">Iniciar sesión</button>
-    }
+<div layout="column" layout-align="center center">
+
+    <div ng-controller="CuentaController" layout="row" layout-align="center center">
+
+        <div style="max-width: 30rem !important; margin-top:2rem;">
+            <div class="md-form">
+                @Html.TextBoxFor(m => m.CorreoElectronico, new { @class = "form-control", ng_model = "Usuario" })
+                @Html.LabelFor(m => m.CorreoElectronico, new { })
+                @Html.ValidationMessageFor(m => m.CorreoElectronico, "", new { @class = "text-danger" })
+            </div>
+            <div class="md-form">
+                @Html.PasswordFor(m => m.Contraseña, new { @class = "form-control", ng_model = "Contraseña" })
+                @Html.LabelFor(m => m.Contraseña, new { })
+                @Html.ValidationMessageFor(m => m.Contraseña, "", new { @class = "text-danger" })
+            </div>
+
+            <button type="submit" class="btn btn-primary" ng-click="IniciarSesion()">Iniciar sesión</button>
+            <button type="submit" class="btn btn-primary" ng-click="isAuthenticated()">Comprobar autenticación</button>
+            @*@using (Html.BeginForm("Login", "Account", new { ReturnUrl = ViewBag.ReturnUrl }, FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
+                {
+                    @Html.AntiForgeryToken()
+
+                    <div class="md-form">
+                        @Html.TextBoxFor(m => m.CorreoElectronico, new { @class = "form-control" })
+                        @Html.LabelFor(m => m.CorreoElectronico, new { })
+                        @Html.ValidationMessageFor(m => m.CorreoElectronico, "", new { @class = "text-danger" })
+                    </div>
+                    <div class="md-form">
+                        @Html.PasswordFor(m => m.Contraseña, new { @class = "form-control" })
+                        @Html.LabelFor(m => m.Contraseña, new { })
+                        @Html.ValidationMessageFor(m => m.Contraseña, "", new { @class = "text-danger" })
+                    </div>
+
+                    <button type="submit" class="btn btn-primary">Iniciar sesión</button>
+                }*@
+        </div>
+    </div>
 </div>
+
 
 @section Scripts {
     @Scripts.Render("~/bundles/jqueryval")

@@ -5,10 +5,16 @@
         .module('indicadoresoeeapp')
         .controller('CapturaIndicadorController', CapturaIndicadorController);
     
-    CapturaIndicadorController.$inject = ['$scope', '$timeout', '$location', '$anchorScroll', '$log', '$http', '$window', '$compile', '$mdToast', '$mdDialog'];
+    CapturaIndicadorController.$inject = ['$element', '$scope', '$timeout', '$location', '$anchorScroll', '$log', '$http', '$window', '$compile', '$mdToast', '$mdDialog', 'CentroService'];
 
-    function CapturaIndicadorController($scope, $timeout, $location, $anchorScroll, $log, $http, $window, $compile, $mdToast, $mdDialog)
+    function CapturaIndicadorController($element, $scope, $timeout, $location, $anchorScroll, $log, $http, $window, $compile, $mdToast, $mdDialog, CentroService)
     {
+        $element.find('input').on('keydown', function (ev) {
+            ev.stopPropagation();
+        });
+
+        $scope.TerminoBusqueda = '';
+
         $scope.DatosGenerales = {
             IndiceCentro: null,
             IndiceDepartamento: null,
@@ -28,9 +34,9 @@
 
         $scope.ObtenerCentros = function ()
         {
-            $http
-                .post('/Centro/ObtenerCentros')
+            CentroService.ObtenerCentros()
                 .then(function (response) {
+                    $log.info(response);
                     var Estado = response.data.Estado;
                     if (!Estado) {
                         var Mensaje = response.data.Mensaje;
@@ -48,8 +54,7 @@
                     $log.info('Hubo un error: Estatus = ' + response.status + ', Error = ' + response.data);
                 })
                 .catch(function (response) {
-                    $log.info('Excepcion: ', response);
-                    throw e;
+                    $log.error('Excepcion: ', response);
                 })
                 .finally(function () {
                     $log.info('Método ObtenerCentros finalizado');

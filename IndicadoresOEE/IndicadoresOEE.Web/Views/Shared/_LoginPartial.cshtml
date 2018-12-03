@@ -7,7 +7,7 @@
 
         <ul class="navbar-nav ml-auto nav-flex-icons">
             <li>
-                @Html.ActionLink("Hola " + User.Identity.GetUserName() + "!", "Index", "Manage", routeValues: null, htmlAttributes: new { title = "Manage", @class = "btn btn-primary" })
+                @Html.ActionLink("" + User.Identity.GetUserName() + "", "Index", "Manage", routeValues: null, htmlAttributes: new { title = "Manage", @class = "btn btn-primary" })
             </li>
             <li><button class="btn btn-primary" type="submit">Cerrar sesión</button></li>
         </ul>

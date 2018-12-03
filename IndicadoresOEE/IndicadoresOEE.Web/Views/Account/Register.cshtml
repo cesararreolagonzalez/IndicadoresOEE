@@ -18,16 +18,24 @@
         @Html.AntiForgeryToken()
 
         <div class="md-form">
-            @Html.TextBoxFor(m => m.Email, new { @class = "form-control" })
-            @Html.LabelFor(m => m.Email, new { })
+            @Html.TextBoxFor(m => m.CorreoElectronico, new { @class = "form-control" })
+            @Html.LabelFor(m => m.CorreoElectronico, new { })
+            @Html.ValidationMessageFor(m => m.CorreoElectronico, "", new { @class = "text-danger" })
         </div>
         <div class="md-form">
-            @Html.PasswordFor(m => m.Password, new { @class = "form-control" })
-            @Html.LabelFor(m => m.Password, new { })
+            @Html.PasswordFor(m => m.Contraseña, new { @class = "form-control" })
+            @Html.LabelFor(m => m.Contraseña, new { })
+            @Html.ValidationMessageFor(m => m.Contraseña, "", new { @class = "text-danger" })
         </div>
         <div class="md-form">
-            @Html.PasswordFor(m => m.ConfirmPassword, new { @class = "form-control" })
-            @Html.LabelFor(m => m.ConfirmPassword, new { })
+            @Html.PasswordFor(m => m.ConfirmarContraseña, new { @class = "form-control" })
+            @Html.LabelFor(m => m.ConfirmarContraseña, new { })
+            @Html.ValidationMessageFor(m => m.ConfirmarContraseña, "", new { @class = "text-danger" })
+        </div>
+        <div class="md-form">
+            @Html.TextBoxFor(m => m.Nombre, new { @class = "form-control" })
+            @Html.LabelFor(m => m.Nombre, new { })
+            @Html.ValidationMessageFor(m => m.Nombre, "", new { @class = "text-danger" })
         </div>
 
         <button type="submit" class="btn btn-primary">Registrar</button>

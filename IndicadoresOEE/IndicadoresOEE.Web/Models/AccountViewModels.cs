@@ -52,39 +52,41 @@
         [Required]
         [Display(Name = "Correo electrónico")]
         [EmailAddress]
-        public string Email { get; set; }
+        public string CorreoElectronico { get; set; }
 
         [Required]
         [DataType(DataType.Password)]
         [Display(Name = "Contraseña")]
-        public string Password { get; set; }
-
-        [Required]
-        [DataType(DataType.Password)]
-        [Display(Name = "Contraseña")]
-        public DateTime Fecha { get; set; } = DateTime.Now;
-
+        public string Contraseña { get; set; }
+        
         [Display(Name = "¿Recordar cuenta?")]
-        public bool RememberMe { get; set; }
+        public bool RecordarCuenta { get; set; }
     }
 
     public class RegisterViewModel
     {
+        [Key]
+        public int Indice { get; set; }
+
         [Required]
         [EmailAddress]
         [Display(Name = "Correo electrónico")]
-        public string Email { get; set; }
+        public string CorreoElectronico { get; set; }
 
         [Required]
-        [StringLength(100, ErrorMessage = "El número de caracteres de {0} debe ser al menos {2}.", MinimumLength = 6)]
+        [DataType(DataType.Password)]
+        [Display(Name = "Nombre")]
+        public string Nombre { get; set; }
+
+        [Required]
         [DataType(DataType.Password)]
         [Display(Name = "Contraseña")]
-        public string Password { get; set; }
+        public string Contraseña { get; set; }
 
         [DataType(DataType.Password)]
         [Display(Name = "Confirmar contraseña")]
-        [Compare("Password", ErrorMessage = "La contraseña y la contraseña de confirmación no coinciden.")]
-        public string ConfirmPassword { get; set; }
+        [Compare("Contraseña", ErrorMessage = "La contraseña y la contraseña de confirmación no coinciden.")]
+        public string ConfirmarContraseña { get; set; }
     }
 
     public class ResetPasswordViewModel

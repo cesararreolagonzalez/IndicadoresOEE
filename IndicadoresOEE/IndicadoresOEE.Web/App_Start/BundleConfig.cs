@@ -8,15 +8,28 @@ namespace IndicadoresOEE.Web
         // Para obtener más información sobre las uniones, visite https://go.microsoft.com/fwlink/?LinkId=301862
         public static void RegisterBundles(BundleCollection bundles)
         {
-            bundles.Add(new ScriptBundle("~/bundles/jquery").Include("~/Scripts/jquery-{version}.js"));
+            bundles.Add(new ScriptBundle("~/bundles/jquery")
+                .Include("~/Scripts/jquery-{version}.js",
+                "~/Scripts/jquery-{version}.intellisense.js"));
 
             bundles.Add(new ScriptBundle("~/bundles/moment")
-                .Include("~/Scripts/moment-with-locales.js",
+                .Include("~/Scripts/moment-with-locales.js"));
+
+            bundles.Add(new ScriptBundle("~/bundles/angularjs")
+                .Include("~/Scripts/angular.js",
+                "~/Scripts/angular-animate.js",
+                "~/Scripts/angular-sanitize.js",
+                "~/Scripts/angular-cookies.js",
+                "~/Scripts/angular-messages.js",
+                "~/Scripts/angular-aria.js",
+                "~/Scripts/angular-mocks.js",
                 "~/Scripts/angular-moment.js"));
 
             bundles.Add(new ScriptBundle("~/bundles/angularapp")
                 .Include("~/Scripts/app/app.js",
-                "~/Scripts/app/controllers/CapturaIndicadorController.js"));
+                "~/Scripts/app/controllers/CapturaIndicadorController.js",
+                "~/Scripts/app/controllers/CuentaController.js")
+                .IncludeDirectory("~/Scripts/app/factories", "*.js"));
 
             bundles.Add(new ScriptBundle("~/bundles/jqueryval").Include("~/Scripts/jquery.validate*"));
 

@@ -25,6 +25,7 @@
         /// 
         /// </summary>
         /// <returns></returns>
+        [HttpGet]
         public ActionResult ObtenerCentros()
         {
             string Mensaje = string.Empty;
@@ -43,7 +44,8 @@
                 Mensaje = e.Message;
             }
 
-            return Json(new { Estado, Mensaje, ListaCentros });
+            object data = new { Estado, Mensaje, ListaCentros };
+            return Json(data, JsonRequestBehavior.AllowGet);
         }
     }
 }

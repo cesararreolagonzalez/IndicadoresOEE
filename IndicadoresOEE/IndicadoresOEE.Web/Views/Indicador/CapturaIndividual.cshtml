@@ -51,11 +51,14 @@
             <br />
             <div layout="column" style="background-color: #FFF !important; padding-left: 2rem; padding-right: 2rem;">
                 <div layout="row">
-                    <md-input-container class="md-block md-subhead" flex style="padding: 0 !important; margin: 0.4rem !important;">
+                    <md-input-container class="md-block md-subhead" 
+                                        flex 
+                                        style="padding: 0 !important; margin: 0.4rem !important;">
                         <label>Centro</label>
                         <md-select id="centroSeleccionable"
                                    name="centroSeleccionable"
                                    md-on-open="ObtenerCentros()"
+                                   md-on-close="ResetearTerminoBusqueda()"
                                    ng-model="DatosGenerales.IndiceCentro"
                                    md-container-class="selectdemoSelectHeader"
                                    md-autofocus
@@ -67,7 +70,7 @@
                                        class="demo-header-searchbox md-text">
                             </md-select-header>
                             <md-optgroup label="Centros disponibles">
-                                <md-option ng-repeat="Centro in ListaCentros" ng-value="Centro.Indice">
+                                <md-option ng-repeat="Centro in ListaCentros | filter:TerminoBusqueda" ng-value="Centro.Indice">
                                     {{ Centro.Nombre }}
                                 </md-option>
                             </md-optgroup>
@@ -94,6 +97,7 @@
                         <md-select id="departamentoSeleccionable"
                                    name="departamentoSeleccionable"
                                    ng-disabled="DatosGenerales.IndiceCentro === null"
+                                   md-on-close="ResetearTerminoBusqueda()"
                                    ng-model="DatosGenerales.IndiceDepartamento"
                                    md-container-class="selectdemoSelectHeader"
                                    md-autofocus
@@ -105,7 +109,7 @@
                                        class="demo-header-searchbox md-text">
                             </md-select-header>
                             <md-optgroup label="Centros disponibles">
-                                <md-option ng-repeat="Departamento in ListaDepartamentos" ng-value="Departamento.Indice">
+                                <md-option ng-repeat="Departamento in ListaDepartamentos | filter:TerminoBusqueda" ng-value="Departamento.Indice">
                                     {{ Departamento.Nombre }}
                                 </md-option>
                             </md-optgroup>
@@ -127,6 +131,7 @@
                         <md-select id="lineaSeleccionable"
                                    name="lineaSeleccionable"
                                    ng-disabled="DatosGenerales.IndiceDepartamento === null"
+                                   md-on-close="ResetearTerminoBusqueda()"
                                    ng-model="DatosGenerales.IndiceLinea"
                                    md-container-class="selectdemoSelectHeader"
                                    md-autofocus
@@ -138,7 +143,7 @@
                                        class="demo-header-searchbox md-text">
                             </md-select-header>
                             <md-optgroup label="Lineas disponibles">
-                                <md-option ng-repeat="Linea in ListaLineas" ng-value="Linea.Indice">
+                                <md-option ng-repeat="Linea in ListaLineas | filter:TerminoBusqueda" ng-value="Linea.Indice">
                                     {{ Linea.Nombre }}
                                 </md-option>
                             </md-optgroup>
@@ -160,6 +165,7 @@
                         <md-select id="procesoSeleccionable"
                                    name="procesoSeleccionable"
                                    ng-disabled="DatosGenerales.IndiceLinea === null"
+                                   md-on-close="ResetearTerminoBusqueda()"
                                    ng-model="DatosGenerales.IndiceProceso"
                                    md-container-class="selectdemoSelectHeader"
                                    md-autofocus
@@ -171,7 +177,7 @@
                                        class="demo-header-searchbox md-text">
                             </md-select-header>
                             <md-optgroup label="Lineas disponibles">
-                                <md-option ng-repeat="Proceso in ListaProcesos" ng-value="Proceso.Indice">
+                                <md-option ng-repeat="Proceso in ListaProcesos | filter:TerminoBusqueda" ng-value="Proceso.Indice">
                                     {{ Proceso.Nombre }}
                                 </md-option>
                             </md-optgroup>
@@ -260,7 +266,7 @@
                         </md-datepicker>
 
                         <div style="display: inline-flex">
-                            <div style="margin-top: 1.5rem;">
+                            <div style="margin-top: 1.4rem;">
                                 <button class="md-icon-button md-button md-ink-ripple" type="button" ng-click="!readOnly && showPicker($event)" ng-disabled="readOnly">
                                     <md-icon title="Hora" md-svg-src="../Content/Icons/time.svg" aria-label="Hora"></md-icon>
                                     <div class="md-ripple-container"></div>
@@ -315,30 +321,18 @@
         </md-card-actions>
     </md-card>
 
-    <md-card md-theme="{{ showDarkTheme ? 'dark-grey' : 'default' }}" md-theme-watch ng-cloak style="max-width: 60rem !important;">
+    <md-card md-theme="{{ showDarkTheme ? 'dark-grey' : 'default' }}" md-theme-watch ng-cloak style=" max-width: 60rem !important;">
         <md-card-title>
             <md-card-title-text>
-                <span class="md-title text-muted" style="padding-left: 2.5rem;">Datos del indicador</span>
+                <span class="md-title text-muted" style="padding-left: 2.5rem;">Paros</span>
                 <span class="md-subhead"></span>
             </md-card-title-text>
         </md-card-title>
         <md-card-content>
-            <md-tabs md-dynamic-height md-border-bottom md-stretch-tabs="always">
-                <md-tab label="Paros">
-                    <md-content class="md-padding">
-                        <h1 class="md-display-2">Tab One</h1>
-                        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla venenatis ante augue. Phasellus volutpat neque ac dui mattis vulputate. Etiam consequat aliquam cursus. In sodales pretium ultrices. Maecenas lectus est, sollicitudin consectetur felis nec, feugiat ultricies mi.</p>
-                    </md-content>
-                </md-tab>
-                <md-tab label="Rechazos">
-                    <md-content class="md-padding">
-                        <h1 class="md-display-2">Tab Two</h1>
-                        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla venenatis ante augue. Phasellus volutpat neque ac dui mattis vulputate. Etiam consequat aliquam cursus. In sodales pretium ultrices. Maecenas lectus est, sollicitudin consectetur felis nec, feugiat ultricies mi. Aliquam erat volutpat. Nam placerat, tortor in ultrices porttitor, orci enim rutrum enim, vel tempor sapien arcu a tellus. Vivamus convallis sodales ante varius gravida. Curabitur a purus vel augue ultrices ultricies id a nisl. Nullam malesuada consequat diam, a facilisis tortor volutpat et. Sed urna dolor, aliquet vitae posuere vulputate, euismod ac lorem. Sed felis risus, pulvinar at interdum quis, vehicula sed odio. Phasellus in enim venenatis, iaculis tortor eu, bibendum ante. Donec ac tellus dictum neque volutpat blandit. Praesent efficitur faucibus risus, ac auctor purus porttitor vitae. Phasellus ornare dui nec orci posuere, nec luctus mauris semper.</p>
-                        <p>Morbi viverra, ante vel aliquet tincidunt, leo dolor pharetra quam, at semper massa orci nec magna. Donec posuere nec sapien sed laoreet. Etiam cursus nunc in condimentum facilisis. Etiam in tempor tortor. Vivamus faucibus egestas enim, at convallis diam pulvinar vel. Cras ac orci eget nisi maximus cursus. Nunc urna libero, viverra sit amet nisl at, hendrerit tempor turpis. Maecenas facilisis convallis mi vel tempor. Nullam vitae nunc leo. Cras sed nisl consectetur, rhoncus sapien sit amet, tempus sapien.</p>
-                        <p>Integer turpis erat, porttitor vitae mi faucibus, laoreet interdum tellus. Curabitur posuere molestie dictum. Morbi eget congue risus, quis rhoncus quam. Suspendisse vitae hendrerit erat, at posuere mi. Cras eu fermentum nunc. Sed id ante eu orci commodo volutpat non ac est. Praesent ligula diam, congue eu enim scelerisque, finibus commodo lectus.</p>
-                    </md-content>
-                </md-tab>
-            </md-tabs>
+            <br />
+            <div layout="column" style="background-color: #FFF !important; padding-left: 2rem; padding-right: 2rem;">
+                
+            </div>
         </md-card-content>
         <md-card-actions layout="row" layout-align="end center">
             <md-button>
@@ -349,23 +343,46 @@
             </md-button>
         </md-card-actions>
     </md-card>
-    <div layout="row" layout-align="start" style="max-width: 60rem !important;" flex>
-        <div layout="column" layout-align="start" flex>
-            <md-button md-no-ink class="md-primary">
-                <md-icon md-svg-icon="~/Content/Icons/time.svg"></md-icon>
-                Agregar paro
+
+    <md-card md-theme="{{ showDarkTheme ? 'dark-grey' : 'default' }}" md-theme-watch ng-cloak style=" max-width: 60rem !important;">
+        <md-card-title>
+            <md-card-title-text>
+                <span class="md-title text-muted" style="padding-left: 2.5rem;">Rechazos</span>
+                <span class="md-subhead"></span>
+            </md-card-title-text>
+        </md-card-title>
+        <md-card-content>
+            <br />
+            <div layout="column" style="background-color: #FFF !important; padding-left: 2rem; padding-right: 2rem;">
+                
+            </div>
+        </md-card-content>
+        <md-card-actions layout="row" layout-align="end center">
+            <md-button>
+                SIGUIENTE
+                <md-icon md-svg-src="~/Content/Icons/arrow-forward.svg"
+                         aria-label="Insert Drive Icon">
+                </md-icon>
             </md-button>
+        </md-card-actions>
+    </md-card>
+    @*<div layout="row" layout-align="start" style="max-width: 60rem !important;" flex>
+            <div layout="column" layout-align="start" flex>
+                <md-button md-no-ink class="md-primary">
+                    <md-icon md-svg-icon="~/Content/Icons/time.svg"></md-icon>
+                    Agregar paro
+                </md-button>
+            </div>
+            <div layout="column" layout-align="start" flex>
+                <md-button md-no-ink class="md-primary">
+                    <md-icon md-svg-icon="~/Content/Icons/time.svg"></md-icon>
+                    Agregar rechazo
+                </md-button>
+            </div>
         </div>
-        <div layout="column" layout-align="start" flex>
-            <md-button md-no-ink class="md-primary">
-                <md-icon md-svg-icon="~/Content/Icons/time.svg"></md-icon>
-                Agregar rechazo
-            </md-button>
-        </div>
-    </div>
-    <div layout="row" style="max-width: 60rem !important;">
-        
-    </div>
+        <div layout="row" style="max-width: 60rem !important;">
+
+        </div>*@
 </div>
 @*http://logbon72.github.io/angular-material-datetimepicker/*@
 @*https://eonasdan.github.io/bootstrap-datetimepicker/*@

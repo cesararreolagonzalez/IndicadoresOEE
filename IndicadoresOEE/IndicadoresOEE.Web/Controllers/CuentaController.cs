@@ -15,10 +15,11 @@
         [HttpPost]
         public ActionResult IniciarSesion(SesionModel modelo)
         {
+            int Indice = 1;
             try {  }
             catch(Exception e) { }
 
-            return Json(new { });
+            return Json(new { Indice = Indice });
         }
 
         // GET: Registro

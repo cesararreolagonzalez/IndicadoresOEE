@@ -4,7 +4,10 @@
     angular.module('indicadoresoeeapp', ['ngMaterial', 'ngMessages', 'ngSanitize', 'angularMoment'])
 
         .config(['$mdIconProvider', '$mdDateLocaleProvider', '$mdThemingProvider',
-            function ($mdIconProvider, $mdDateLocaleProvider, $mdThemingProvider) {
+            function ($mdIconProvider, $mdDateLocaleProvider, $mdThemingProvider)
+            {
+                //==============================================================================
+
                 $mdIconProvider.icon('md-close', '../img/icons/ic_close_24px.svg', 24);
 
                 // Example of a Spanish localization.
