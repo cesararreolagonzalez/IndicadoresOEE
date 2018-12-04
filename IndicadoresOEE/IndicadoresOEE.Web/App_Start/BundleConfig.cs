@@ -26,10 +26,13 @@ namespace IndicadoresOEE.Web
                 "~/Scripts/angular-moment.js"));
 
             bundles.Add(new ScriptBundle("~/bundles/angularapp")
-                .Include("~/Scripts/app/app.js",
-                "~/Scripts/app/controllers/CapturaIndicadorController.js",
-                "~/Scripts/app/controllers/CuentaController.js")
-                .IncludeDirectory("~/Scripts/app/factories", "*.js"));
+                .Include("~/Scripts/app/app.js")
+                .IncludeDirectory("~/Scripts/app/values", "*.js")
+                .IncludeDirectory("~/Scripts/app/constants", "*.js")
+                .IncludeDirectory("~/Scripts/app/factories", "*.js")
+                .IncludeDirectory("~/Scripts/app/services", "*.js")
+                .IncludeDirectory("~/Scripts/app/directives", "*.js")
+                .IncludeDirectory("~/Scripts/app/controllers", "*.js"));
 
             bundles.Add(new ScriptBundle("~/bundles/jqueryval").Include("~/Scripts/jquery.validate*"));
 
@@ -39,7 +42,7 @@ namespace IndicadoresOEE.Web
 
             bundles.Add(new ScriptBundle("~/bundles/bootstrap").Include("~/Scripts/bootstrap.js"));
 
-            bundles.Add(new StyleBundle("~/Content/css").Include("~/Content/site.css"));
+            bundles.Add(new StyleBundle("~/Content/css").Include("~/Content/Site.css"));
 
             bundles.Add(new StyleBundle("~/Content/bootstrap").Include("~/Content/bootstrap.css"));
         }

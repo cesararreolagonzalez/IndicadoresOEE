@@ -15,8 +15,8 @@
 
         return service;
 
-        function ValidarOrden() {
-            return $http.get('/SAP/ValidarOrden').then(handleSuccess, handleError);
+        function ValidarOrden(Orden) {
+            return $http.get('/SAP/ValidarOrden?Orden=' + Orden).then(handleSuccess, handleError);
         }
 
         // private functions

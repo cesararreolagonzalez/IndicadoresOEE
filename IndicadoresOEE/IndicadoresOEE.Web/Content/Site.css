@@ -9,3 +9,15 @@
 .titulo-seccion {
     color: rgb(97, 93, 94);
 }
+
+.mdb-text-success {
+    color: rgb(0, 200, 81);
+}
+
+.mdb-text-warning {
+    color: rgb(255, 187, 51);
+}
+
+.mdb-text-danger {
+    color: rgb(255, 53, 71);
+}

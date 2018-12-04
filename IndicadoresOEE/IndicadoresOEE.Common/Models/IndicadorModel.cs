@@ -37,6 +37,12 @@
         [DataMember]
         public DateTime Fecha { get; set; }
         [DataMember]
+        public int Dia { get; set; }
+        [DataMember]
+        public int Mes { get; set; }
+        [DataMember]
+        public int Año { get; set; }
+        [DataMember]
         public int Hora { get; set; }
         [DataMember]
         public int Minuto { get; set; }

@@ -246,8 +246,10 @@
     <Content Include="Scripts\angular.js" />
     <Content Include="Scripts\angular.min.js" />
     <Content Include="Scripts\app\app.js" />
+    <Content Include="Scripts\app\constants\AplicacionConstant.js" />
     <Content Include="Scripts\app\controllers\CapturaIndicadorController.js" />
     <Content Include="Scripts\app\controllers\CuentaController.js" />
+    <Content Include="Scripts\app\factories\UtilFactory.js" />
     <Content Include="Scripts\app\factories\SAPService.js" />
     <Content Include="Scripts\app\factories\VelocidadService.js" />
     <Content Include="Scripts\app\factories\IndicadorService.js" />
@@ -255,6 +257,7 @@
     <Content Include="Scripts\app\factories\LineaService.js" />
     <Content Include="Scripts\app\factories\DepartamentoService.js" />
     <Content Include="Scripts\app\factories\CentroService.js" />
+    <Content Include="Scripts\app\values\AplicacionConstant.js" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
     <Content Include="ApplicationInsights.config">
