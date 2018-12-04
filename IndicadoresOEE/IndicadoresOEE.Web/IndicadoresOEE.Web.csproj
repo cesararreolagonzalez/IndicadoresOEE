@@ -199,6 +199,7 @@
     <Compile Include="Controllers\ManageController.cs" />
     <Compile Include="Controllers\PrincipalController.cs" />
     <Compile Include="Controllers\ProcesoController.cs" />
+    <Compile Include="Controllers\SAPController.cs" />
     <Compile Include="Controllers\VelocidadController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
@@ -247,6 +248,12 @@
     <Content Include="Scripts\app\app.js" />
     <Content Include="Scripts\app\controllers\CapturaIndicadorController.js" />
     <Content Include="Scripts\app\controllers\CuentaController.js" />
+    <Content Include="Scripts\app\factories\SAPService.js" />
+    <Content Include="Scripts\app\factories\VelocidadService.js" />
+    <Content Include="Scripts\app\factories\IndicadorService.js" />
+    <Content Include="Scripts\app\factories\ProcesoService.js" />
+    <Content Include="Scripts\app\factories\LineaService.js" />
+    <Content Include="Scripts\app\factories\DepartamentoService.js" />
     <Content Include="Scripts\app\factories\CentroService.js" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
@@ -327,6 +334,7 @@
     <Folder Include="Scripts\app\directives\" />
     <Folder Include="Scripts\app\services\" />
     <Folder Include="Views\Inicio\" />
+    <Folder Include="Views\SAP\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="fonts\glyphicons-halflings-regular.woff2" />

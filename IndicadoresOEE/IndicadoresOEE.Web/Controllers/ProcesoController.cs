@@ -25,7 +25,9 @@
         /// 
         /// </summary>
         /// <returns></returns>
-        public ActionResult ObtenerProcesos(long IndiceLinea)
+
+        [HttpGet]
+        public JsonResult ObtenerProcesos(long IndiceLinea)
         {
             string Mensaje = string.Empty;
             bool Estado = false;
@@ -43,7 +45,7 @@
                 Mensaje = e.Message;
             }
 
-            return Json(new { Estado, Mensaje, ListaProcesos });
+            return Json(new { Estado, Mensaje, ListaProcesos }, JsonRequestBehavior.AllowGet);
         }
     }
 }

@@ -20,7 +20,67 @@
             IndicadorTiempoBusiness = new IndicadorTiempoBusiness();
             ProcesoBusiness = new ProcesoBusiness();
         }
+        
+        public IndicadorModel ObtenerIndicadorPorProceso(long IndiceProceso)
+        {
+            IndicadorModel indicador = null;
 
+            Indicador_V2 IndicadorV2 = null;
+            Indicador IndicadorV1 = null;
+
+            IndicadorV2 = db.Indicador_V2
+                .Where(columna => columna.IndiceProceso == IndiceProceso)
+                .OrderByDescending(columna => columna.Fecha)
+                .FirstOrDefault();
+
+            if(IndicadorV2 == null)
+            {
+                IndicadorV1 = db.Indicador
+                .Where(columna => columna.id_proceso == IndiceProceso)
+                .OrderByDescending(columna => columna.fecha_hora)
+                .FirstOrDefault();
+
+                if (IndicadorV1 != null)
+                {
+                    indicador = new IndicadorModel()
+                    {
+                        Indice = IndicadorV1.id_indicador,
+                        Orden = IndicadorV1.orden,
+                        Lote = IndicadorV1.lote,
+                        Material = IndicadorV1.material,
+                        DescripcionMaterial = IndicadorV1.descripcion,
+                        IndiceVelocidad = 0,
+                        Velocidad = string.Empty,
+                        Fecha = IndicadorV1.fecha_hora.GetValueOrDefault(),
+                        Hora = IndicadorV1.fecha_hora.GetValueOrDefault().Hour,
+                        Minuto = IndicadorV1.fecha_hora.GetValueOrDefault().Minute,
+                        Turno = IndicadorV1.turno,
+                        Ciclo = Convert.ToInt32(IndicadorV1.ciclo)
+                    };
+                }
+            }
+            else
+            {
+                indicador = new IndicadorModel()
+                {
+                    Indice = IndicadorV2.Indice,
+                    Orden = IndicadorV2.Orden,
+                    Lote = IndicadorV2.Lote,
+                    Material = IndicadorV2.Material,
+                    DescripcionMaterial = IndicadorV2.Descripcion,
+                    IndiceVelocidad = IndicadorV2.IndiceVelocidad.GetValueOrDefault(),
+                    Velocidad = string.Empty,
+                    Fecha = IndicadorV2.Fecha.GetValueOrDefault(),
+                    Hora = IndicadorV2.Fecha.GetValueOrDefault().Hour,
+                    Minuto = IndicadorV2.Fecha.GetValueOrDefault().Minute,
+                    Turno = IndicadorV2.Turno,
+                    Ciclo = Convert.ToInt32(IndicadorV2.Ciclo)
+                };
+            }
+
+            return indicador;
+        }
+        
         /// <summary>
         /// 
         /// </summary>

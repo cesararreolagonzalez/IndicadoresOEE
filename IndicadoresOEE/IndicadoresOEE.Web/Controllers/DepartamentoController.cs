@@ -25,6 +25,8 @@
         /// 
         /// </summary>
         /// <returns></returns>
+        
+        [HttpGet]
         public ActionResult ObtenerDepartamentos(long IndiceCentro)
         {
             string Mensaje = string.Empty;
@@ -43,7 +45,7 @@
                 Mensaje = e.Message;
             }
 
-            return Json(new { Estado, Mensaje, ListaDepartamentos });
+            return Json(new { Estado, Mensaje, ListaDepartamentos }, JsonRequestBehavior.AllowGet);
         }
     }
 }

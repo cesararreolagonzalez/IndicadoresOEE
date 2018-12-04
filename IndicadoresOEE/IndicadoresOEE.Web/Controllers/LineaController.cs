@@ -25,6 +25,8 @@
         /// 
         /// </summary>
         /// <returns></returns>
+
+        [HttpGet]
         public ActionResult ObtenerLineas(long IndiceDepartamento)
         {
             string Mensaje = string.Empty;
@@ -43,7 +45,7 @@
                 Mensaje = e.Message;
             }
 
-            return Json(new { Estado, Mensaje, ListaLineas });
+            return Json(new { Estado, Mensaje, ListaLineas }, JsonRequestBehavior.AllowGet);
         }
     }
 }

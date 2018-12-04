@@ -5,9 +5,13 @@
         .module('indicadoresoeeapp')
         .controller('CapturaIndicadorController', CapturaIndicadorController);
     
-    CapturaIndicadorController.$inject = ['$element', '$scope', '$timeout', '$location', '$anchorScroll', '$log', '$http', '$window', '$compile', '$mdToast', '$mdDialog', 'CentroService'];
+    CapturaIndicadorController.$inject = ['$element', '$scope', '$timeout', '$location',
+        '$anchorScroll', '$log', '$http', '$window', '$mdDialog',
+        'CentroService', 'DepartamentoService', 'LineaService', 'ProcesoService', 'VelocidadService', 'IndicadorService', 'SAPService'];
 
-    function CapturaIndicadorController($element, $scope, $timeout, $location, $anchorScroll, $log, $http, $window, $compile, $mdToast, $mdDialog, CentroService)
+    function CapturaIndicadorController($element, $scope, $timeout, $location, $anchorScroll,
+        $log, $http, $window,  $mdDialog,
+        CentroService, DepartamentoService, LineaService, ProcesoService, VelocidadService, IndicadorService, SAPService)
     {
         $element.find('input').on('keydown', function (ev) {
             ev.stopPropagation();
@@ -36,7 +40,6 @@
         {
             CentroService.ObtenerCentros()
                 .then(function (response) {
-                    $log.info(response);
                     var Estado = response.data.Estado;
                     if (!Estado) {
                         var Mensaje = response.data.Mensaje;
@@ -63,8 +66,7 @@
 
         $scope.ObtenerDepartamentos = function ()
         {
-            $http
-                .post('/Departamento/ObtenerDepartamentos', JSON.stringify({ IndiceCentro: $scope.DatosGenerales.IndiceCentro }))
+            DepartamentoService.ObtenerDepartamentosPorCentro($scope.DatosGenerales.IndiceCentro)
                 .then(function (response) {
                     var Estado = response.data.Estado;
                     if (!Estado) {
@@ -84,7 +86,7 @@
                 })
                 .catch(function (response) {
                     $log.info('Excepcion: ', response);
-                    throw e;
+                    throw response;
                 })
                 .finally(function () {
                     $log.info('Método ObtenerDepartamentos finalizado');
@@ -93,8 +95,7 @@
 
         $scope.ObtenerLineas = function ()
         {
-            $http
-                .post('/Linea/ObtenerLineas', JSON.stringify({ IndiceDepartamento: $scope.DatosGenerales.IndiceDepartamento }))
+            LineaService.ObtenerLineasPorDepartamento($scope.DatosGenerales.IndiceDepartamento)
                 .then(function (response) {
                     var Estado = response.data.Estado;
                     if (!Estado) {
@@ -114,7 +115,7 @@
                 })
                 .catch(function (response) {
                     $log.info('Excepcion: ', response);
-                    throw e;
+                    throw response;
                 })
                 .finally(function () {
                     $log.info('Método ObtenerLineas finalizado');
@@ -123,8 +124,7 @@
 
         $scope.ObtenerProcesos = function ()
         {
-            $http
-                .post('/Proceso/ObtenerProcesos', JSON.stringify({ IndiceLinea: $scope.DatosGenerales.IndiceLinea }))
+            ProcesoService.ObtenerProcesosPorLinea($scope.DatosGenerales.IndiceLinea)
                 .then(function (response) {
                     var Estado = response.data.Estado;
                     if (!Estado) {
@@ -142,34 +142,170 @@
                 })
                 .catch(function (response) {
                     $log.info('Excepcion: ', response);
-                    throw e;
+                    throw response;
                 })
                 .finally(function () {
                     $log.info('Método ObtenerProcesos finalizado');
                 });
         };
 
+        // Al obtener el Proceso
+        function ObtenerIndicadorPorProceso()
+        {
+            IndicadorService.ObtenerIndicadorPorProceso($scope.DatosGenerales.IndiceProceso)
+                .then(function (response) {
+                    var Estado = response.data.Estado;
+                    if (!Estado) {
+                        var Mensaje = response.data.Mensaje;
+                        $log.info('Se produjo el siguiente error en el método ObtenerLineas = ' + Mensaje);
+                    }
+                    else {
+                        var Indicador = response.data.Indicador;
+                        $scope.DatosGenerales.Orden = Indicador.Orden;
+                        $scope.DatosGenerales.Lote = Indicador.Lote;
+                        $scope.DatosGenerales.Material = Indicador.Material;
+                        $scope.DatosGenerales.Descripcion = Indicador.DescripcionMaterial;
+                        $scope.DatosGenerales.Velocidad = Indicador.Velocidad;
+                        $scope.DatosGenerales.IndiceVelocidad = Indicador.IndiceVelocidad;
+
+                    }
+                },
+                    function (response) {
+                        $log.info('Hubo un error: Estatus = ' + response.status + ', Error = ' + response.data);
+                    })
+                .catch(function (response) {
+                    $log.info('Excepcion: ', response);
+                    throw response;
+                })
+                .finally(function () {
+                    $log.info('Método ObtenerProcesos finalizado');
+                });
+        }
+
+        // Al obtener el Material
+        function ObtenerVelocidad()
+        {
+            VelocidadService.ObtenerVelocidadPorMaterial($scope.DatosGenerales.IndiceProceso, $scope.DatosGenerales.Material)
+                .then(function (response) {
+                    var Estado = response.data.Estado;
+                    if (!Estado) {
+                        var Mensaje = response.data.Mensaje;
+                        $log.info('Se produjo el siguiente error en el método ObtenerVelocidad = ' + Mensaje);
+                    }
+                    else {
+                        var Velocidad = response.data.velocidadModel;
+                        $scope.DatosGenerales.Velocidad = Velocidad.Velocidad;
+                        $scope.DatosGenerales.IndiceVelocidad = Velocidad.IndiceVelocidad;
+
+                    }
+                },
+                    function (response) {
+                        $log.info('Hubo un error: Estatus = ' + response.status + ', Error = ' + response.data);
+                    })
+                .catch(function (response) {
+                    $log.info('Excepcion: ', response);
+                    throw response;
+                })
+                .finally(function () {
+                    $log.info('Método ObtenerVelocidad finalizado');
+                });
+        }
+        
+        $scope.ValidarOrden = function () {
+            ProcesoService.ObtenerProcesosPorLinea($scope.DatosGenerales.IndiceLinea)
+                .then(function (response) {
+                    var Estado = response.data.Estado;
+                    if (!Estado) {
+                        var Mensaje = response.data.Mensaje;
+                        $log.info('Se produjo el siguiente error en el método ObtenerLineas = ' + Mensaje);
+                    }
+                    else {
+                        $scope.ListaProcesos = response.data.ListaProcesos;
+                        $scope.DatosGenerales.IndiceProceso = $scope.ListaProcesos.length === 1 ? $scope.ListaProcesos[0].Indice : null;
+
+                    }
+                },
+                    function (response) {
+                        $log.info('Hubo un error: Estatus = ' + response.status + ', Error = ' + response.data);
+                    })
+                .catch(function (response) {
+                    $log.info('Excepcion: ', response);
+                    throw response;
+                })
+                .finally(function () {
+                    $log.info('Método ObtenerProcesos finalizado');
+                });
+        };
 
         $scope.$watch('DatosGenerales.IndiceCentro', function (newValue, oldValue) {
             if (newValue !== undefined && newValue !== null && newValue !== '') {
+
+                $scope.DatosGenerales.IndiceDepartamento = null;
+                $scope.DatosGenerales.IndiceLinea = null;
+                $scope.DatosGenerales.IndiceProceso = null;
+                $scope.DatosGenerales.Orden = null;
+                $scope.DatosGenerales.Lote = null;
+                $scope.DatosGenerales.IndiceVelocidad = null;
+                $scope.DatosGenerales.Velocidad = null;
+                $scope.DatosGenerales.Material = null;
+                $scope.DatosGenerales.Descripcion = null;
+                
                 $scope.ObtenerDepartamentos();
             }
         });
 
         $scope.$watch('DatosGenerales.IndiceDepartamento', function (newValue, oldValue) {
             if (newValue !== undefined && newValue !== null && newValue !== '') {
+                
+                $scope.DatosGenerales.IndiceLinea = null;
+                $scope.DatosGenerales.IndiceProceso = null;
+                $scope.DatosGenerales.Orden = null;
+                $scope.DatosGenerales.Lote = null;
+                $scope.DatosGenerales.IndiceVelocidad = null;
+                $scope.DatosGenerales.Velocidad = null;
+                $scope.DatosGenerales.Material = null;
+                $scope.DatosGenerales.Descripcion = null;
+
                 $scope.ObtenerLineas();
             }
         });
 
         $scope.$watch('DatosGenerales.IndiceLinea', function (newValue, oldValue) {
             if (newValue !== undefined && newValue !== null && newValue !== '') {
+                
+                $scope.DatosGenerales.IndiceProceso = null;
+                $scope.DatosGenerales.Orden = null;
+                $scope.DatosGenerales.Lote = null;
+                $scope.DatosGenerales.IndiceVelocidad = null;
+                $scope.DatosGenerales.Velocidad = null;
+                $scope.DatosGenerales.Material = null;
+                $scope.DatosGenerales.Descripcion = null;
+
                 $scope.ObtenerProcesos();
             }
         });
 
         $scope.$watch('DatosGenerales.IndiceProceso', function (newValue, oldValue) {
             if (newValue !== undefined && newValue !== null && newValue !== '') {
+                
+                $scope.DatosGenerales.Orden = null;
+                $scope.DatosGenerales.Lote = null;
+                $scope.DatosGenerales.IndiceVelocidad = null;
+                $scope.DatosGenerales.Velocidad = null;
+                $scope.DatosGenerales.Material = null;
+                $scope.DatosGenerales.Descripcion = null;
+
+                ObtenerIndicadorPorProceso();
+            }
+        });
+
+        $scope.$watch('DatosGenerales.Material', function (newValue, oldValue) {
+            if (newValue !== undefined && newValue !== null && newValue !== '') {
+                
+                $scope.DatosGenerales.IndiceVelocidad = null;
+                $scope.DatosGenerales.Velocidad = null;
+
+                ObtenerVelocidad();
             }
         });
     }

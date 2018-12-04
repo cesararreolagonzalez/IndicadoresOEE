@@ -8,9 +8,8 @@
             {
                 //==============================================================================
 
-                $mdIconProvider.icon('md-close', '../img/icons/ic_close_24px.svg', 24);
-
-                // Example of a Spanish localization.
+                //$mdIconProvider.icon('md-close', '../img/icons/ic_close_24px.svg', 24);
+                
                 $mdDateLocaleProvider.months = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio',
                     'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'];
                 $mdDateLocaleProvider.shortMonths = ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun',

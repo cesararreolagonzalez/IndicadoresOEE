@@ -17,7 +17,7 @@
         {
             int Indice = 1;
             try {  }
-            catch(Exception e) { }
+            catch(Exception) { }
 
             return Json(new { Indice = Indice });
         }

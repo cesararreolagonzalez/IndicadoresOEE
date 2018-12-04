@@ -24,19 +24,19 @@
         }
 
         function ObtenerCentro(id) {
-            return $http.get('/Centro/ObtenerCentro' + id).then(handleSuccess, handleError('Error al intentar obtener el centro'));
+            return $http.get('/Centro/ObtenerCentro' + id).then(handleSuccess, handleError);
         }
 
         function CrearCentro(centro) {
-            return $http.post('/Centro/CrearCentro', centro).then(handleSuccess, handleError('Error al intentar crear el centro'));
+            return $http.post('/Centro/CrearCentro', centro).then(handleSuccess, handleError);
         }
 
         function ActualizarCentro(centro) {
-            return $http.put('/Centro/ActualizarCentro' + centro.id, centro).then(handleSuccess, handleError('Error al intentar actualizar el centro'));
+            return $http.put('/Centro/ActualizarCentro' + centro.id, centro).then(handleSuccess, handleError);
         }
 
         function EliminarCentro(id) {
-            return $http.delete('/Centro/EliminarCentro' + id).then(handleSuccess, handleError('Error al intentar eliminar el centro'));
+            return $http.delete('/Centro/EliminarCentro' + id).then(handleSuccess, handleError);
         }
 
         // private functions

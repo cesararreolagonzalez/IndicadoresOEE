@@ -8,7 +8,9 @@
         [DataMember]
         public long Indice { get; set; }
         [DataMember]
-        public string Nombre { get; set; }
+        public long Velocidad { get; set; }
+        [DataMember]
+        public long Material { get; set; }
         [DataMember]
         public long IndiceProceso { get; set; }
     }
