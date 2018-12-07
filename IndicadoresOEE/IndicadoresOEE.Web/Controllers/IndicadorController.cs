@@ -16,7 +16,7 @@
         }
 
         // GET: Indicador
-        public ActionResult CapturaIndividual()
+        public ActionResult Captura()
         {
             return View();
         }

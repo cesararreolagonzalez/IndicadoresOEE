@@ -6,14 +6,87 @@
         .controller('CapturaIndicadorController', CapturaIndicadorController);
     
     CapturaIndicadorController.$inject = ['$element', '$scope', '$sce', '$timeout', '$location',
-        '$anchorScroll', '$log', '$http', '$window', '$mdDialog', 'moment',
+        '$anchorScroll', '$log', '$window', '$mdDialog', 'moment',
         'CentroService', 'DepartamentoService', 'LineaService', 'ProcesoService', 'VelocidadService',
         'IndicadorService', 'SAPService', 'UtilFactory'];
 
     function CapturaIndicadorController($element, $scope, $sce, $timeout, $location, $anchorScroll,
-        $log, $http, $window, $mdDialog, moment,
-        CentroService, DepartamentoService, LineaService, ProcesoService, VelocidadService, IndicadorService, SAPService, UtilFactory)
+        $log, $window, $mdDialog, moment,
+        CentroService, DepartamentoService, LineaService,
+        ProcesoService, VelocidadService, IndicadorService, SAPService, UtilFactory)
     {
+        $scope.agregarParo = function (ev) {
+            $mdDialog.show({
+                locals: {},
+                controller: function ($scope, $mdDialog) {
+                    $scope.cancel = function () {
+                        $mdDialog.cancel();
+                    };
+                },
+                templateUrl: '../Scripts/app/templates/AgregarParos.html',
+                parent: angular.element(document.body),
+                targetEvent: ev,
+                clickOutsideToClose: false,
+                onShowing: function () {
+                    console.log(789);
+                    $("body").addClass("loading");
+                },
+                onComplete: function () {
+                    console.log(456);
+                    $("body").removeClass("loading");
+                },
+                onRemoving: function (event, removePromise) {
+                    console.log(123);
+                },
+                fullscreen: true,
+                closeTo: angular.element(document.querySelector('#btnAddParo'))
+            })
+                .then(function (answer) {
+                    console.log('You said the information was "' + answer + '".');
+                }, function () {
+                    console.log('Dialogo cancelado');
+                })
+                .finally(function () {
+                    console.log('Dialogo finalizado');
+                });
+        };
+
+        $scope.agregarRechazo = function (ev) {
+            $mdDialog.show({
+                    locals: { },
+                    controller: function ($scope, $mdDialog) {
+                        $scope.cancel = function () {
+                            $mdDialog.cancel();
+                        };
+                    },
+                    templateUrl: '../Scripts/app/templates/AgregarRechazos.html',
+                    parent: angular.element(document.body),
+                    targetEvent: ev,
+                    clickOutsideToClose: false,
+                    onShowing: function () {
+                        console.log(789);
+                        $("body").addClass("loading");
+                    },
+                    onComplete: function () {
+                        console.log(456);
+                        $("body").removeClass("loading");
+                    },
+                    onRemoving: function (event, removePromise) {
+                        console.log(123);
+                    },
+                    fullscreen: true,
+                    closeTo: angular.element(document.querySelector('#btnAddParo'))
+                })
+                .then(function (answer) {
+                    console.log('You said the information was "' + answer + '".');
+                }, function () {
+                    console.log('Dialogo cancelado');
+                })
+                .finally(function () {
+                    console.log('Dialogo finalizado');
+                });
+        };
+
         $scope.Turnos = ['A', 'B', 'C', 'D'];
 
         $element.find('input').on('keydown', function (ev) {

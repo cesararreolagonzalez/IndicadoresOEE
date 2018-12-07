@@ -216,6 +216,8 @@
     <Content Include="Content\bootstrap.css" />
     <Content Include="Content\bootstrap.min.css" />
     <Content Include="Content\Icons\add.svg" />
+    <Content Include="Content\Icons\add_circle.svg" />
+    <Content Include="Content\Icons\add_circle_outline.svg" />
     <Content Include="Content\Icons\arrow-back.svg" />
     <Content Include="Content\Icons\arrow-forward.svg" />
     <Content Include="Content\Icons\cancel.svg" />
@@ -257,6 +259,8 @@
     <Content Include="Scripts\app\factories\LineaService.js" />
     <Content Include="Scripts\app\factories\DepartamentoService.js" />
     <Content Include="Scripts\app\factories\CentroService.js" />
+    <Content Include="Scripts\app\templates\AgregarParos.html" />
+    <Content Include="Scripts\app\templates\AgregarRechazos.html" />
     <Content Include="Scripts\app\values\AplicacionConstant.js" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
@@ -331,6 +335,7 @@
     <Content Include="Views\Linea\Inicio.cshtml" />
     <Content Include="Views\Velocidad\Inicio.cshtml" />
     <Content Include="Views\Bitacora\Inicio.cshtml" />
+    <Content Include="Views\Indicador\Captura.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
@@ -378,9 +383,9 @@
         <WebProjectProperties>
           <UseIIS>True</UseIIS>
           <AutoAssignPort>True</AutoAssignPort>
-          <DevelopmentServerPort>64723</DevelopmentServerPort>
+          <DevelopmentServerPort>0</DevelopmentServerPort>
           <DevelopmentServerVPath>/</DevelopmentServerVPath>
-          <IISUrl>http://localhost:64723/</IISUrl>
+          <IISUrl>http://localhost:55622/</IISUrl>
           <NTLMAuthentication>False</NTLMAuthentication>
           <UseCustomServer>False</UseCustomServer>
           <CustomServerUrl>
