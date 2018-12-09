@@ -33,7 +33,7 @@
                 .OrderByDescending(columna => columna.Fecha)
                 .FirstOrDefault();
 
-            if(IndicadorV2 == null)
+            if (IndicadorV2 == null)
             {
                 IndicadorV1 = db.Indicador
                 .Where(columna => columna.id_proceso == IndiceProceso)
@@ -58,6 +58,27 @@
                         Minuto = IndicadorV1.fecha_hora.GetValueOrDefault().Minute,
                         Turno = IndicadorV1.turno,
                         Ciclo = Convert.ToInt32(IndicadorV1.ciclo)
+                    };
+                }
+                else
+                {
+                    DateTime Fecha = DateTime.Now;
+                    indicador = new IndicadorModel()
+                    {
+                        Indice = 0,
+                        Orden = string.Empty,
+                        Lote = string.Empty,
+                        Material = string.Empty,
+                        DescripcionMaterial = string.Empty,
+                        IndiceVelocidad = 0,
+                        Velocidad = string.Empty,
+                        Dia = Fecha.Day,
+                        Mes = Fecha.Month,
+                        Año = Fecha.Year,
+                        Hora = 0,
+                        Minuto = 0,
+                        Turno = string.Empty,
+                        Ciclo = 0
                     };
                 }
             }

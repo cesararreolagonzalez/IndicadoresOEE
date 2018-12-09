@@ -56,7 +56,7 @@
                     <div layout="row" flex>
                         <md-input-container flex class="md-block md-subhead" style="padding: 0 !important; margin-right: 0.4rem !important; margin-top: 0.4rem !important; margin-bottom: 0.4rem !important;">
                             <label>Orden</label>
-                            <input ng-model="DatosGenerales.Orden">
+                            <input ng-model="DatosGenerales.Orden" solo-numerico valor-valido-mayor-cero>
                         </md-input-container>
                         <div>
                             <button type="button" class="btn btn-sm btn-primary">validar</button>
@@ -69,6 +69,7 @@
                         <md-select id="departamentoSeleccionable"
                                    name="departamentoSeleccionable"
                                    ng-disabled="DatosGenerales.IndiceCentro === null"
+                                   md-on-open="ObtenerDepartamentos(DatosGenerales.IndiceCentro)"
                                    md-on-close="ResetearTerminoBusqueda()"
                                    ng-model="DatosGenerales.IndiceDepartamento"
                                    md-container-class="selectdemoSelectHeader"
@@ -203,7 +204,12 @@
         </md-card-title>
         <md-card-content>
             <br />
-            <div layout="row" style="background-color: #FFF !important; padding-left: 2rem; padding-right: 2rem;" flex>
+            @*<div ng-show="DatosGenerales.IndiceProceso === null">
+                <div layout="row" layout-sm="column" layout-align="space-around">
+                    <md-progress-circular md-mode="indeterminate"></md-progress-circular>
+                </div>
+            </div>*@
+            <div layout="row" style="background-color: #FFF !important; padding-left: 2rem; padding-right: 2rem;" flex ng-show="DatosGenerales.IndiceProceso !== null">
                 <div layout="column" flex="60">
 
                     <md-input-container class="md-block md-subhead md-input-has-value" flex style="padding: 0 !important; margin: 0.4rem !important;">
@@ -216,12 +222,12 @@
                     <div layout="row" flex>
                         <md-input-container class="md-block md-subhead" ng-disabled="DatosGenerales.IndiceIndicador === null" flex style="padding: 0 !important; margin-right: 0.4rem !important;margin-left: 0.4rem !important;margin-top: 1rem !important;">
                             <label>Ciclo</label>
-                            <input ng-model="DatosIndicador.Ciclo">
+                            <input ng-model="DatosIndicador.Ciclo" solo-numerico valor-valido-mayor-cero>
                         </md-input-container>
 
                         <md-input-container class="md-block md-subhead" ng-disabled="DatosGenerales.IndiceIndicador === null" flex style="padding: 0 !important;  margin-right: 0.4rem !important;margin-left: 0.4rem !important;margin-top: 1rem !important;">
                             <label>Piezas</label>
-                            <input ng-model="DatosIndicador.Piezas">
+                            <input ng-model="DatosIndicador.Piezas" solo-numerico valor-valido-mayor-cero>
                         </md-input-container>
                     </div>
 
@@ -297,13 +303,16 @@
                 <span class="md-subhead"></span>
             </md-card-title-text>
         </md-card-title>
-        <md-card-content>
+        <md-card-content style="padding-left: 3.5rem;">
+            <br />
+            <span>No has seleccionado rechazos aún</span>
+            <br />
             <br />
         </md-card-content>
         <md-card-actions layout="row" layout-align="end center">
             <md-card-actions layout="row" layout-align="end center">
-                <md-button id="btnAddRechazo" md-no-ink class="md-primary" ng-click="agregarRechazo($event)">
-                    <md-icon md-svg-src="~/Content/Icons/add_circle_outline.svg"
+                <md-button id="btnAddRechazo" md-no-ink class="md-primary" ng-click="agregarRechazo($event)" ng-show="DatosGenerales.IndiceProceso !== null">
+                    <md-icon md-svg-src="~/Content/Icons/add.svg"
                              aria-label="Agregar">
                     </md-icon>
                     AGREGAR
@@ -319,11 +328,14 @@
                 <span class="md-subhead"></span>
             </md-card-title-text>
         </md-card-title>
-        <md-card-content>
+        <md-card-content style="padding-left: 3.5rem;">
+            <br />
+            <span>No has seleccionado paros aún</span>
+            <br />
             <br />
         </md-card-content>
         <md-card-actions layout="row" layout-align="end center">
-            <md-button id="btnAddParo" md-no-ink class="md-primary" ng-click="agregarParo($event)">
+            <md-button id="btnAddParo" md-no-ink class="md-primary" ng-click="agregarParo($event)" ng-show="DatosGenerales.IndiceProceso !== null">
                 <md-icon md-svg-src="~/Content/Icons/add.svg"
                          aria-label="Agregar">
                 </md-icon>

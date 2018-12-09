@@ -67,6 +67,8 @@
     <Compile Include="Business\IndicadorBusiness.cs" />
     <Compile Include="Business\IndicadorTiempoBusiness.cs" />
     <Compile Include="Business\LineaBusiness.cs" />
+    <Compile Include="Business\RechazoBusiness.cs" />
+    <Compile Include="Business\ParoBusiness.cs" />
     <Compile Include="Business\ProcesoBusiness.cs" />
     <Compile Include="Business\VelocidadBusiness.cs" />
     <Compile Include="Centro.cs">

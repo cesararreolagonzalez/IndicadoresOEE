@@ -15,76 +15,151 @@
         CentroService, DepartamentoService, LineaService,
         ProcesoService, VelocidadService, IndicadorService, SAPService, UtilFactory)
     {
+        $scope.ListaRechazosElegidos = [];
+        $scope.ListaParosElegidos = [];
+
         $scope.agregarParo = function (ev) {
             $mdDialog.show({
-                locals: {},
-                controller: function ($scope, $mdDialog) {
-                    $scope.cancel = function () {
-                        $mdDialog.cancel();
-                    };
-                },
+                locals: { IndiceProceso: $scope.DatosGenerales.IndiceProceso},
+                controller: ['$scope', '$element', '$mdDialog', 'ParoService', 'IndiceProceso',
+                    function ($scope, $element, $mdDialog, ParoService, IndiceProceso)
+                    {
+                        $element.find('input').on('keydown', function (ev) {
+                            ev.stopPropagation();
+                        });
+
+                        $scope.TerminoBusqueda = '';
+                        $scope.Paro = { 'Indice': null, 'Cantidad': null, 'Folio': null };
+                        
+                        $scope.ResetearTerminoBusqueda = function () {
+                            $scope.TerminoBusqueda = '';
+                        };
+                        
+                        $scope.ObtenerParos = function ()
+                        {
+                            return ParoService.ObtenerParos(IndiceProceso)
+                                .then(function (response)
+                                {
+                                    var Estado = response.data.Estado;
+                                    if (!Estado) {
+                                        var Mensaje = response.data.Mensaje;
+                                        $log.info('Se produjo el siguiente error en el método ObtenerCentros = ' + Mensaje);
+                                    }
+                                    else {
+                                        $scope.ListaParos = response.data.ListaParos;
+                                        $scope.Paro.Indice = $scope.ListaParos.length === 1 ? $scope.ListaParos[0].Indice : null;
+                                    }
+                                })
+                                .catch(function (response) {
+                                    $log.error('Excepcion: ', response);
+                                })
+                                .finally(function () {
+                                    $log.info('Método ObtenerCentros() finalizado');
+                                });
+                        };
+
+                        $scope.AgregarParo = function () {
+                            var Paro = null;
+                            Paro = angular.copy($scope.Paro);
+                            $mdDialog.hide(Paro);
+                        };
+                }],
                 templateUrl: '../Scripts/app/templates/AgregarParos.html',
                 parent: angular.element(document.body),
                 targetEvent: ev,
-                clickOutsideToClose: false,
+                clickOutsideToClose: true,
                 onShowing: function () {
-                    console.log(789);
-                    $("body").addClass("loading");
                 },
                 onComplete: function () {
-                    console.log(456);
-                    $("body").removeClass("loading");
                 },
                 onRemoving: function (event, removePromise) {
-                    console.log(123);
                 },
                 fullscreen: true,
                 closeTo: angular.element(document.querySelector('#btnAddParo'))
             })
-                .then(function (answer) {
-                    console.log('You said the information was "' + answer + '".');
+                .then(function (Paro) {
+                    $scope.ListaParosElegidos.push(Paro);
+                    $log.info($scope.ListaParosElegidos);
                 }, function () {
-                    console.log('Dialogo cancelado');
                 })
                 .finally(function () {
-                    console.log('Dialogo finalizado');
                 });
         };
 
         $scope.agregarRechazo = function (ev) {
             $mdDialog.show({
-                    locals: { },
-                    controller: function ($scope, $mdDialog) {
+                locals: { IndiceProceso: $scope.DatosGenerales.IndiceProceso },
+                controller: ['$scope', '$element', '$mdDialog', 'RechazoService', 'IndiceProceso',
+                    function ($scope, $element, $mdDialog, RechazoService, IndiceProceso)
+                    {
+                        $scope.TerminoBusqueda = '';
+                        $scope.Rechazo = { 'Indice': null, 'Cantidad': null };
+
+                        $element.find('input').on('keydown', function (ev) {
+                            ev.stopPropagation();
+                        });
+
+                        $scope.ResetearTerminoBusqueda = function () {
+                            $scope.TerminoBusqueda = '';
+                        };
+
+                        $scope.ObtenerRechazos = function ()
+                        {
+                            return RechazoService.ObtenerRechazos(IndiceProceso)
+                                .then(function (response)
+                                {
+                                    var Estado = response.data.Estado;
+                                    if (!Estado)
+                                    {
+                                        var Mensaje = response.data.Mensaje;
+                                        $log.info('Se produjo el siguiente error en el método ObtenerCentros = ' + Mensaje);
+                                    }
+                                    else
+                                    {
+                                        $scope.ListaRechazos = response.data.ListaRechazos;
+                                        $scope.Rechazo.Indice = $scope.ListaRechazos.length === 1 ? $scope.ListaRechazos[0].Indice : null;
+                                    }
+                                })
+                                .catch(function (response)
+                                {
+                                    $log.error('Excepcion: ', response);
+                                })
+                                .finally(function ()
+                                {
+                                    $log.info('Método ObtenerCentros() finalizado');
+                                });
+                        };
+
                         $scope.cancel = function () {
                             $mdDialog.cancel();
                         };
-                    },
-                    templateUrl: '../Scripts/app/templates/AgregarRechazos.html',
-                    parent: angular.element(document.body),
-                    targetEvent: ev,
-                    clickOutsideToClose: false,
-                    onShowing: function () {
-                        console.log(789);
-                        $("body").addClass("loading");
-                    },
-                    onComplete: function () {
-                        console.log(456);
-                        $("body").removeClass("loading");
-                    },
-                    onRemoving: function (event, removePromise) {
-                        console.log(123);
-                    },
-                    fullscreen: true,
-                    closeTo: angular.element(document.querySelector('#btnAddParo'))
-                })
-                .then(function (answer) {
-                    console.log('You said the information was "' + answer + '".');
+
+                        $scope.AgregarRechazo = function () {
+                            var Rechazo = null;
+                            Rechazo = angular.copy($scope.Rechazo);
+                            $mdDialog.hide(Rechazo);
+                        };
+                    }],
+                templateUrl: '../Scripts/app/templates/AgregarRechazos.html',
+                parent: angular.element(document.body),
+                targetEvent: ev,
+                clickOutsideToClose: true,
+                onShowing: function () {
+                },
+                onComplete: function () {
+                },
+                onRemoving: function (event, removePromise) {
+                },
+                fullscreen: true,
+                closeTo: angular.element(document.querySelector('#btnAddRechazo'))
+            })
+                .then(function (Rechazo) {
+                    $scope.ListaRechazosElegidos.push(Rechazo);
+                    $log.info($scope.ListaRechazosElegidos);
                 }, function () {
-                    console.log('Dialogo cancelado');
-                })
-                .finally(function () {
-                    console.log('Dialogo finalizado');
-                });
+            })
+            .finally(function () {
+            });
         };
 
         $scope.Turnos = ['A', 'B', 'C', 'D'];
@@ -129,8 +204,9 @@
         
         $scope.ObtenerCentros = function ()
         {
-            CentroService.ObtenerCentros()
-                .then(function (response) {
+            return CentroService.ObtenerCentros()
+                .then(function (response)
+                {
                     var Estado = response.data.Estado;
                     if (!Estado) {
                         var Mensaje = response.data.Mensaje;
@@ -142,28 +218,21 @@
 
                         if ($scope.DatosGenerales.IndiceCentros !== null)
                             $scope.ObtenerDepartamentos();
-
-                        return response.data.ListaCentros;
                     }
-
-                    return null;
-                },
-                    function (response) {
-                        $log.info('Hubo un error: Estatus = ' + response.status + ', Error = ' + response.data);
-                    })
+                })
                 .catch(function (response) {
                     $log.error('Excepcion: ', response);
                 })
                 .finally(function () {
                     $log.info('Método ObtenerCentros() finalizado');
                 });
-
         };
 
-        $scope.ObtenerDepartamentos = function ()
+        $scope.ObtenerDepartamentos = function (IndiceCentro)
         {
-            DepartamentoService.ObtenerDepartamentosPorCentro($scope.DatosGenerales.IndiceCentro)
-                .then(function (response) {
+            return DepartamentoService.ObtenerDepartamentosPorCentro(IndiceCentro)
+                .then(function (response)
+                {
                     var Estado = response.data.Estado;
                     if (!Estado) {
                         var Mensaje = response.data.Mensaje;
@@ -176,16 +245,12 @@
                         if ($scope.DatosGenerales.IndiceCentros !== null)
                             $scope.ObtenerLineas();
                     }
-                },
-                function (response) {
-                    $log.info('Hubo un error: Estatus = ' + response.status + ', Error = ' + response.data);
                 })
                 .catch(function (response) {
-                    $log.info('Excepcion: ', response);
-                    throw response;
+                    $log.error('Excepcion: ', response);
                 })
                 .finally(function () {
-                    $log.info('Método ObtenerDepartamentos() finalizado');
+                    $log.info('Método ObtenerCentros() finalizado');
                 });
         };
 

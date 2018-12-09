@@ -197,8 +197,10 @@
     <Compile Include="Controllers\IndicadorController.cs" />
     <Compile Include="Controllers\LineaController.cs" />
     <Compile Include="Controllers\ManageController.cs" />
+    <Compile Include="Controllers\ParoController.cs" />
     <Compile Include="Controllers\PrincipalController.cs" />
     <Compile Include="Controllers\ProcesoController.cs" />
+    <Compile Include="Controllers\RechazoController.cs" />
     <Compile Include="Controllers\SAPController.cs" />
     <Compile Include="Controllers\VelocidadController.cs" />
     <Compile Include="Global.asax.cs">
@@ -251,6 +253,10 @@
     <Content Include="Scripts\app\constants\AplicacionConstant.js" />
     <Content Include="Scripts\app\controllers\CapturaIndicadorController.js" />
     <Content Include="Scripts\app\controllers\CuentaController.js" />
+    <Content Include="Scripts\app\directives\valorValidoMayorCeroDirective.js" />
+    <Content Include="Scripts\app\directives\SoloNumericoDirective.js" />
+    <Content Include="Scripts\app\factories\RechazoService.js" />
+    <Content Include="Scripts\app\factories\ParoService.js" />
     <Content Include="Scripts\app\factories\UtilFactory.js" />
     <Content Include="Scripts\app\factories\SAPService.js" />
     <Content Include="Scripts\app\factories\VelocidadService.js" />
@@ -289,7 +295,9 @@
     <Content Include="Scripts\moment-with-locales.min.js" />
     <Content Include="Scripts\moment.js" />
     <Content Include="Scripts\moment.min.js" />
-    <Content Include="Web.config" />
+    <Content Include="Web.config">
+      <SubType>Designer</SubType>
+    </Content>
     <Content Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </Content>
@@ -328,7 +336,6 @@
     <Content Include="Views\Cuenta\Registro.cshtml" />
     <Content Include="Views\Indicador\Reporte.cshtml" />
     <Content Include="Views\Indicador\CapturaMasiva.cshtml" />
-    <Content Include="Views\Indicador\CapturaIndividual.cshtml" />
     <Content Include="Views\Proceso\Inicio.cshtml" />
     <Content Include="Views\Centro\Inicio.cshtml" />
     <Content Include="Views\Departamento\Inicio.cshtml" />
@@ -339,9 +346,10 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
-    <Folder Include="Scripts\app\directives\" />
     <Folder Include="Scripts\app\services\" />
     <Folder Include="Views\Inicio\" />
+    <Folder Include="Views\Paro\" />
+    <Folder Include="Views\Rechazo\" />
     <Folder Include="Views\SAP\" />
   </ItemGroup>
   <ItemGroup>

@@ -30,7 +30,7 @@
                     if (date !== undefined && date !== null && date !== '') {
                         var dia = date.getDate();
                         //console.log('Dia = ' + dia);
-                        //var nombreDia = dia > 9 ? dia : '0' + dia;
+                        var nombreDia = dia > 9 ? dia : '0' + dia;
                         var indiceMes = date.getMonth();
                         var año = date.getFullYear();
 
@@ -50,7 +50,7 @@
                             case 12: nombreMes = 'Diciembre'; break;
                         }
 
-                        return dia + '/' + nombreMes + '/' + año;
+                        return nombreDia + '/' + nombreMes + '/' + año;
                     }
 
                     return '';

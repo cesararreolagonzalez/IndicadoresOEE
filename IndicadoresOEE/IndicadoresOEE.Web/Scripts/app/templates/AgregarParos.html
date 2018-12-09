@@ -9,9 +9,9 @@
                     <div layout="column" flex="100">
                         <md-input-container class="md-block md-subhead">
                             <label>Nivel 1</label>
-                            <md-select id="centroSeleccionable"
-                                       name="centroSeleccionable"
-                                       md-on-open="ObtenerCentros()"
+                            <md-select id="paroSeleccionable1"
+                                       name="paroSeleccionable"
+                                       md-on-open="ObtenerParos()"
                                        md-on-close="ResetearTerminoBusqueda()"
                                        ng-model="Paro.Indice"
                                        md-container-class="selectdemoSelectHeader"
@@ -24,8 +24,8 @@
                                            class="demo-header-searchbox md-text">
                                 </md-select-header>
                                 <md-optgroup label="Centros disponibles">
-                                    <md-option ng-repeat="Centro in ListaCentros | filter:TerminoBusqueda" ng-value="Centro.Indice">
-                                        {{ Centro.Nombre }}
+                                    <md-option ng-repeat="Paro in ListaParos | filter:TerminoBusqueda" ng-value="Paro.Indice">
+                                        {{ Paro.Nombre | uppercase }}
                                     </md-option>
                                 </md-optgroup>
                             </md-select>
@@ -33,18 +33,15 @@
                     </div>
                 </div>
                 <div layout="row" layour-align="center center" flex>
-                    <div layout="column" flex="10">
-                    </div>
-                    <div layout="column" flex="80">
+                    <div layout="column" flex="100">
                         <md-input-container class="md-block md-subhead">
                             <label>Nivel 2</label>
-                            <md-select id="centroSeleccionable"
-                                       name="centroSeleccionable"
-                                       md-on-open="ObtenerCentros()"
+                            <md-select id="paroSeleccionable2"
+                                       name="paroSeleccionable"
+                                       md-on-open="ObtenerParos()"
                                        md-on-close="ResetearTerminoBusqueda()"
                                        ng-model="Paro.Indice"
                                        md-container-class="selectdemoSelectHeader"
-                                       md-autofocus
                                        ng-cloak>
                                 <md-select-header class="demo-select-header">
                                     <input ng-model="TerminoBusqueda"
@@ -53,30 +50,25 @@
                                            class="demo-header-searchbox md-text">
                                 </md-select-header>
                                 <md-optgroup label="Centros disponibles">
-                                    <md-option ng-repeat="Centro in ListaCentros | filter:TerminoBusqueda" ng-value="Centro.Indice">
-                                        {{ Centro.Nombre }}
+                                    <md-option ng-repeat="Paro in ListaParos | filter:TerminoBusqueda" ng-value="Paro.Indice">
+                                        {{ Paro.Nombre | uppercase }}
                                     </md-option>
                                 </md-optgroup>
                             </md-select>
                         </md-input-container>
                     </div>
-                    <div layout="column" flex="10">
-                    </div>
                 </div>
 
                 <div layout="row" layour-align="center center" flex>
-                    <div layout="column" flex="10">
-                    </div>
-                    <div layout="column" flex="80">
+                    <div layout="column" flex="100">
                         <md-input-container class="md-block md-subhead">
                             <label>Nivel 3</label>
-                            <md-select id="centroSeleccionable"
-                                       name="centroSeleccionable"
-                                       md-on-open="ObtenerCentros()"
+                            <md-select id="paroSeleccionable3"
+                                       name="paroSeleccionable"
+                                       md-on-open="ObtenerParos()"
                                        md-on-close="ResetearTerminoBusqueda()"
                                        ng-model="Paro.Indice"
                                        md-container-class="selectdemoSelectHeader"
-                                       md-autofocus
                                        ng-cloak>
                                 <md-select-header class="demo-select-header">
                                     <input ng-model="TerminoBusqueda"
@@ -85,30 +77,25 @@
                                            class="demo-header-searchbox md-text">
                                 </md-select-header>
                                 <md-optgroup label="Centros disponibles">
-                                    <md-option ng-repeat="Centro in ListaCentros | filter:TerminoBusqueda" ng-value="Centro.Indice">
-                                        {{ Centro.Nombre }}
+                                    <md-option ng-repeat="Paro in ListaParos | filter:TerminoBusqueda" ng-value="Paro.Indice">
+                                        {{ Paro.Nombre | uppercase }}
                                     </md-option>
                                 </md-optgroup>
                             </md-select>
                         </md-input-container>
-                    </div>
-                    <div layout="column" flex="10">
                     </div>
                 </div>
 
                 <div layout="row" layour-align="center center" flex>
-                    <div layout="column" flex="10">
-                    </div>
-                    <div layout="column" flex="80">
+                    <div layout="column" flex="100">
                         <md-input-container class="md-block md-subhead">
                             <label>Nivel 4</label>
-                            <md-select id="centroSeleccionable"
-                                       name="centroSeleccionable"
-                                       md-on-open="ObtenerCentros()"
+                            <md-select id="paroSeleccionable4"
+                                       name="paroSeleccionable"
+                                       md-on-open="ObtenerParos()"
                                        md-on-close="ResetearTerminoBusqueda()"
                                        ng-model="Paro.Indice"
                                        md-container-class="selectdemoSelectHeader"
-                                       md-autofocus
                                        ng-cloak>
                                 <md-select-header class="demo-select-header">
                                     <input ng-model="TerminoBusqueda"
@@ -117,29 +104,24 @@
                                            class="demo-header-searchbox md-text">
                                 </md-select-header>
                                 <md-optgroup label="Centros disponibles">
-                                    <md-option ng-repeat="Centro in ListaCentros | filter:TerminoBusqueda" ng-value="Centro.Indice">
-                                        {{ Centro.Nombre }}
+                                    <md-option ng-repeat="Paro in ListaParos | filter:TerminoBusqueda" ng-value="Paro.Indice">
+                                        {{ Paro.Nombre | uppercase }}
                                     </md-option>
                                 </md-optgroup>
                             </md-select>
                         </md-input-container>
-                    </div>
-                    <div layout="column" flex="10">
                     </div>
                 </div>
                 <div layout="row" layour-align="center center" flex>
-                    <div layout="column" flex="10">
-                    </div>
-                    <div layout="column" flex="80">
+                    <div layout="column" flex="100">
                         <md-input-container class="md-block md-subhead">
                             <label>Nivel 5</label>
-                            <md-select id="centroSeleccionable"
-                                       name="centroSeleccionable"
-                                       md-on-open="ObtenerCentros()"
+                            <md-select id="paroSeleccionable5"
+                                       name="paroSeleccionable"
+                                       md-on-open="ObtenerParos()"
                                        md-on-close="ResetearTerminoBusqueda()"
                                        ng-model="Paro.Indice"
                                        md-container-class="selectdemoSelectHeader"
-                                       md-autofocus
                                        ng-cloak>
                                 <md-select-header class="demo-select-header">
                                     <input ng-model="TerminoBusqueda"
@@ -148,21 +130,19 @@
                                            class="demo-header-searchbox md-text">
                                 </md-select-header>
                                 <md-optgroup label="Centros disponibles">
-                                    <md-option ng-repeat="Centro in ListaCentros | filter:TerminoBusqueda" ng-value="Centro.Indice">
-                                        {{ Centro.Nombre }}
+                                    <md-option ng-repeat="Paro in ListaParos | filter:TerminoBusqueda" ng-value="Paro.Indice">
+                                        {{ Paro.Nombre | uppercase }}
                                     </md-option>
                                 </md-optgroup>
                             </md-select>
                         </md-input-container>
-                    </div>
-                    <div layout="column" flex="10">
                     </div>
                 </div>
                 <div layout="row" layour-align="center center" flex>
                     <div layout="column" flex>
                         <md-input-container class="md-block md-subhead" ng-disabled="Paro.Indice === null">
                             <label>Cantidad</label>
-                            <input ng-model="Paro.Cantidad">
+                            <input ng-model="Paro.Cantidad" solo-numerico valor-valido-mayor-cero>
                         </md-input-container>
                     </div>
 
@@ -173,7 +153,7 @@
                     <div layout="column" flex>
                         <md-input-container class="md-block md-subhead" ng-disabled="Paro.Indice === null">
                             <label>Folio</label>
-                            <input ng-model="Paro.Cantidad">
+                            <input ng-model="Paro.Folio">
                         </md-input-container>
                     </div>
                 </div>
@@ -181,7 +161,7 @@
         </md-dialog-content>
 
         <md-dialog-actions layout="row">
-            <md-button ng-click="cancel()" class="md-primary">
+            <md-button ng-click="AgregarParo()" class="md-primary">
                 Agregar
             </md-button>
         </md-dialog-actions>
