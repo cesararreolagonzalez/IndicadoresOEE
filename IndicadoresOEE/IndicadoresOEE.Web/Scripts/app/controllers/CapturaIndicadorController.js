@@ -29,7 +29,7 @@
                         });
 
                         $scope.TerminoBusqueda = '';
-                        $scope.Paro = { 'Indice': null, 'Cantidad': null, 'Folio': null };
+                        $scope.Paro = { 'Indice': null, 'Nombre': null, 'Cantidad': null, 'Folio': null };
                         
                         $scope.ResetearTerminoBusqueda = function () {
                             $scope.TerminoBusqueda = '';
@@ -60,6 +60,14 @@
 
                         $scope.AgregarParo = function () {
                             var Paro = null;
+
+                            $scope.Paro.Nombre = Enumerable.From($scope.ListaParos)
+                                .Where(function (x) { return x.Indice === $scope.Paro.Indice; })
+                                .OrderBy(function (x) { return x.Indice; })
+                                .Select(function (x) { return x.Nombre; })
+                                .FirstOrDefault();
+
+                            $scope.Paro.Cantidad = parseInt($scope.Rechazo.Cantidad);
                             Paro = angular.copy($scope.Paro);
                             $mdDialog.hide(Paro);
                         };
@@ -79,7 +87,6 @@
             })
                 .then(function (Paro) {
                     $scope.ListaParosElegidos.push(Paro);
-                    $log.info($scope.ListaParosElegidos);
                 }, function () {
                 })
                 .finally(function () {
@@ -89,11 +96,11 @@
         $scope.agregarRechazo = function (ev) {
             $mdDialog.show({
                 locals: { IndiceProceso: $scope.DatosGenerales.IndiceProceso },
-                controller: ['$scope', '$element', '$mdDialog', 'RechazoService', 'IndiceProceso',
-                    function ($scope, $element, $mdDialog, RechazoService, IndiceProceso)
+                controller: ['$scope', '$element', '$mdDialog', 'RechazoService', 'UtilFactory', 'IndiceProceso',
+                    function ($scope, $element, $mdDialog, RechazoService, UtilFactory, IndiceProceso)
                     {
                         $scope.TerminoBusqueda = '';
-                        $scope.Rechazo = { 'Indice': null, 'Cantidad': null };
+                        $scope.Rechazo = { 'Indice': null, 'Nombre': null, 'Cantidad': null };
 
                         $element.find('input').on('keydown', function (ev) {
                             ev.stopPropagation();
@@ -136,6 +143,14 @@
 
                         $scope.AgregarRechazo = function () {
                             var Rechazo = null;
+
+                            $scope.Rechazo.Nombre  = Enumerable.From($scope.ListaRechazos)
+                                .Where(function (x) { return x.Indice === $scope.Rechazo.Indice; })
+                                .OrderBy(function (x) { return x.Indice; })
+                                .Select(function (x) { return x.Nombre; })
+                                .FirstOrDefault();
+
+                            $scope.Rechazo.Cantidad = parseInt($scope.Rechazo.Cantidad);
                             Rechazo = angular.copy($scope.Rechazo);
                             $mdDialog.hide(Rechazo);
                         };
@@ -214,9 +229,9 @@
                     }
                     else {
                         $scope.ListaCentros = response.data.ListaCentros;
-                        $scope.DatosGenerales.IndiceCentros = $scope.ListaCentros.length === 1 ? $scope.ListaCentros[0].Indice : null;
+                        $scope.DatosGenerales.IndiceCentro = $scope.ListaCentros.length === 1 ? $scope.ListaCentros[0].Indice : null;
 
-                        if ($scope.DatosGenerales.IndiceCentros !== null)
+                        if ($scope.DatosGenerales.IndiceCentro !== null)
                             $scope.ObtenerDepartamentos();
                     }
                 })
@@ -228,9 +243,9 @@
                 });
         };
 
-        $scope.ObtenerDepartamentos = function (IndiceCentro)
+        $scope.ObtenerDepartamentos = function ()
         {
-            return DepartamentoService.ObtenerDepartamentosPorCentro(IndiceCentro)
+            return DepartamentoService.ObtenerDepartamentosPorCentro($scope.DatosGenerales.IndiceCentro)
                 .then(function (response)
                 {
                     var Estado = response.data.Estado;
@@ -256,7 +271,10 @@
 
         $scope.ObtenerLineas = function ()
         {
-            LineaService.ObtenerLineasPorDepartamento($scope.DatosGenerales.IndiceDepartamento)
+            if ($scope.DatosGenerales.IndiceDepartamento === null || $scope.DatosGenerales.IndiceDepartamento === '')
+                return;
+
+            return LineaService.ObtenerLineasPorDepartamento($scope.DatosGenerales.IndiceDepartamento)
                 .then(function (response) {
                     var Estado = response.data.Estado;
                     if (!Estado) {
@@ -285,7 +303,10 @@
 
         $scope.ObtenerProcesos = function ()
         {
-            ProcesoService.ObtenerProcesosPorLinea($scope.DatosGenerales.IndiceLinea)
+            if ($scope.DatosGenerales.IndiceLinea === null || $scope.DatosGenerales.IndiceLinea === '')
+                return;
+
+            return ProcesoService.ObtenerProcesosPorLinea($scope.DatosGenerales.IndiceLinea)
                 .then(function (response) {
                     var Estado = response.data.Estado;
                     if (!Estado) {
@@ -313,7 +334,10 @@
         // Al obtener el Proceso
         function ObtenerIndicadorPorProceso()
         {
-            IndicadorService.ObtenerIndicadorPorProceso($scope.DatosGenerales.IndiceProceso)
+            if ($scope.DatosGenerales.IndiceProceso === null || $scope.DatosGenerales.IndiceProceso === '')
+                return;
+
+            return IndicadorService.ObtenerIndicadorPorProceso($scope.DatosGenerales.IndiceProceso)
                 .then(function (response) {
                     var Estado = response.data.Estado;
                     if (!Estado) {
@@ -349,14 +373,19 @@
                     throw response;
                 })
                 .finally(function () {
-                    $log.info('Método ObtenerProcesos() finalizado');
+                    $log.info('Método ObtenerIndicadorPorProceso() finalizado');
                 });
         }
 
         // Al obtener el Material
         function ObtenerVelocidad()
         {
-            VelocidadService.ObtenerVelocidadPorMaterial($scope.DatosGenerales.IndiceProceso, $scope.DatosGenerales.Material)
+            if ($scope.DatosGenerales.IndiceProceso === null || $scope.DatosGenerales.IndiceProceso === '')
+                return;
+            if ($scope.DatosGenerales.Material === null || $scope.DatosGenerales.Material === '')
+                return;
+
+            return VelocidadService.ObtenerVelocidadPorMaterial($scope.DatosGenerales.IndiceProceso, $scope.DatosGenerales.Material)
                 .then(function (response) {
                     var Estado = response.data.Estado;
                     if (!Estado) {
@@ -384,7 +413,7 @@
 
         // Opcional. Validación de la Orden en SAP
         $scope.ValidarOrden = function () {
-            SAPService.ValidarOrden($scope.DatosGenerales.Orden)
+            return SAPService.ValidarOrden($scope.DatosGenerales.Orden)
                 .then(function (response) {
                     var Estado = response.data.Estado;
                     if (!Estado) {
@@ -409,9 +438,8 @@
                 });
         };
         
-        function ObtenerMinutosParos() {
-            var TotalMintuosParos = 0;
-
+        function ObtenerMinutosParos()
+        {
             var Velocidad = angular.copy($scope.DatosGenerales.Velocidad);
             var Piezas = angular.copy($scope.DatosIndicador.Piezas);
             var Ciclo = angular.copy($scope.DatosIndicador.Ciclo);
@@ -571,10 +599,41 @@
             $scope.Util.MensajeCalculoHorasParo = null;
         };
 
-        $scope.VerFecha = function () {
-            $log.info($scope.DatosIndicador.Fecha);
-            $log.info($scope.Util.FechaLimite);
-            $log.info($scope.DatosIndicador.Fecha < $scope.Util.FechaLimite);
+        $scope.ValidarHora = function (Index) {
+            if ($scope.DatosGenerales.IndiceProceso === null)
+                return;
+
+            var Fecha1 = angular.copy($scope.DatosIndicador.Fecha);
+            var Fecha2 = angular.copy($scope.Util.FechaLimite);
+            var Hora = angular.copy($scope.DatosIndicador.Hora);
+
+            var FechasIguales = Fecha1 === Fecha2;
+            var HoraLimite = $scope.Util.FechaLimite.getHours();
+            var SeDesactiva = false;
+
+            $log.info('HoraLimite = ' + HoraLimite + ', ' + Index);
+            if (HoraLimite >= Index && Fecha1 >= Fecha2)
+                SeDesactiva = false;
+            else
+                SeDesactiva = true;
+
+            $log.info('SeDesactiva = ' + SeDesactiva);
+            return SeDesactiva;
+        };
+
+        $scope.TransformarChipParos = function (chip) {
+            return {
+                Nombre: chip.Nombre,
+                Cantidad: chip.Cantidad,
+                Folio: chip.Folio
+            };
+        };
+
+        $scope.TransformarChipRechazos = function (chip) {
+            return {
+                Nombre: chip.Nombre,
+                Cantidad: chip.Cantidad
+            };
         };
     }
 }) ();

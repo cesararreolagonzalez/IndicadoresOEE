@@ -69,7 +69,7 @@
                         <md-select id="departamentoSeleccionable"
                                    name="departamentoSeleccionable"
                                    ng-disabled="DatosGenerales.IndiceCentro === null"
-                                   md-on-open="ObtenerDepartamentos(DatosGenerales.IndiceCentro)"
+                                   md-on-open="ObtenerDepartamentos()"
                                    md-on-close="ResetearTerminoBusqueda()"
                                    ng-model="DatosGenerales.IndiceDepartamento"
                                    md-container-class="selectdemoSelectHeader"
@@ -104,6 +104,7 @@
                         <md-select id="lineaSeleccionable"
                                    name="lineaSeleccionable"
                                    ng-disabled="DatosGenerales.IndiceDepartamento === null"
+                                   md-on-open="ObtenerLineas()"
                                    md-on-close="ResetearTerminoBusqueda()"
                                    ng-model="DatosGenerales.IndiceLinea"
                                    md-container-class="selectdemoSelectHeader"
@@ -138,6 +139,7 @@
                         <md-select id="procesoSeleccionable"
                                    name="procesoSeleccionable"
                                    ng-disabled="DatosGenerales.IndiceLinea === null"
+                                   md-on-open="ObtenerProcesos()"
                                    md-on-close="ResetearTerminoBusqueda()"
                                    ng-model="DatosGenerales.IndiceProceso"
                                    md-container-class="selectdemoSelectHeader"
@@ -184,12 +186,12 @@
             </div>
         </md-card-content>
         <md-card-actions layout="row" layout-align="end center">
-            <md-button>
+            @*<md-button>
                 SIGUIENTE
                 <md-icon md-svg-src="~/Content/Icons/arrow-forward.svg"
                          aria-label="Insert Drive Icon">
                 </md-icon>
-            </md-button>
+            </md-button>*@
         </md-card-actions>
     </md-card>
 
@@ -248,13 +250,14 @@
                                     <div class="md-ripple-container"></div>
                                 </button>
                             </div>
-                            <div style="margin-top: 0.5rem;">
+                            <div style="margin-top: 0.4rem;">
                                 <md-input-container class="md-subhead">
                                     <md-select ng-model="DatosIndicador.Hora" md-selected-text="" aria-label="hora" ng-disabled="DatosGenerales.IndiceIndicador === null">
                                         <md-optgroup label="hora">
                                             <md-option ng-repeat="hora in [].constructor(24) track by $index"
                                                        ng-value="$index"
-                                                       ng-disabled="DatosIndicador.Fecha >= Util.FechaLimite && $index > DatosIndicador.Hora">
+                                                       ng-disabled="ValidarHora($index)"
+                                                       @*ng-disabled="DatosIndicador.Fecha >= Util.FechaLimite && $index > DatosIndicador.Hora"*@>
                                                 {{ $index < 10 ? '0' + $index : $index }}
                                             </md-option>
                                         </md-optgroup>
@@ -287,12 +290,12 @@
             </div>
         </md-card-content>
         <md-card-actions layout="row" layout-align="end center">
-            <md-button ng-click="VerFecha()">
+            @*<md-button ng-click="VerFecha()">
                 SIGUIENTE
                 <md-icon md-svg-src="~/Content/Icons/arrow-forward.svg"
                          aria-label="Insert Drive Icon">
                 </md-icon>
-            </md-button>
+            </md-button>*@
         </md-card-actions>
     </md-card>
 
@@ -304,17 +307,31 @@
             </md-card-title-text>
         </md-card-title>
         <md-card-content style="padding-left: 3.5rem;">
-            <br />
-            <span>No has seleccionado rechazos aún</span>
-            <br />
-            <br />
+            <span ng-show="ListaRechazosElegidos.length === 0" style="padding-top: 2rem; padding-bottom: 2rem;">No has seleccionado rechazos aún</span>
+            <md-content class="" layout="column">
+                <md-chips ng-model="ListaRechazosElegidos"
+                          class="custom-chips"
+                          readonly="true"
+                          md-removable="true"
+                          md-transform-chip="TransformarChipRechazo($chip)">
+                    <md-chip-template>
+                        <span>
+                            <strong>{{$chip.Nombre | uppercase }}</strong>
+                            <em>({{ $chip.Cantidad }})</em>
+                        </span>
+                    </md-chip-template>
+                    <button md-chip-remove
+                            class="vegetablechip md-primary"
+                            ng-click="QuitarRechazo($chip)">
+                        <md-icon md-svg-icon="md-close"></md-icon>
+                    </button>
+                </md-chips>
+            </md-content>
         </md-card-content>
         <md-card-actions layout="row" layout-align="end center">
             <md-card-actions layout="row" layout-align="end center">
                 <md-button id="btnAddRechazo" md-no-ink class="md-primary" ng-click="agregarRechazo($event)" ng-show="DatosGenerales.IndiceProceso !== null">
-                    <md-icon md-svg-src="~/Content/Icons/add.svg"
-                             aria-label="Agregar">
-                    </md-icon>
+                    <md-icon md-svg-icon="md-add"></md-icon>
                     AGREGAR
                 </md-button>
             </md-card-actions>
@@ -329,16 +346,30 @@
             </md-card-title-text>
         </md-card-title>
         <md-card-content style="padding-left: 3.5rem;">
-            <br />
-            <span>No has seleccionado paros aún</span>
-            <br />
-            <br />
+            <span ng-show="ListaParosElegidos.length === 0" style="padding-top: 2rem; padding-bottom: 2rem;">No has seleccionado paros aún</span>
+            <md-content class="" layout="column">
+                <md-chips ng-model="ListaParosElegidos"
+                          class="custom-chips"
+                          readonly="true"
+                          md-removable="true"
+                          md-transform-chip="TransformarChipParo($chip)">
+                    <md-chip-template>
+                        <span>
+                            <strong>{{$chip.Nombre | uppercase }}</strong>
+                            <em>({{ $chip.Cantidad }})</em>
+                        </span>
+                    </md-chip-template>
+                    <button md-chip-remove
+                            class="vegetablechip md-primary"
+                            ng-click="QuitarParo($chip)">
+                        <md-icon md-svg-icon="md-close"></md-icon>
+                    </button>
+                </md-chips>
+            </md-content>
         </md-card-content>
         <md-card-actions layout="row" layout-align="end center">
             <md-button id="btnAddParo" md-no-ink class="md-primary" ng-click="agregarParo($event)" ng-show="DatosGenerales.IndiceProceso !== null">
-                <md-icon md-svg-src="~/Content/Icons/add.svg"
-                         aria-label="Agregar">
-                </md-icon>
+                <md-icon md-svg-icon="md-add"></md-icon>
                 AGREGAR
             </md-button>
         </md-card-actions>

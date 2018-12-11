@@ -161,7 +161,7 @@
         </md-dialog-content>
 
         <md-dialog-actions layout="row">
-            <md-button ng-click="AgregarParo()" class="md-primary">
+            <md-button ng-click="AgregarParo()" class="md-primary" ng-disabled="Paro.Indice === null || Paro.Cantidad === null || Paro.Cantidad === undefined">
                 Agregar
             </md-button>
         </md-dialog-actions>

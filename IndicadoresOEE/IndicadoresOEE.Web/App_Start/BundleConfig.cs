@@ -15,6 +15,9 @@ namespace IndicadoresOEE.Web
             bundles.Add(new ScriptBundle("~/bundles/moment")
                 .Include("~/Scripts/moment-with-locales.js"));
 
+            bundles.Add(new ScriptBundle("~/bundles/linq")
+                .Include("~/Scripts/linq.js"));
+
             bundles.Add(new ScriptBundle("~/bundles/angularjs")
                 .Include("~/Scripts/angular.js",
                 "~/Scripts/angular-animate.js",

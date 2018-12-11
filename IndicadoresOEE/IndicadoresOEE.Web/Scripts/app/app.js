@@ -8,7 +8,8 @@
             {
                 //==============================================================================
 
-                //$mdIconProvider.icon('md-close', '../img/icons/ic_close_24px.svg', 24);
+                $mdIconProvider.icon('md-close', '../Content/Icons/quitar.svg', 24);
+                $mdIconProvider.icon('md-add', '../Content/Icons/add.svg', 24);
                 
                 $mdDateLocaleProvider.months = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio',
                     'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'];

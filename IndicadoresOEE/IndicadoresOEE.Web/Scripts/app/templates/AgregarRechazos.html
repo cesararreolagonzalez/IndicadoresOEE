@@ -47,8 +47,8 @@
         </md-dialog-content>
 
         <md-dialog-actions layout="row" style="margin-right: 1rem !important;">
-            <md-button ng-click="AgregarRechazo()" class="md-primary" ng-disabled="Rechazo.Indice === null && Rechazo.Cantidad === null">
-                Agregar [{{ Rechazo.Cantidad === '' }}]
+            <md-button ng-click="AgregarRechazo()" class="md-primary" ng-disabled="Rechazo.Indice === null || Rechazo.Cantidad === null || Rechazo.Cantidad === undefined">
+                Agregar
             </md-button>
         </md-dialog-actions>
     </form>

@@ -228,6 +228,7 @@
     <Content Include="Content\Icons\edit.svg" />
     <Content Include="Content\Icons\navigate-before.svg" />
     <Content Include="Content\Icons\navigate-next.svg" />
+    <Content Include="Content\Icons\quitar.svg" />
     <Content Include="Content\Icons\time.svg" />
     <Content Include="Content\Images\indicadoresoee-logo.jpg" />
     <Content Include="favicon.ico" />
@@ -290,6 +291,9 @@
     <Content Include="Scripts\jquery.validate.min.js" />
     <Content Include="Scripts\jquery.validate.unobtrusive.js" />
     <Content Include="Scripts\jquery.validate.unobtrusive.min.js" />
+    <None Include="Scripts\linq-vsdoc.js" />
+    <Content Include="Scripts\linq.js" />
+    <Content Include="Scripts\linq.min.js" />
     <Content Include="Scripts\modernizr-2.8.3.js" />
     <Content Include="Scripts\moment-with-locales.js" />
     <Content Include="Scripts\moment-with-locales.min.js" />
