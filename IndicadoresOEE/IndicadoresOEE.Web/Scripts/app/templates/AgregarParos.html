@@ -13,7 +13,7 @@
                                        name="paroSeleccionable"
                                        md-on-open="ObtenerParos()"
                                        md-on-close="ResetearTerminoBusqueda()"
-                                       ng-model="Paro.Indice"
+                                       ng-model="ParoElegido.IndiceNivelI"
                                        md-container-class="selectdemoSelectHeader"
                                        md-autofocus
                                        ng-cloak>
@@ -32,7 +32,7 @@
                         </md-input-container>
                     </div>
                 </div>
-                <div layout="row" layour-align="center center" flex>
+                <div layout="row" layour-align="center center" ng-show="ParoElegido.IndiceNivelI !== null" flex>
                     <div layout="column" flex="100">
                         <md-input-container class="md-block md-subhead">
                             <label>Nivel 2</label>
@@ -40,7 +40,7 @@
                                        name="paroSeleccionable"
                                        md-on-open="ObtenerParos()"
                                        md-on-close="ResetearTerminoBusqueda()"
-                                       ng-model="Paro.Indice"
+                                       ng-model="ParoElegido.IndiceNivelII"
                                        md-container-class="selectdemoSelectHeader"
                                        ng-cloak>
                                 <md-select-header class="demo-select-header">
@@ -59,7 +59,7 @@
                     </div>
                 </div>
 
-                <div layout="row" layour-align="center center" flex>
+                <div layout="row" layour-align="center center" ng-show="ParoElegido.IndiceNivelII !== null" flex>
                     <div layout="column" flex="100">
                         <md-input-container class="md-block md-subhead">
                             <label>Nivel 3</label>
@@ -67,7 +67,7 @@
                                        name="paroSeleccionable"
                                        md-on-open="ObtenerParos()"
                                        md-on-close="ResetearTerminoBusqueda()"
-                                       ng-model="Paro.Indice"
+                                       ng-model="ParoElegido.IndiceNivelIII"
                                        md-container-class="selectdemoSelectHeader"
                                        ng-cloak>
                                 <md-select-header class="demo-select-header">
@@ -86,7 +86,7 @@
                     </div>
                 </div>
 
-                <div layout="row" layour-align="center center" flex>
+                <div layout="row" layour-align="center center" flex ng-show="ParoElegido.IndiceNivelIII !== null">
                     <div layout="column" flex="100">
                         <md-input-container class="md-block md-subhead">
                             <label>Nivel 4</label>
@@ -94,7 +94,7 @@
                                        name="paroSeleccionable"
                                        md-on-open="ObtenerParos()"
                                        md-on-close="ResetearTerminoBusqueda()"
-                                       ng-model="Paro.Indice"
+                                       ng-model="ParoElegido.IndiceNivelIV"
                                        md-container-class="selectdemoSelectHeader"
                                        ng-cloak>
                                 <md-select-header class="demo-select-header">
@@ -112,7 +112,7 @@
                         </md-input-container>
                     </div>
                 </div>
-                <div layout="row" layour-align="center center" flex>
+                <div layout="row" layour-align="center center" flex ng-show="ParoElegido.IndiceNivelIV !== null">
                     <div layout="column" flex="100">
                         <md-input-container class="md-block md-subhead">
                             <label>Nivel 5</label>
@@ -120,7 +120,7 @@
                                        name="paroSeleccionable"
                                        md-on-open="ObtenerParos()"
                                        md-on-close="ResetearTerminoBusqueda()"
-                                       ng-model="Paro.Indice"
+                                       ng-model="ParoElegido.IndiceNivelV"
                                        md-container-class="selectdemoSelectHeader"
                                        ng-cloak>
                                 <md-select-header class="demo-select-header">

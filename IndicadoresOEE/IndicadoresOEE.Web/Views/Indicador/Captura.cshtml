@@ -245,7 +245,7 @@
 
                         <div style="display: inline-flex">
                             <div style="margin-top: 1.3rem;">
-                                <button class="md-icon-button md-button md-ink-ripple" type="button" ng-click="!readOnly && showPicker($event)">
+                                <button class="md-icon-button md-button md-ink-ripple" type="button">
                                     <md-icon title="Hora" md-svg-src="../Content/Icons/time.svg" aria-label="Hora"></md-icon>
                                     <div class="md-ripple-container"></div>
                                 </button>
@@ -256,19 +256,18 @@
                                         <md-optgroup label="hora">
                                             <md-option ng-repeat="hora in [].constructor(24) track by $index"
                                                        ng-value="$index"
-                                                       ng-disabled="ValidarHora($index)"
-                                                       @*ng-disabled="DatosIndicador.Fecha >= Util.FechaLimite && $index > DatosIndicador.Hora"*@>
+                                                       ng-disabled="ValidarHora($index)">
                                                 {{ $index < 10 ? '0' + $index : $index }}
                                             </md-option>
                                         </md-optgroup>
                                     </md-select>
                                 </md-input-container>
-                                <md-input-container>
+                                <md-input-container class="md-subhead">
                                     <md-select ng-model="DatosIndicador.Minuto" md-selected-text="" aria-label="minutos" ng-disabled="DatosIndicador.Hora === null">
                                         <md-optgroup label="minuto">
                                             <md-option ng-repeat="minuto in [].constructor(60) track by $index"
                                                        ng-value="$index"
-                                                       ng-disabled="Util.CompararFecha(DatosIndicador.Fecha, Util.FechaLimite) && $index > DatosIndicador.Minuto">
+                                                       nng-disabled="ValidarMinuto($index)">
                                                 {{ $index < 10 ? '0' + $index : $index }}
                                             </md-option>
                                         </md-optgroup>
@@ -322,7 +321,7 @@
                     </md-chip-template>
                     <button md-chip-remove
                             class="vegetablechip md-primary"
-                            ng-click="QuitarRechazo($chip)">
+                            ng-click="QuitarRechazo($chip.Indice)">
                         <md-icon md-svg-icon="md-close"></md-icon>
                     </button>
                 </md-chips>

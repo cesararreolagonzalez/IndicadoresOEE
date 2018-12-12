@@ -18,19 +18,24 @@
         $scope.ListaRechazosElegidos = [];
         $scope.ListaParosElegidos = [];
 
+        // Sirven para desactivar de la lista los paros escogidos
+        $scope.ListaIndicesRechazosEnUso = [];
+        $scope.ListaIndicesParosEnUso = [];
+
         $scope.agregarParo = function (ev) {
             $mdDialog.show({
                 locals: { IndiceProceso: $scope.DatosGenerales.IndiceProceso},
                 controller: ['$scope', '$element', '$mdDialog', 'ParoService', 'IndiceProceso',
                     function ($scope, $element, $mdDialog, ParoService, IndiceProceso)
                     {
+                        $scope.TerminoBusqueda = '';
+                        $scope.ParoElegido = { 'IndiceNivelI': null, 'IndiceNivelII': null, 'IndiceNivelIII': null, 'IndiceNivelIV': null, 'IndiceNivelV': null };
+                        $scope.Paro = { 'Indice': null, 'Nombre': null, 'Cantidad': null, 'Folio': null };
+
                         $element.find('input').on('keydown', function (ev) {
                             ev.stopPropagation();
                         });
 
-                        $scope.TerminoBusqueda = '';
-                        $scope.Paro = { 'Indice': null, 'Nombre': null, 'Cantidad': null, 'Folio': null };
-                        
                         $scope.ResetearTerminoBusqueda = function () {
                             $scope.TerminoBusqueda = '';
                         };
@@ -95,9 +100,9 @@
 
         $scope.agregarRechazo = function (ev) {
             $mdDialog.show({
-                locals: { IndiceProceso: $scope.DatosGenerales.IndiceProceso },
-                controller: ['$scope', '$element', '$mdDialog', 'RechazoService', 'UtilFactory', 'IndiceProceso',
-                    function ($scope, $element, $mdDialog, RechazoService, UtilFactory, IndiceProceso)
+                locals: { IndiceProceso: $scope.DatosGenerales.IndiceProceso, ListaIndicesRechazosEnUso: $scope.ListaIndicesRechazosEnUso },
+                controller: ['$scope', '$element', '$mdDialog', 'RechazoService', 'UtilFactory', 'IndiceProceso', 'ListaIndicesRechazosEnUso',
+                    function ($scope, $element, $mdDialog, RechazoService, UtilFactory, IndiceProceso, ListaIndicesRechazosEnUso)
                     {
                         $scope.TerminoBusqueda = '';
                         $scope.Rechazo = { 'Indice': null, 'Nombre': null, 'Cantidad': null };
@@ -108,6 +113,12 @@
 
                         $scope.ResetearTerminoBusqueda = function () {
                             $scope.TerminoBusqueda = '';
+                        };
+
+                        $scope.DesactivarSiEstaEnUso = function (IndiceRechazo) {
+                            var Existe = Enumerable.From(ListaIndicesRechazosEnUso).Any(function (item) { return item === IndiceRechazo; });
+
+                            return Existe;
                         };
 
                         $scope.ObtenerRechazos = function ()
@@ -170,7 +181,7 @@
             })
                 .then(function (Rechazo) {
                     $scope.ListaRechazosElegidos.push(Rechazo);
-                    $log.info($scope.ListaRechazosElegidos);
+                    $scope.ListaIndicesRechazosEnUso.push(Rechazo.Indice);
                 }, function () {
             })
             .finally(function () {
@@ -600,24 +611,45 @@
         };
 
         $scope.ValidarHora = function (Index) {
-            if ($scope.DatosGenerales.IndiceProceso === null)
+            if (!$scope.DatosGenerales.IndiceProceso || !$scope.DatosIndicador.Fecha)
                 return;
 
             var Fecha1 = angular.copy($scope.DatosIndicador.Fecha);
             var Fecha2 = angular.copy($scope.Util.FechaLimite);
-            var Hora = angular.copy($scope.DatosIndicador.Hora);
 
-            var FechasIguales = Fecha1 === Fecha2;
             var HoraLimite = $scope.Util.FechaLimite.getHours();
+            var FechasIguales = Fecha1.getTime() === Fecha2.getTime();
+            var LaHoraActualEsMayorQueLaEstablecida = Index > HoraLimite;
             var SeDesactiva = false;
 
-            $log.info('HoraLimite = ' + HoraLimite + ', ' + Index);
-            if (HoraLimite >= Index && Fecha1 >= Fecha2)
-                SeDesactiva = false;
-            else
+            //$log.info('Fecha1 = ' + Fecha1.getTime() + ', Fecha2 = ' + Fecha2.getTime());
+            //$log.info('FechasIguales = ' + FechasIguales + ', LaHoraActualEsMayorQueLaEstablecida = ' + LaHoraActualEsMayorQueLaEstablecida);
+            if (FechasIguales && LaHoraActualEsMayorQueLaEstablecida)
                 SeDesactiva = true;
+            else
+                SeDesactiva = false;
 
-            $log.info('SeDesactiva = ' + SeDesactiva);
+            //$log.info('SeDesactiva = ' + SeDesactiva);
+            return SeDesactiva;
+        };
+        
+        $scope.ValidarMinuto = function (Index) {
+            if (!$scope.DatosGenerales.IndiceProceso || !$scope.DatosIndicador.Fecha)
+                return;
+
+            var Fecha1 = angular.copy($scope.DatosIndicador.Fecha);
+            var Fecha2 = angular.copy($scope.Util.FechaLimite);
+
+            var MinutoLimite = $scope.Util.FechaLimite.getMinutes();
+            var FechasIguales = Fecha1.getTime() === Fecha2.getTime();
+            var LaHoraActualEsMayorQueLaEstablecida = Index > MinutoLimite;
+            var SeDesactiva = false;
+
+            if (FechasIguales && LaHoraActualEsMayorQueLaEstablecida)
+                SeDesactiva = true;
+            else
+                SeDesactiva = false;
+
             return SeDesactiva;
         };
 
@@ -634,6 +666,24 @@
                 Nombre: chip.Nombre,
                 Cantidad: chip.Cantidad
             };
+        };
+
+        $scope.QuitarRechazo = function (IndiceRechazo)
+        {
+            var IndiceLista = UtilFactory.FiltrarArreglo($scope.ListaIndicesRechazosEnUso, function (item) { return item === IndiceRechazo; });
+
+            if (IndiceLista !== -1) {
+                $scope.ListaIndicesRechazosEnUso.splice(IndiceLista, 1);
+            }
+        };
+
+        $scope.QuitarParo = function (IndiceParo)
+        {
+            var IndiceLista = UtilFactory.FiltrarArreglo($scope.ListaIndicesParosEnUso, function (item) { return item === IndiceParo; });
+
+            if (IndiceLista !== -1) {
+                $scope.ListaIndicesParosEnUso.splice(IndiceLista, 1);
+            }
         };
     }
 }) ();
