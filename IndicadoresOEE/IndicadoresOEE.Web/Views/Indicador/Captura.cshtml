@@ -307,7 +307,10 @@
         </md-card-title>
         <md-card-content style="padding-left: 3.5rem;">
             <span ng-show="ListaRechazosElegidos.length === 0" style="padding-top: 2rem; padding-bottom: 2rem;">No has seleccionado rechazos aún</span>
-            <md-content class="" layout="column">
+            <span ng-show="ListaRechazosElegidos.length > 0" style="" ng-cloak>
+                {{ ListaRechazosElegidos.length }} {{ ListaRechazosElegidos.length === 1 ? 'rechazo seleccionado' : 'rechazos seleccionados' }}
+            </span>
+            <md-content class="" layout="column" style="margin-top: 1rem;">
                 <md-chips ng-model="ListaRechazosElegidos"
                           class="custom-chips"
                           readonly="true"
@@ -346,7 +349,10 @@
         </md-card-title>
         <md-card-content style="padding-left: 3.5rem;">
             <span ng-show="ListaParosElegidos.length === 0" style="padding-top: 2rem; padding-bottom: 2rem;">No has seleccionado paros aún</span>
-            <md-content class="" layout="column">
+            <span ng-show="ListaParosElegidos.length > 0" ng-cloak>
+                {{ ListaParosElegidos.length }} {{ ListaParosElegidos.length === 1 ? 'paro seleccionado' : 'paros seleccionados' }}
+            </span>
+            <md-content class="" layout="column" style="margin-top: 1rem;">
                 <md-chips ng-model="ListaParosElegidos"
                           class="custom-chips"
                           readonly="true"

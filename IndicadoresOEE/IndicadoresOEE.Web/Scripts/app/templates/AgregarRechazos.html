@@ -24,8 +24,8 @@
                                            class="demo-header-searchbox md-text">
                                 </md-select-header>
                                 <md-optgroup label="Rechazos disponibles">
-                                    <md-option ng-repeat="Rechazo in ListaRechazos | filter:TerminoBusqueda" 
-                                               ng-value="Rechazo.Indice" 
+                                    <md-option ng-repeat="Rechazo in ListaRechazos | filter:TerminoBusqueda"
+                                               ng-value="Rechazo.Indice"
                                                ng-disabled="DesactivarSiEstaEnUso(Rechazo.Indice)">
                                         {{ Rechazo.Nombre | uppercase }}
                                     </md-option>
@@ -47,11 +47,18 @@
                 </div>
             </div>
         </md-dialog-content>
-
-        <md-dialog-actions layout="row" style="margin-right: 1rem !important;">
-            <md-button ng-click="AgregarRechazo()" class="md-primary" ng-disabled="Rechazo.Indice === null || Rechazo.Cantidad === null || Rechazo.Cantidad === undefined">
-                Agregar
-            </md-button>
+        <md-dialog-actions layout="row" flex>
+            <div layout="column" layout-align="start center" flex>
+                <md-button ng-click="Inicializar()" layout-align="start">
+                    Inicializar
+                </md-button>
+            </div>
+            <div layout="column" layout-align="end center" flex>
+                <md-button ng-click="AgregarRechazo()" class="md-primary" 
+                           ng-disabled="Rechazo.Indice === null || Rechazo.Cantidad === null || Rechazo.Cantidad === undefined">
+                    Agregar
+                </md-button>
+            </div>
         </md-dialog-actions>
     </form>
 </md-dialog>

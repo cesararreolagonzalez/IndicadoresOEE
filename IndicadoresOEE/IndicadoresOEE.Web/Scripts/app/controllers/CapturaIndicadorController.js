@@ -37,16 +37,23 @@
                             ev.stopPropagation();
                         });
 
-                        $scope.Paro = { 'Indice': null, 'Nombre': null, 'Cantidad': null, 'Folio': null };
                         $scope.TerminoBusqueda = '';
                         $scope.IndiceParoActual = 0;
                         $scope.HabilitarFolio = false;
+                        $scope.EsUltimoNivel = false;
 
                         $scope.ListaParosPrimerNivel = null;
                         $scope.ListaParosSegundoNivel = null;
                         $scope.ListaParosTercerNivel = null;
                         $scope.ListaParosCuartoNivel = null;
                         $scope.ListaParosQuintoNivel = null;
+
+                        $scope.Paro = {
+                            'Indice': null,
+                            'Nombre': null,
+                            'Cantidad': null,
+                            'Folio': null
+                        };
 
                         $scope.IndiceParo = {
                             'Nivel01': null,
@@ -56,11 +63,12 @@
                             'Nivel05': null
                         };
                         
-                        $scope.EsUltimoNivel = false;
-                        
                         $scope.ObtenerParos = function (Nivel)
                         {
-                            return ParoService.ObtenerParosPorGerarquia1($scope.IndiceParoActual, IndiceProceso)
+                            if (Nivel === 1)
+                                $scope.IndiceParoActual = 0;
+
+                            return ParoService.ObtenerParosPorGerarquia($scope.IndiceParoActual, IndiceProceso)
                                 .then(function (response)
                                 {
                                     var Estado = response.data.Estado;
@@ -77,7 +85,6 @@
                                             {
                                                 case 1:
                                                     $scope.HabilitarFolio = false;
-                                                    $scope.ListaParosPrimerNivel = ListaParos;
                                                     $scope.ListaParosSegundoNivel = null;
                                                     $scope.ListaParosTercerNivel = null;
                                                     $scope.ListaParosCuartoNivel = null;
@@ -87,6 +94,7 @@
                                                     $scope.IndiceParo.Nivel03 = null;
                                                     $scope.IndiceParo.Nivel04 = null;
                                                     $scope.IndiceParo.Nivel05 = null;
+                                                    $scope.ListaParosPrimerNivel = ListaParos;
                                                     break;
                                                 case 2:
                                                     $scope.ListaParosSegundoNivel = ListaParos;
@@ -119,14 +127,11 @@
                                             }
 
                                             $scope.EsUltimoNivel = false;
-                                            $scope.Indice = null;
-                                            $scope.Nombre = null;
-                                            $scope.Cantidad = null;
-                                            $scope.Folio = null;
+                                            InicializarParo();
                                         }
                                         else {
                                             $scope.EsUltimoNivel = true;
-                                            $scope.Indice = $scope.IndiceParoActual;
+                                            $scope.Paro.Indice = $scope.IndiceParoActual;
                                         }
 
                                     }
@@ -139,20 +144,16 @@
                                 });
                         };
 
-                        $scope.AveriaParoPadre = function () {
+                        $scope.AveriaParoPadre = function ()
+                        {
+                            var Nombre = Enumerable.From($scope.ListaParosPrimerNivel)
+                                .Where(function (col) { return col.Indice === $scope.IndiceParo.Nivel01; })
+                                .Select(function (col) { return col.Nombre; })
+                                .FirstOrDefault();
 
-                            // Filtrar por indice seleccionado del paro de nivel 1
-                            var Existe = Enumerable.From($scope.ListaParosPrimerNivel).Any(function (item) { return item.Nombre.toLowerCase() === 'averías'; });
-
-                            $log.info(Existe);
-                            return Existe;
-                            //var Nombre = Enumerable.From($scope.ListaParosPrimerNivel)
-                            //    .Where(function (col) { return EsAveria(col.Nombre); })
-                            //    .OrderBy(function (col) { return col.Indice; })
-                            //    .Select(function (col) { return col.Nombre; })
-                            //    .FirstOrDefault();
-
-                            //return Nombre !== undefined;
+                            if (!Nombre)
+                                return false;
+                            return EsAveria(Nombre);
 
                         };
 
@@ -170,7 +171,6 @@
                                 case 1:
                                     ListaParos = $scope.ListaParosPrimerNivel;
                                     $scope.HabilitarFolio = $scope.AveriaParoPadre();
-                                    console.log($scope.HabilitarFolio);
                                     break;
                                 case 2:
                                     ListaParos = $scope.ListaParosSegundoNivel;
@@ -188,11 +188,13 @@
                                     ListaParos = [];
                             }
 
-                            $scope.Nombre = Enumerable.From(ListaParos)
-                                                .Where(function (col) { return col.Indice === IndiceParo; })
-                                                .OrderBy(function (col) { return col.Indice; })
-                                                .Select(function (col) { return col.Nombre; })
-                                                .FirstOrDefault();
+                            $scope.Paro.Nombre = Enumerable.From(ListaParos)
+                                .Where(function (col) { return col.Indice === IndiceParo; })
+                                .OrderBy(function (col) { return col.Indice; })
+                                .Select(function (col) { return col.Nombre; })
+                                .FirstOrDefault();
+
+
 
                             $scope.ObtenerParos(SiguienteNivel);
                         };
@@ -232,12 +234,16 @@
                             $scope.IndiceParo.Nivel03 = null;
                             $scope.IndiceParo.Nivel04 = null;
                             $scope.IndiceParo.Nivel05 = null;
-                            
-                            $scope.Indice = null;
-                            $scope.Nombre = null;
-                            $scope.Cantidad = null;
-                            $scope.Folio = null;
+
+                            InicializarParo();
                         };
+
+                        function InicializarParo () {
+                            $scope.Paro.Indice = null;
+                            $scope.Paro.Nombre = null;
+                            $scope.Paro.Cantidad = null;
+                            $scope.Paro.Folio = null;
+                        }
 
                 }],
                 templateUrl: '../Scripts/app/templates/AgregarParos.html',
@@ -255,7 +261,7 @@
             })
                 .then(function (Paro) {
                     $scope.ListaParosElegidos.push(Paro);
-                    $scope.ListaIndicesParosEnUso.push(Indice);
+                    $scope.ListaIndicesParosEnUso.push(Paro.Indice);
                 }, function () {
                 })
                 .finally(function () {
@@ -328,6 +334,12 @@
                             $scope.Rechazo.Cantidad = parseInt($scope.Rechazo.Cantidad);
                             Rechazo = angular.copy($scope.Rechazo);
                             $mdDialog.hide(Rechazo);
+                        };
+
+                        $scope.Inicializar = function () {
+                            $scope.Rechazo.Indice = null;
+                            $scope.Rechazo.Nombre = null;
+                            $scope.Rechazo.Cantidad = null;
                         };
                     }],
                 templateUrl: '../Scripts/app/templates/AgregarRechazos.html',

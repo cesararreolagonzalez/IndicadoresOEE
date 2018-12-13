@@ -20,32 +20,7 @@
         {
             return View();
         }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <returns></returns>
-        [HttpGet]
-        public ActionResult ObtenerParosPorProceso(long IndiceProceso)
-        {
-            string Mensaje = string.Empty;
-            bool Estado = false;
-            List<ParoModel> ListaParos = new List<ParoModel>();
-
-            try
-            {
-                ListaParos = paroBusiness.ObtenerParosPorProceso(IndiceProceso);
-                Estado = true;
-            }
-            catch (Exception e)
-            {
-                Mensaje = e.Message;
-            }
-
-            object data = new { Estado, Mensaje, ListaParos };
-            return Json(data, JsonRequestBehavior.AllowGet);
-        }
-
+        
         /// <summary>
         /// 
         /// </summary>
@@ -60,31 +35,6 @@
             try
             {
                 ListaParos = paroBusiness.ObtenerParosPorGerarquia(IndiceParo, IndiceProceso);
-                Estado = true;
-            }
-            catch (Exception e)
-            {
-                Mensaje = e.Message;
-            }
-
-            object data = new { Estado, Mensaje, ListaParos };
-            return Json(data, JsonRequestBehavior.AllowGet);
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <returns></returns>
-        [HttpGet]
-        public ActionResult ObtenerParosPorGerarquia1(long IndiceParo, long IndiceProceso)
-        {
-            string Mensaje = string.Empty;
-            bool Estado = false;
-            List<ParoModel> ListaParos = new List<ParoModel>();
-
-            try
-            {
-                ListaParos = paroBusiness.ObtenerParosPorGerarquia1(IndiceParo, IndiceProceso);
                 Estado = true;
             }
             catch (Exception e)

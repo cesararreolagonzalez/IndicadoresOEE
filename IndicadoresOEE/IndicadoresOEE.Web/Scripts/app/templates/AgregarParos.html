@@ -2,7 +2,7 @@
     <form ng-cloak>
         <md-dialog-content style="background-color: #FFF !important; padding-left: 2rem; padding-right: 2rem; min-width: 40rem!important;">
             <div class="md-dialog-content">
-                <h2 class="md-title"><strong>Agregar paro [{{HabilitarFolio}}]</strong></h2>
+                <h2 class="md-title"><strong>Agregar paro</strong></h2>
 
                 <br />
 
@@ -175,14 +175,18 @@
                 </div>
             </div>
         </md-dialog-content>
-
-        <md-dialog-actions layout="row">
-            <md-button ng-click="Inicializar()" layout-align="start">
-                Inicializar
-            </md-button>
-            <md-button ng-click="AgregarParo()"  layout-align="end" class="md-primary" ng-disabled="Paro.Indice === null || Paro.Cantidad === null || Paro.Cantidad === undefined">
-                Agregar
-            </md-button>
+        <md-dialog-actions layout="row" flex>
+            <div layout="column" layout-align="start center" flex>
+                <md-button ng-click="Inicializar()" layout-align="start">
+                    Inicializar
+                </md-button>
+            </div>
+            <div layout="column" layout-align="end center" flex>
+                <md-button ng-click="AgregarParo()" layout-align="end" class="md-primary"
+                           ng-disabled="Paro.Indice === null || Paro.Cantidad === null || Paro.Cantidad === undefined">
+                    Agregar
+                </md-button>
+            </div>
         </md-dialog-actions>
     </form>
 </md-dialog>
