@@ -214,20 +214,22 @@
             <div layout="row" style="background-color: #FFF !important; padding-left: 2rem; padding-right: 2rem;" flex ng-show="DatosGenerales.IndiceProceso !== null">
                 <div layout="column" flex="60">
 
-                    <md-input-container class="md-block md-subhead md-input-has-value" flex style="padding: 0 !important; margin: 0.4rem !important;">
-                        <label>Turno</label>
-                        <md-radio-group ng-model="DatosIndicador.Turno" layout="row" flex>
-                            <md-radio-button class="md-primary" ng-repeat="turno in Turnos" ng-value="turno" aria-label="{{ turno }}" flex>{{ turno }}</md-radio-button>
-                        </md-radio-group>
-                    </md-input-container>
+                    <div layout="row" style="padding: 0 !important; margin: 0.4rem !important;" flex>
+                        <md-input-container class="md-block md-subhead md-input-has-value">
+                            <label>Turno</label>
+                            <md-radio-group ng-model="DatosIndicador.Turno" layout="row">
+                                <md-radio-button class="md-primary" ng-repeat="turno in Turnos" ng-value="turno" aria-label="{{ turno }}" flex>{{ turno }}</md-radio-button>
+                            </md-radio-group>
+                        </md-input-container>
+                    </div>
 
-                    <div layout="row" flex>
-                        <md-input-container class="md-block md-subhead" ng-disabled="DatosGenerales.IndiceIndicador === null" flex style="padding: 0 !important; margin-right: 0.4rem !important;margin-left: 0.4rem !important;margin-top: 1rem !important;">
+                    <div layout="row"  style="padding: 0 !important; margin-right: 0.4rem !important;margin-left: 0.4rem !important;margin-top: 1rem !important;" flex>
+                        <md-input-container class="md-block md-subhead" ng-disabled="DatosGenerales.IndiceIndicador === null">
                             <label>Ciclo</label>
                             <input ng-model="DatosIndicador.Ciclo" solo-numerico valor-valido-mayor-cero>
                         </md-input-container>
 
-                        <md-input-container class="md-block md-subhead" ng-disabled="DatosGenerales.IndiceIndicador === null" flex style="padding: 0 !important;  margin-right: 0.4rem !important;margin-left: 0.4rem !important;margin-top: 1rem !important;">
+                        <md-input-container class="md-block md-subhead" ng-disabled="DatosGenerales.IndiceIndicador === null">
                             <label>Piezas</label>
                             <input ng-model="DatosIndicador.Piezas" solo-numerico valor-valido-mayor-cero>
                         </md-input-container>
