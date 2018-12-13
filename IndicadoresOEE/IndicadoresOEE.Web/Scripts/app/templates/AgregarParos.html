@@ -2,7 +2,8 @@
     <form ng-cloak>
         <md-dialog-content style="background-color: #FFF !important; padding-left: 2rem; padding-right: 2rem; min-width: 40rem!important;">
             <div class="md-dialog-content">
-                <h2 class="md-title"><strong>Agregar paro</strong></h2>
+                <h2 class="md-title"><strong>Agregar paro [{{HabilitarFolio}}]</strong></h2>
+
                 <br />
 
                 <div layout="row" layour-align="center center" flex>
@@ -11,10 +12,11 @@
                             <label>Nivel 1</label>
                             <md-select id="paroSeleccionable1"
                                        name="paroSeleccionable"
-                                       md-on-open="ObtenerParos()"
-                                       md-on-close="ResetearTerminoBusqueda()"
-                                       ng-model="ParoElegido.IndiceNivelI"
                                        md-container-class="selectdemoSelectHeader"
+                                       ng-model="IndiceParo.Nivel01"
+                                       ng-change="ParoEscogido(IndiceParo.Nivel01, 1)"
+                                       md-on-open="ObtenerParos(1)"
+                                       md-on-close="ResetearTerminoBusqueda()"
                                        md-autofocus
                                        ng-cloak>
                                 <md-select-header class="demo-select-header">
@@ -24,7 +26,9 @@
                                            class="demo-header-searchbox md-text">
                                 </md-select-header>
                                 <md-optgroup label="Centros disponibles">
-                                    <md-option ng-repeat="Paro in ListaParos | filter:TerminoBusqueda" ng-value="Paro.Indice">
+                                    <md-option ng-repeat="Paro in ListaParosPrimerNivel | filter:TerminoBusqueda"
+                                               ng-value="Paro.Indice"
+                                               ng-disabled="DesactivarSiEstaEnUso(Paro.Indice)">
                                         {{ Paro.Nombre | uppercase }}
                                     </md-option>
                                 </md-optgroup>
@@ -32,16 +36,17 @@
                         </md-input-container>
                     </div>
                 </div>
-                <div layout="row" layour-align="center center" ng-show="ParoElegido.IndiceNivelI !== null" flex>
+                <div layout="row" layour-align="center center" ng-show="IndiceParo.Nivel01 && ListaParosSegundoNivel" flex>
                     <div layout="column" flex="100">
                         <md-input-container class="md-block md-subhead">
                             <label>Nivel 2</label>
                             <md-select id="paroSeleccionable2"
                                        name="paroSeleccionable"
-                                       md-on-open="ObtenerParos()"
-                                       md-on-close="ResetearTerminoBusqueda()"
-                                       ng-model="ParoElegido.IndiceNivelII"
                                        md-container-class="selectdemoSelectHeader"
+                                       ng-model="IndiceParo.Nivel02"
+                                       ng-change="ParoEscogido(IndiceParo.Nivel02, 2)"
+                                       md-on-open="ObtenerParos(2)"
+                                       md-on-close="ResetearTerminoBusqueda()"
                                        ng-cloak>
                                 <md-select-header class="demo-select-header">
                                     <input ng-model="TerminoBusqueda"
@@ -50,7 +55,9 @@
                                            class="demo-header-searchbox md-text">
                                 </md-select-header>
                                 <md-optgroup label="Centros disponibles">
-                                    <md-option ng-repeat="Paro in ListaParos | filter:TerminoBusqueda" ng-value="Paro.Indice">
+                                    <md-option ng-repeat="Paro in ListaParosSegundoNivel | filter:TerminoBusqueda"
+                                               ng-value="Paro.Indice"
+                                               ng-disabled="DesactivarSiEstaEnUso(Paro.Indice)">
                                         {{ Paro.Nombre | uppercase }}
                                     </md-option>
                                 </md-optgroup>
@@ -59,16 +66,17 @@
                     </div>
                 </div>
 
-                <div layout="row" layour-align="center center" ng-show="ParoElegido.IndiceNivelII !== null" flex>
+                <div layout="row" layour-align="center center" ng-show="IndiceParo.Nivel02 && ListaParosTercerNivel" flex>
                     <div layout="column" flex="100">
                         <md-input-container class="md-block md-subhead">
                             <label>Nivel 3</label>
                             <md-select id="paroSeleccionable3"
                                        name="paroSeleccionable"
-                                       md-on-open="ObtenerParos()"
-                                       md-on-close="ResetearTerminoBusqueda()"
-                                       ng-model="ParoElegido.IndiceNivelIII"
                                        md-container-class="selectdemoSelectHeader"
+                                       ng-model="IndiceParo.Nivel03"
+                                       ng-change="ParoEscogido(IndiceParo.Nivel03, 3)"
+                                       md-on-open="ObtenerParos(3)"
+                                       md-on-close="ResetearTerminoBusqueda()"
                                        ng-cloak>
                                 <md-select-header class="demo-select-header">
                                     <input ng-model="TerminoBusqueda"
@@ -77,7 +85,9 @@
                                            class="demo-header-searchbox md-text">
                                 </md-select-header>
                                 <md-optgroup label="Centros disponibles">
-                                    <md-option ng-repeat="Paro in ListaParos | filter:TerminoBusqueda" ng-value="Paro.Indice">
+                                    <md-option ng-repeat="Paro in ListaParosTercerNivel | filter:TerminoBusqueda"
+                                               ng-value="Paro.Indice"
+                                               ng-disabled="DesactivarSiEstaEnUso(Paro.Indice)">
                                         {{ Paro.Nombre | uppercase }}
                                     </md-option>
                                 </md-optgroup>
@@ -86,16 +96,17 @@
                     </div>
                 </div>
 
-                <div layout="row" layour-align="center center" flex ng-show="ParoElegido.IndiceNivelIII !== null">
+                <div layout="row" layour-align="center center" ng-show="IndiceParo.Nivel03 && ListaParosCuartoNivel" flex>
                     <div layout="column" flex="100">
                         <md-input-container class="md-block md-subhead">
                             <label>Nivel 4</label>
                             <md-select id="paroSeleccionable4"
                                        name="paroSeleccionable"
-                                       md-on-open="ObtenerParos()"
-                                       md-on-close="ResetearTerminoBusqueda()"
-                                       ng-model="ParoElegido.IndiceNivelIV"
                                        md-container-class="selectdemoSelectHeader"
+                                       ng-model="IndiceParo.Nivel04"
+                                       ng-change="ParoEscogido(IndiceParo.Nivel04, 4)"
+                                       md-on-open="ObtenerParos(4)"
+                                       md-on-close="ResetearTerminoBusqueda()"
                                        ng-cloak>
                                 <md-select-header class="demo-select-header">
                                     <input ng-model="TerminoBusqueda"
@@ -104,7 +115,9 @@
                                            class="demo-header-searchbox md-text">
                                 </md-select-header>
                                 <md-optgroup label="Centros disponibles">
-                                    <md-option ng-repeat="Paro in ListaParos | filter:TerminoBusqueda" ng-value="Paro.Indice">
+                                    <md-option ng-repeat="Paro in ListaParosCuartoNivel | filter:TerminoBusqueda"
+                                               ng-value="Paro.Indice"
+                                               ng-disabled="DesactivarSiEstaEnUso(Paro.Indice)">
                                         {{ Paro.Nombre | uppercase }}
                                     </md-option>
                                 </md-optgroup>
@@ -112,16 +125,17 @@
                         </md-input-container>
                     </div>
                 </div>
-                <div layout="row" layour-align="center center" flex ng-show="ParoElegido.IndiceNivelIV !== null">
+                <div layout="row" layour-align="center center" ng-show="IndiceParo.Nivel04 && ListaParosQuintoNivel" flex>
                     <div layout="column" flex="100">
                         <md-input-container class="md-block md-subhead">
                             <label>Nivel 5</label>
                             <md-select id="paroSeleccionable5"
                                        name="paroSeleccionable"
-                                       md-on-open="ObtenerParos()"
-                                       md-on-close="ResetearTerminoBusqueda()"
-                                       ng-model="ParoElegido.IndiceNivelV"
                                        md-container-class="selectdemoSelectHeader"
+                                       ng-model="IndiceParo.Nivel05"
+                                       ng-change="ParoEscogido(IndiceParo.Nivel05, 5)"
+                                       md-on-open="ObtenerParos(5)"
+                                       md-on-close="ResetearTerminoBusqueda()"
                                        ng-cloak>
                                 <md-select-header class="demo-select-header">
                                     <input ng-model="TerminoBusqueda"
@@ -130,7 +144,9 @@
                                            class="demo-header-searchbox md-text">
                                 </md-select-header>
                                 <md-optgroup label="Centros disponibles">
-                                    <md-option ng-repeat="Paro in ListaParos | filter:TerminoBusqueda" ng-value="Paro.Indice">
+                                    <md-option ng-repeat="Paro in ListaParosQuintoNivel | filter:TerminoBusqueda"
+                                               ng-value="Paro.Indice"
+                                               ng-disabled="DesactivarSiEstaEnUso(Paro.Indice)">
                                         {{ Paro.Nombre | uppercase }}
                                     </md-option>
                                 </md-optgroup>
@@ -138,20 +154,20 @@
                         </md-input-container>
                     </div>
                 </div>
-                <div layout="row" layour-align="center center" flex>
+                <div layout="row" layour-align="center center" ng-show="EsUltimoNivel" flex>
                     <div layout="column" flex>
-                        <md-input-container class="md-block md-subhead" ng-disabled="Paro.Indice === null">
+                        <md-input-container class="md-block md-subhead" ng-disabled="">
                             <label>Cantidad</label>
                             <input ng-model="Paro.Cantidad" solo-numerico valor-valido-mayor-cero>
                         </md-input-container>
                     </div>
 
-                    <div flex="5" hide-xs hide-sm>
+                    <div flex="5" ng-show="HabilitarFolio" hide-xs hide-sm>
                         <!-- Spacer //-->
                     </div>
 
-                    <div layout="column" flex>
-                        <md-input-container class="md-block md-subhead" ng-disabled="Paro.Indice === null">
+                    <div layout="column" ng-show="HabilitarFolio" flex>
+                        <md-input-container class="md-block md-subhead">
                             <label>Folio</label>
                             <input ng-model="Paro.Folio">
                         </md-input-container>
@@ -161,7 +177,10 @@
         </md-dialog-content>
 
         <md-dialog-actions layout="row">
-            <md-button ng-click="AgregarParo()" class="md-primary" ng-disabled="Paro.Indice === null || Paro.Cantidad === null || Paro.Cantidad === undefined">
+            <md-button ng-click="Inicializar()" layout-align="start">
+                Inicializar
+            </md-button>
+            <md-button ng-click="AgregarParo()"  layout-align="end" class="md-primary" ng-disabled="Paro.Indice === null || Paro.Cantidad === null || Paro.Cantidad === undefined">
                 Agregar
             </md-button>
         </md-dialog-actions>

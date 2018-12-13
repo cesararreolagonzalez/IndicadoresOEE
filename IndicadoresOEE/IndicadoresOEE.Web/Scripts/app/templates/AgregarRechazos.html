@@ -24,7 +24,9 @@
                                            class="demo-header-searchbox md-text">
                                 </md-select-header>
                                 <md-optgroup label="Rechazos disponibles">
-                                    <md-option ng-repeat="Rechazo in ListaRechazos | filter:TerminoBusqueda" ng-value="Rechazo.Indice" ng-disabled="DesactivarSiEstaEnUso(Rechazo.Indice)">
+                                    <md-option ng-repeat="Rechazo in ListaRechazos | filter:TerminoBusqueda" 
+                                               ng-value="Rechazo.Indice" 
+                                               ng-disabled="DesactivarSiEstaEnUso(Rechazo.Indice)">
                                         {{ Rechazo.Nombre | uppercase }}
                                     </md-option>
                                 </md-optgroup>

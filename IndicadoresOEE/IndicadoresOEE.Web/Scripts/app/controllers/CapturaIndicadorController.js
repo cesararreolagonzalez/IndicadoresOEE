@@ -15,6 +15,11 @@
         CentroService, DepartamentoService, LineaService,
         ProcesoService, VelocidadService, IndicadorService, SAPService, UtilFactory)
     {
+        $scope.ListaCentros = null;
+        $scope.ListaDepartamentos = null;
+        $scope.ListaLineas = null;
+        $scope.ListaProcesos = null;
+
         $scope.ListaRechazosElegidos = [];
         $scope.ListaParosElegidos = [];
 
@@ -24,25 +29,38 @@
 
         $scope.agregarParo = function (ev) {
             $mdDialog.show({
-                locals: { IndiceProceso: $scope.DatosGenerales.IndiceProceso},
-                controller: ['$scope', '$element', '$mdDialog', 'ParoService', 'IndiceProceso',
-                    function ($scope, $element, $mdDialog, ParoService, IndiceProceso)
+                locals: { IndiceProceso: $scope.DatosGenerales.IndiceProceso, ListaIndicesParosEnUso: $scope.ListaIndicesParosEnUso },
+                controller: ['$scope', '$element', '$mdDialog', 'ParoService', 'IndiceProceso', 'ListaIndicesParosEnUso',
+                    function ($scope, $element, $mdDialog, ParoService, IndiceProceso, ListaIndicesParosEnUso)
                     {
-                        $scope.TerminoBusqueda = '';
-                        $scope.ParoElegido = { 'IndiceNivelI': null, 'IndiceNivelII': null, 'IndiceNivelIII': null, 'IndiceNivelIV': null, 'IndiceNivelV': null };
-                        $scope.Paro = { 'Indice': null, 'Nombre': null, 'Cantidad': null, 'Folio': null };
-
                         $element.find('input').on('keydown', function (ev) {
                             ev.stopPropagation();
                         });
 
-                        $scope.ResetearTerminoBusqueda = function () {
-                            $scope.TerminoBusqueda = '';
+                        $scope.Paro = { 'Indice': null, 'Nombre': null, 'Cantidad': null, 'Folio': null };
+                        $scope.TerminoBusqueda = '';
+                        $scope.IndiceParoActual = 0;
+                        $scope.HabilitarFolio = false;
+
+                        $scope.ListaParosPrimerNivel = null;
+                        $scope.ListaParosSegundoNivel = null;
+                        $scope.ListaParosTercerNivel = null;
+                        $scope.ListaParosCuartoNivel = null;
+                        $scope.ListaParosQuintoNivel = null;
+
+                        $scope.IndiceParo = {
+                            'Nivel01': null,
+                            'Nivel02': null,
+                            'Nivel03': null,
+                            'Nivel04': null,
+                            'Nivel05': null
                         };
                         
-                        $scope.ObtenerParos = function ()
+                        $scope.EsUltimoNivel = false;
+                        
+                        $scope.ObtenerParos = function (Nivel)
                         {
-                            return ParoService.ObtenerParos(IndiceProceso)
+                            return ParoService.ObtenerParosPorGerarquia1($scope.IndiceParoActual, IndiceProceso)
                                 .then(function (response)
                                 {
                                     var Estado = response.data.Estado;
@@ -51,31 +69,176 @@
                                         $log.info('Se produjo el siguiente error en el método ObtenerCentros = ' + Mensaje);
                                     }
                                     else {
-                                        $scope.ListaParos = response.data.ListaParos;
-                                        $scope.Paro.Indice = $scope.ListaParos.length === 1 ? $scope.ListaParos[0].Indice : null;
+                                        var ListaParos = response.data.ListaParos;
+
+                                        if (ListaParos !== null && ListaParos.length > 0)
+                                        {
+                                            switch (Nivel)
+                                            {
+                                                case 1:
+                                                    $scope.HabilitarFolio = false;
+                                                    $scope.ListaParosPrimerNivel = ListaParos;
+                                                    $scope.ListaParosSegundoNivel = null;
+                                                    $scope.ListaParosTercerNivel = null;
+                                                    $scope.ListaParosCuartoNivel = null;
+                                                    $scope.ListaParosQuintoNivel = null;
+                                                    $scope.IndiceParo.Nivel01 = null;
+                                                    $scope.IndiceParo.Nivel02 = null;
+                                                    $scope.IndiceParo.Nivel03 = null;
+                                                    $scope.IndiceParo.Nivel04 = null;
+                                                    $scope.IndiceParo.Nivel05 = null;
+                                                    break;
+                                                case 2:
+                                                    $scope.ListaParosSegundoNivel = ListaParos;
+                                                    $scope.ListaParosTercerNivel = null;
+                                                    $scope.ListaParosCuartoNivel = null;
+                                                    $scope.ListaParosQuintoNivel = null;
+                                                    $scope.IndiceParo.Nivel02 = null;
+                                                    $scope.IndiceParo.Nivel03 = null;
+                                                    $scope.IndiceParo.Nivel04 = null;
+                                                    $scope.IndiceParo.Nivel05 = null;
+                                                    break;
+                                                case 3:
+                                                    $scope.ListaParosTercerNivel = ListaParos;
+                                                    $scope.ListaParosCuartoNivel = null;
+                                                    $scope.ListaParosQuintoNivel = null;
+                                                    $scope.IndiceParo.Nivel03 = null;
+                                                    $scope.IndiceParo.Nivel04 = null;
+                                                    $scope.IndiceParo.Nivel05 = null;
+                                                    break;
+                                                case 4:
+                                                    $scope.ListaParosCuartoNivel = ListaParos;
+                                                    $scope.ListaParosQuintoNivel = null;
+                                                    $scope.IndiceParo.Nivel04 = null;
+                                                    $scope.IndiceParo.Nivel05 = null;
+                                                    break;
+                                                case 5:
+                                                    $scope.ListaParosQuintoNivel = ListaParos;
+                                                    $scope.IndiceParo.Nivel05 = null;
+                                                    break;
+                                            }
+
+                                            $scope.EsUltimoNivel = false;
+                                            $scope.Indice = null;
+                                            $scope.Nombre = null;
+                                            $scope.Cantidad = null;
+                                            $scope.Folio = null;
+                                        }
+                                        else {
+                                            $scope.EsUltimoNivel = true;
+                                            $scope.Indice = $scope.IndiceParoActual;
+                                        }
+
                                     }
                                 })
                                 .catch(function (response) {
-                                    $log.error('Excepcion: ', response);
+                                    $log.error('Excepcion: ', response.data);
                                 })
                                 .finally(function () {
-                                    $log.info('Método ObtenerCentros() finalizado');
+                                    $log.info('Método ObtenerParos() finalizado');
                                 });
+                        };
+
+                        $scope.AveriaParoPadre = function () {
+
+                            // Filtrar por indice seleccionado del paro de nivel 1
+                            var Existe = Enumerable.From($scope.ListaParosPrimerNivel).Any(function (item) { return item.Nombre.toLowerCase() === 'averías'; });
+
+                            $log.info(Existe);
+                            return Existe;
+                            //var Nombre = Enumerable.From($scope.ListaParosPrimerNivel)
+                            //    .Where(function (col) { return EsAveria(col.Nombre); })
+                            //    .OrderBy(function (col) { return col.Indice; })
+                            //    .Select(function (col) { return col.Nombre; })
+                            //    .FirstOrDefault();
+
+                            //return Nombre !== undefined;
+
+                        };
+
+                        function EsAveria(Nombre) {
+                            return Nombre.toLowerCase() === 'averías' || Nombre.toLowerCase() === 'averias' || Nombre.toLowerCase() === 'avería' || Nombre.toLowerCase() === 'averia';
+                        }
+                        
+                        $scope.ParoEscogido = function (IndiceParo, Nivel)
+                        {
+                            $scope.IndiceParoActual = IndiceParo;
+                            var SiguienteNivel = parseInt(Nivel) + 1;
+
+                            var ListaParos = null;
+                            switch (Nivel) {
+                                case 1:
+                                    ListaParos = $scope.ListaParosPrimerNivel;
+                                    $scope.HabilitarFolio = $scope.AveriaParoPadre();
+                                    console.log($scope.HabilitarFolio);
+                                    break;
+                                case 2:
+                                    ListaParos = $scope.ListaParosSegundoNivel;
+                                    break;
+                                case 3:
+                                    ListaParos = $scope.ListaParosTercerNivel;
+                                    break;
+                                case 4:
+                                    ListaParos = $scope.ListaParosCuartoNivel;
+                                    break;
+                                case 5:
+                                    ListaParos = $scope.ListaParosQuintoNivel;
+                                    break;
+                                default:
+                                    ListaParos = [];
+                            }
+
+                            $scope.Nombre = Enumerable.From(ListaParos)
+                                                .Where(function (col) { return col.Indice === IndiceParo; })
+                                                .OrderBy(function (col) { return col.Indice; })
+                                                .Select(function (col) { return col.Nombre; })
+                                                .FirstOrDefault();
+
+                            $scope.ObtenerParos(SiguienteNivel);
                         };
 
                         $scope.AgregarParo = function () {
                             var Paro = null;
 
-                            $scope.Paro.Nombre = Enumerable.From($scope.ListaParos)
-                                .Where(function (x) { return x.Indice === $scope.Paro.Indice; })
-                                .OrderBy(function (x) { return x.Indice; })
-                                .Select(function (x) { return x.Nombre; })
-                                .FirstOrDefault();
-
-                            $scope.Paro.Cantidad = parseInt($scope.Rechazo.Cantidad);
+                            $scope.Cantidad = parseInt($scope.Cantidad);
                             Paro = angular.copy($scope.Paro);
                             $mdDialog.hide(Paro);
                         };
+
+                        $scope.ResetearTerminoBusqueda = function () {
+                            $scope.TerminoBusqueda = '';
+                        };
+
+                        $scope.DesactivarSiEstaEnUso = function (IndiceParo) {
+                            var Existe = Enumerable.From(ListaIndicesParosEnUso).Any(function (item) { return item === IndiceParo; });
+
+                            return Existe;
+                        };
+
+                        $scope.Inicializar = function () {
+                            $scope.TerminoBusqueda = '';
+                            $scope.EsUltimoNivel = false;
+                            $scope.IndiceParoActual = 0;
+                            $scope.HabilitarFolio = false;
+
+                            $scope.ListaParosPrimerNivel = null;
+                            $scope.ListaParosSegundoNivel = null;
+                            $scope.ListaParosTercerNivel = null;
+                            $scope.ListaParosCuartoNivel = null;
+                            $scope.ListaParosQuintoNivel = null;
+                            
+                            $scope.IndiceParo.Nivel01 = null;
+                            $scope.IndiceParo.Nivel02 = null;
+                            $scope.IndiceParo.Nivel03 = null;
+                            $scope.IndiceParo.Nivel04 = null;
+                            $scope.IndiceParo.Nivel05 = null;
+                            
+                            $scope.Indice = null;
+                            $scope.Nombre = null;
+                            $scope.Cantidad = null;
+                            $scope.Folio = null;
+                        };
+
                 }],
                 templateUrl: '../Scripts/app/templates/AgregarParos.html',
                 parent: angular.element(document.body),
@@ -92,6 +255,7 @@
             })
                 .then(function (Paro) {
                     $scope.ListaParosElegidos.push(Paro);
+                    $scope.ListaIndicesParosEnUso.push(Indice);
                 }, function () {
                 })
                 .finally(function () {
@@ -140,7 +304,7 @@
                                 })
                                 .catch(function (response)
                                 {
-                                    $log.error('Excepcion: ', response);
+                                    $log.error('Excepcion: ', response.data);
                                 })
                                 .finally(function ()
                                 {
@@ -241,13 +405,10 @@
                     else {
                         $scope.ListaCentros = response.data.ListaCentros;
                         $scope.DatosGenerales.IndiceCentro = $scope.ListaCentros.length === 1 ? $scope.ListaCentros[0].Indice : null;
-
-                        if ($scope.DatosGenerales.IndiceCentro !== null)
-                            $scope.ObtenerDepartamentos();
                     }
                 })
                 .catch(function (response) {
-                    $log.error('Excepcion: ', response);
+                    $log.error('Excepcion: ', response.data);
                 })
                 .finally(function () {
                     $log.info('Método ObtenerCentros() finalizado');
@@ -256,6 +417,9 @@
 
         $scope.ObtenerDepartamentos = function ()
         {
+            if ($scope.ListaDepartamentos)
+                return;
+
             return DepartamentoService.ObtenerDepartamentosPorCentro($scope.DatosGenerales.IndiceCentro)
                 .then(function (response)
                 {
@@ -267,22 +431,19 @@
                     else {
                         $scope.ListaDepartamentos = response.data.ListaDepartamentos;
                         $scope.DatosGenerales.IndiceDepartamento = $scope.ListaDepartamentos.length === 1 ? $scope.ListaDepartamentos[0].Indice : null;
-
-                        if ($scope.DatosGenerales.IndiceCentros !== null)
-                            $scope.ObtenerLineas();
                     }
                 })
                 .catch(function (response) {
-                    $log.error('Excepcion: ', response);
+                    $log.error('Excepcion: ', response.data);
                 })
                 .finally(function () {
-                    $log.info('Método ObtenerCentros() finalizado');
+                    $log.info('Método ObtenerDepartamentos() finalizado');
                 });
         };
 
         $scope.ObtenerLineas = function ()
         {
-            if ($scope.DatosGenerales.IndiceDepartamento === null || $scope.DatosGenerales.IndiceDepartamento === '')
+            if ($scope.ListaLineas)
                 return;
 
             return LineaService.ObtenerLineasPorDepartamento($scope.DatosGenerales.IndiceDepartamento)
@@ -295,9 +456,6 @@
                     else {
                         $scope.ListaLineas = response.data.ListaLineas;
                         $scope.DatosGenerales.IndiceLinea = $scope.ListaLineas.length === 1 ? $scope.ListaLineas[0].Indice : null;
-
-                        if ($scope.DatosGenerales.IndiceCentros !== null)
-                            $scope.ObtenerProcesos();
                     }
                 },
                 function (response) {
@@ -314,7 +472,7 @@
 
         $scope.ObtenerProcesos = function ()
         {
-            if ($scope.DatosGenerales.IndiceLinea === null || $scope.DatosGenerales.IndiceLinea === '')
+            if ($scope.ListaProcesos)
                 return;
 
             return ProcesoService.ObtenerProcesosPorLinea($scope.DatosGenerales.IndiceLinea)
@@ -327,7 +485,6 @@
                     else {
                         $scope.ListaProcesos = response.data.ListaProcesos;
                         $scope.DatosGenerales.IndiceProceso = $scope.ListaProcesos.length === 1 ? $scope.ListaProcesos[0].Indice : null;
-                        
                     }
                 },
                 function (response) {
@@ -345,9 +502,6 @@
         // Al obtener el Proceso
         function ObtenerIndicadorPorProceso()
         {
-            if ($scope.DatosGenerales.IndiceProceso === null || $scope.DatosGenerales.IndiceProceso === '')
-                return;
-
             return IndicadorService.ObtenerIndicadorPorProceso($scope.DatosGenerales.IndiceProceso)
                 .then(function (response) {
                     var Estado = response.data.Estado;
@@ -358,7 +512,6 @@
                     else {
                         var Indicador = response.data.Indicador;
                         var Fecha = moment().year(Indicador.Año).month(Indicador.Mes).date(Indicador.Dia).hour(Indicador.Hora).minute(Indicador.Minuto).second(0).toDate();
-                        console.log('Fecha = ' + Fecha);
 
                         $scope.DatosGenerales.Orden = Indicador.Orden;
                         $scope.DatosGenerales.Lote = Indicador.Lote;
@@ -486,9 +639,10 @@
             $log.info('Método ObtenerMinutosParos() finalizado');
         }
         
-        $scope.$watch('DatosGenerales.IndiceCentro', function (newValue, oldValue) {
-            if (newValue !== undefined && newValue !== null && newValue !== '') {
-
+        $scope.$watch('DatosGenerales.IndiceCentro', function (newValue, oldValue)
+        {
+            if (newValue)
+            {
                 $scope.DatosGenerales.IndiceDepartamento = null;
                 $scope.DatosGenerales.IndiceLinea = null;
                 $scope.DatosGenerales.IndiceProceso = null;
@@ -499,14 +653,19 @@
                 $scope.DatosGenerales.Material = null;
                 $scope.DatosGenerales.Descripcion = null;
                 $scope.ResetearDatosIndicador();
-                
+
+                $scope.ListaDepartamentos = null;
+                $scope.ListaLineas = null;
+                $scope.ListaProcesos = null;
+
                 $scope.ObtenerDepartamentos();
             }
         });
 
-        $scope.$watch('DatosGenerales.IndiceDepartamento', function (newValue, oldValue) {
-            if (newValue !== undefined && newValue !== null && newValue !== '') {
-                
+        $scope.$watch('DatosGenerales.IndiceDepartamento', function (newValue, oldValue)
+        {
+            if (newValue)
+            {
                 $scope.DatosGenerales.IndiceLinea = null;
                 $scope.DatosGenerales.IndiceProceso = null;
                 $scope.DatosGenerales.Orden = null;
@@ -516,14 +675,18 @@
                 $scope.DatosGenerales.Material = null;
                 $scope.DatosGenerales.Descripcion = null;
                 $scope.ResetearDatosIndicador();
+                
+                $scope.ListaLineas = null;
+                $scope.ListaProcesos = null;
 
                 $scope.ObtenerLineas();
             }
         });
 
-        $scope.$watch('DatosGenerales.IndiceLinea', function (newValue, oldValue) {
-            if (newValue !== undefined && newValue !== null && newValue !== '') {
-                
+        $scope.$watch('DatosGenerales.IndiceLinea', function (newValue, oldValue)
+        {
+            if (newValue)
+            {
                 $scope.DatosGenerales.IndiceProceso = null;
                 $scope.DatosGenerales.Orden = null;
                 $scope.DatosGenerales.Lote = null;
@@ -533,13 +696,16 @@
                 $scope.DatosGenerales.Descripcion = null;
                 $scope.ResetearDatosIndicador();
 
+                $scope.ListaProcesos = null;
+
                 $scope.ObtenerProcesos();
             }
         });
 
-        $scope.$watch('DatosGenerales.IndiceProceso', function (newValue, oldValue) {
-            if (newValue !== undefined && newValue !== null && newValue !== '') {
-                
+        $scope.$watch('DatosGenerales.IndiceProceso', function (newValue, oldValue)
+        {
+            if (newValue)
+            {
                 $scope.DatosGenerales.Orden = null;
                 $scope.DatosGenerales.Lote = null;
                 $scope.DatosGenerales.IndiceVelocidad = null;
@@ -547,14 +713,15 @@
                 $scope.DatosGenerales.Material = null;
                 $scope.DatosGenerales.Descripcion = null;
                 $scope.ResetearDatosIndicador();
-
+                
                 ObtenerIndicadorPorProceso();
             }
         });
 
-        $scope.$watch('DatosGenerales.Material', function (newValue, oldValue) {
-            if (newValue !== undefined && newValue !== null && newValue !== '') {
-                
+        $scope.$watch('DatosGenerales.Material', function (newValue, oldValue)
+        {
+            if (newValue)
+            {
                 $scope.DatosGenerales.IndiceVelocidad = null;
                 $scope.DatosGenerales.Velocidad = null;
 
