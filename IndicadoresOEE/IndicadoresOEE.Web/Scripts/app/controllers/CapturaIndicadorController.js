@@ -15,6 +15,50 @@
         CentroService, DepartamentoService, LineaService,
         ProcesoService, VelocidadService, IndicadorService, SAPService, UtilFactory)
     {
+        $element.find('input').on('keydown', function (ev) {
+            ev.stopPropagation();
+        });
+
+        var FechaHoy = new Date();
+
+        $scope.DatosGenerales = {
+            IndiceCentro: null,
+            IndiceDepartamento: null,
+            IndiceLinea: null,
+            IndiceProceso: null,
+            IndiceVelocidad: null,
+            Orden: null,
+            Lote: null,
+            Material: null,
+            Descripcion: null,
+            Velocidad: null
+        };
+
+        $scope.DatosIndicador = {
+            Turno: null,
+            Ciclo: 0,
+            Piezas: 0,
+            Fecha: new Date(FechaHoy.getFullYear(), FechaHoy.getMonth(), FechaHoy.getDate(), 0, 0, 0),
+            Hora: '0',
+            Minuto: '0'
+        };
+
+        $scope.Util = {
+            FechaLimite: new Date(FechaHoy.getFullYear(), FechaHoy.getMonth(), FechaHoy.getDate(), 0, 0, 0),
+            CalculoHoras: null,
+            CalculoHorasParo: null,
+            MensajeCalculoHoras: null,
+            MensajeCalculoHorasParo: null,
+            SumaParos: 0,
+            SumaPiezasRechazadas: 0,
+            ParoSinCausaAsignada: 0,
+            EstadoHorasParo: false
+        };
+
+        $scope.Turnos = ['A', 'B', 'C', 'D'];
+
+        $scope.TerminoBusqueda = '';
+
         $scope.ListaCentros = null;
         $scope.ListaDepartamentos = null;
         $scope.ListaLineas = null;
@@ -262,6 +306,9 @@
                 .then(function (Paro) {
                     $scope.ListaParosElegidos.push(Paro);
                     $scope.ListaIndicesParosEnUso.push(Paro.Indice);
+                    $scope.Util.SumaParos += Paro.Cantidad;
+                    var resta = $scope.Util.ParoSinCausaAsignada - Paro.Cantidad;
+                    $scope.Util.ParoSinCausaAsignada = resta >= 0 ? resta : 0;
                 }, function () {
                 })
                 .finally(function () {
@@ -358,51 +405,13 @@
                 .then(function (Rechazo) {
                     $scope.ListaRechazosElegidos.push(Rechazo);
                     $scope.ListaIndicesRechazosEnUso.push(Rechazo.Indice);
+                    $scope.Util.SumaPiezasRechazadas += Rechazo.Cantidad;
                 }, function () {
             })
             .finally(function () {
             });
         };
 
-        $scope.Turnos = ['A', 'B', 'C', 'D'];
-
-        $element.find('input').on('keydown', function (ev) {
-            ev.stopPropagation();
-        });
-
-        $scope.TerminoBusqueda = '';
-
-        var FechaHoy = new Date();
-        
-        $scope.DatosGenerales = {
-            IndiceCentro: null,
-            IndiceDepartamento: null,
-            IndiceLinea: null,
-            IndiceProceso: null,
-            IndiceVelocidad: null,
-            Orden: null,
-            Lote: null,
-            Material: null,
-            Descripcion: null,
-            Velocidad: null
-        };
-
-        $scope.DatosIndicador = {
-            Turno: null,
-            Ciclo: null,
-            Piezas: null,
-            Fecha: null,
-            Hora: null,
-            Minuto: null
-        };
-        
-        $scope.Util = {
-            FechaLimite: new Date(FechaHoy.getFullYear(), FechaHoy.getMonth(), FechaHoy.getDate(), 0, 0, 0),
-            CalculoHoras: null,
-            CalculoHorasParo: null,
-            MensajeCalculoHoras: null,
-            MensajeCalculoHorasParo: null
-        };
         
         $scope.ObtenerCentros = function ()
         {
@@ -634,18 +643,24 @@
             $scope.Util.CalculoHorasParo = CalculoHorasParo;
             $scope.Util.CalculoHoras = CalculoHoras;
 
+            $scope.Util.ParoSinCausaAsignada = 0;
+
             if ($scope.Util.CalculoHoras < 1 && $scope.Util.CalculoHorasParo > 0) {
                 var Mensaje = $sce.trustAsHtml('Debes capturar lo equivalente a <b>' + CalculoHorasParo + '</b> minutos de paros');
                 $scope.Util.MensajeCalculoHoras = 'Atención';
                 $scope.Util.MensajeCalculoHorasParo = Mensaje;
+                $scope.Util.ParoSinCausaAsignada = CalculoHorasParo;
+                $scope.Util.EstadoHorasParo = true;
             }
             else if ($scope.Util.CalculoHoras >= 0 && $scope.Util.CalculoHoras <= 1.1 && $scope.Util.CalculoHorasParo <= 0) {
                 $scope.Util.MensajeCalculoHoras = 'Correcto';
                 $scope.Util.MensajeCalculoHorasParo = 'No hay minutos de paros por agregar';
+                $scope.Util.EstadoHorasParo = false;
             }
             else if ($scope.Util.CalculoHoras > 1.1) {
                 $scope.Util.MensajeCalculoHoras = 'Incorrecto';
                 $scope.Util.MensajeCalculoHorasParo = 'Corrige las piezas producidas';
+                $scope.Util.EstadoHorasParo = false;
             }
 
             $log.info('Método ObtenerMinutosParos() finalizado');
@@ -746,7 +761,7 @@
                 $scope.DatosIndicador.Fecha.setHours(newValue);
             }
         });
-
+        
         $scope.$watch('DatosIndicador.Minuto', function (newValue, oldValue) {
             if (newValue !== undefined && newValue !== null && newValue !== '') {
                 $scope.DatosIndicador.Fecha.setMinutes(newValue);
@@ -754,13 +769,15 @@
         });
 
         $scope.$watchGroup(['DatosIndicador.Piezas', 'DatosIndicador.Fecha', 'DatosIndicador.Ciclo'],
-            function (newValues, oldValues) {
+            function (newValues, oldValues)
+            {
                 if (newValues === oldValues)
                     return;
 
                 var Piezas = newValues[0];
                 var Fecha = newValues[1];
                 var Ciclo = newValues[2];
+
 
                 var EsValido = !UtilFactory.EsNuloOVacio(Piezas) && !UtilFactory.EsNuloOVacio(Fecha) && !UtilFactory.EsNuloOVacio(Ciclo);
                 
@@ -779,14 +796,21 @@
 
         $scope.ResetearDatosIndicador = function () {
             $scope.DatosIndicador.Turno = null;
-            $scope.DatosIndicador.Ciclo = null;
-            $scope.DatosIndicador.Piezas = null;
+            $scope.DatosIndicador.Ciclo = 0;
+            $scope.DatosIndicador.Piezas = 0;
             $scope.DatosIndicador.Fecha = null;
             $scope.DatosIndicador.Hora = null;
             $scope.DatosIndicador.Minuto = null;
             
             $scope.Util.MensajeCalculoHoras = null;
             $scope.Util.MensajeCalculoHorasParo = null;
+            $scope.Util.SumaParos = 0;
+            $scope.Util.SumaPiezasRechazadas = 0;
+            $scope.Util.ParoSinCausaAsignada = 0;
+            $scope.Util.CalculoHorasParo = null;
+            $scope.Util.CalculoHoras = null;
+
+            $scope.Util.EstadoHorasParo = false;
         };
 
         $scope.ValidarHora = function (Index) {
@@ -847,21 +871,25 @@
             };
         };
 
-        $scope.QuitarRechazo = function (IndiceRechazo)
+        $scope.QuitarRechazo = function (Rechazo)
         {
-            var IndiceLista = UtilFactory.FiltrarArreglo($scope.ListaIndicesRechazosEnUso, function (item) { return item === IndiceRechazo; });
+            var IndiceLista = UtilFactory.FiltrarArreglo($scope.ListaIndicesRechazosEnUso, function (item) { return item === Rechazo.Indice; });
 
             if (IndiceLista !== -1) {
                 $scope.ListaIndicesRechazosEnUso.splice(IndiceLista, 1);
+                $scope.Util.SumaPiezasRechazadas -= Rechazo.Cantidad;
             }
         };
 
-        $scope.QuitarParo = function (IndiceParo)
+        $scope.QuitarParo = function (Paro)
         {
-            var IndiceLista = UtilFactory.FiltrarArreglo($scope.ListaIndicesParosEnUso, function (item) { return item === IndiceParo; });
+            var IndiceLista = UtilFactory.FiltrarArreglo($scope.ListaIndicesParosEnUso, function (item) { return item === Paro.Indice; });
 
             if (IndiceLista !== -1) {
                 $scope.ListaIndicesParosEnUso.splice(IndiceLista, 1);
+                $scope.Util.SumaParos -= Paro.Cantidad;
+                var CantidadParoSinCausaAsignada = $scope.Util.ParoSinCausaAsignada + Paro.Cantidad;
+                $scope.Util.ParoSinCausaAsignada = CantidadParoSinCausaAsignada > $scope.Util.CalculoHorasParo ? $scope.Util.CalculoHorasParo : CantidadParoSinCausaAsignada; 
             }
         };
     }

@@ -223,9 +223,11 @@
     <Content Include="Content\Icons\check.svg" />
     <Content Include="Content\Icons\close.svg" />
     <Content Include="Content\Icons\edit.svg" />
+    <Content Include="Content\Icons\error.svg" />
     <Content Include="Content\Icons\navigate-before.svg" />
     <Content Include="Content\Icons\navigate-next.svg" />
     <Content Include="Content\Icons\quitar.svg" />
+    <Content Include="Content\Icons\report_problem.svg" />
     <Content Include="Content\Icons\time.svg" />
     <Content Include="Content\Images\indicadoresoee-logo.jpg" />
     <Content Include="favicon.ico" />
@@ -251,8 +253,10 @@
     <Content Include="Scripts\app\constants\AplicacionConstant.js" />
     <Content Include="Scripts\app\controllers\CapturaIndicadorController.js" />
     <Content Include="Scripts\app\controllers\CuentaController.js" />
+    <Content Include="Scripts\app\directives\FormatoNumericoDirective.js" />
+    <Content Include="Scripts\app\directives\LimiteCantidadDirective.js" />
     <Content Include="Scripts\app\directives\valorValidoMayorCeroDirective.js" />
-    <Content Include="Scripts\app\directives\SoloNumericoDirective.js" />
+    <Content Include="Scripts\app\directives\SoloDigitosDirective.js" />
     <Content Include="Scripts\app\factories\RechazoService.js" />
     <Content Include="Scripts\app\factories\ParoService.js" />
     <Content Include="Scripts\app\factories\UtilFactory.js" />

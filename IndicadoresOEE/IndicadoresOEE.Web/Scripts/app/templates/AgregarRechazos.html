@@ -1,11 +1,11 @@
 ﻿<md-dialog aria-label="Agregar rechazo">
     <form ng-cloak>
-        <md-dialog-content style="background-color: #FFF !important; padding-left: 1rem; padding-right: 1rem; min-width: 50rem!important; max-width: 50rem!important;">
+        <md-dialog-content style="background-color: #FFF !important; padding-left: 2rem; padding-right: 2rem; min-width: 40rem!important;">
             <div class="md-dialog-content">
                 <h2 class="md-title"><strong>Agregar rechazo</strong></h2>
                 <br />
-                <div layout="row">
-                    <div layout="column" flex>
+                <div  layout="row" layout-align="center center">
+                    <div layout="column" flex="100">
                         <md-input-container class="md-block md-subhead"
                                             flex>
                             <label>Rechazo</label>
@@ -33,15 +33,12 @@
                             </md-select>
                         </md-input-container>
                     </div>
-
-                    <div flex="10" hide-xs hide-sm>
-                        <!-- Spacer //-->
-                    </div>
-
-                    <div layout="column" flex>
-                        <md-input-container class="md-block md-subhead" ng-disabled="Rechazo.Indice === null" flex>
+                </div>
+                <div  layout="row" layout-align="center center">
+                    <div layout="column" flex="100">
+                        <md-input-container class="md-block md-subhead" ng-hide="Rechazo.Indice === null" flex>
                             <label>Cantidad</label>
-                            <input ng-model="Rechazo.Cantidad" solo-numerico valor-valido-mayor-cero>
+                            <input ng-model="Rechazo.Cantidad" solo-digitos formato-numerico valor-valido-mayor-cero>
                         </md-input-container>
                     </div>
                 </div>
@@ -54,7 +51,7 @@
                 </md-button>
             </div>
             <div layout="column" layout-align="end center" flex>
-                <md-button ng-click="AgregarRechazo()" class="md-primary" 
+                <md-button ng-click="AgregarRechazo()" class="md-primary"
                            ng-disabled="Rechazo.Indice === null || Rechazo.Cantidad === null || Rechazo.Cantidad === undefined">
                     Agregar
                 </md-button>

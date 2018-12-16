@@ -3,11 +3,11 @@
 
     angular
         .module('indicadoresoeeapp')
-        .directive('soloNumerico', soloNumericoDirective);
+        .directive('soloDigitos', soloDigitos);
     
     //soloNumericoDirective.$inject = ['scope', 'element', 'attrs', 'modelCtr'];
 
-    function soloNumericoDirective() {
+    function soloDigitos() {
         return {
             require: 'ngModel',
             link: function (scope, element, attrs, modelCtrl) {
