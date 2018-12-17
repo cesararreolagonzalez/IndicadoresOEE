@@ -7,19 +7,19 @@
 }
 
 .titulo-seccion {
-    color: rgb(97, 93, 94);
+    color: rgb(97, 93, 94) !important;
 }
 
 .mdb-text-success {
-    color: rgb(0, 200, 81);
+    color: rgb(0, 200, 81) !important;
 }
 
 .mdb-text-warning {
-    color: rgb(255, 187, 51);
+    color: rgb(255, 187, 51) !important;
 }
 
 .mdb-text-danger {
-    color: rgb(255, 53, 71);
+    color: rgb(255, 53, 71) !important;
 }
 
 .am-text-primary {

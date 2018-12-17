@@ -39,7 +39,7 @@
                     var valStr, displayValue;
 
                     if (typeof val === undefined || val === null) {
-                        return 0;
+                        return '';
                     }
 
                     valStr = val.toString();

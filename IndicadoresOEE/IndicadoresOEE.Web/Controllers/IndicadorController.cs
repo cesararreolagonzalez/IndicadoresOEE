@@ -22,6 +22,12 @@
         }
 
         // GET: Indicador
+        public ActionResult Captura2()
+        {
+            return View();
+        }
+
+        // GET: Indicador
         public ActionResult CapturaMasiva()
         {
             return View();
@@ -48,6 +54,31 @@
             try
             {
                 Indicador = indicadorBusiness.ObtenerIndicadorPorProceso(IndiceProceso);
+                Estado = true;
+            }
+            catch (Exception e)
+            {
+                Mensaje = e.Message;
+            }
+
+            object data = new { Estado, Mensaje, Indicador };
+            return Json(data, JsonRequestBehavior.AllowGet);
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet]
+        public ActionResult ValidarOrden(string Orden)
+        {
+            string Mensaje = string.Empty;
+            bool Estado = false;
+            IndicadorModel Indicador = new IndicadorModel();
+
+            try
+            {
+                Indicador = indicadorBusiness.ValidarOrden(Orden);
                 Estado = true;
             }
             catch (Exception e)

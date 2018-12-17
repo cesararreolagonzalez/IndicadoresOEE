@@ -36,8 +36,8 @@
 
         $scope.DatosIndicador = {
             Turno: null,
-            Ciclo: 0,
-            Piezas: 0,
+            Ciclo: null,
+            Piezas: null,
             Fecha: new Date(FechaHoy.getFullYear(), FechaHoy.getMonth(), FechaHoy.getDate(), 0, 0, 0),
             Hora: '0',
             Minuto: '0'
@@ -52,7 +52,8 @@
             SumaParos: 0,
             SumaPiezasRechazadas: 0,
             ParoSinCausaAsignada: 0,
-            EstadoHorasParo: false
+            EstadoHorasParo: false,
+            EstadoValidacionOrden: 0
         };
 
         $scope.Turnos = ['A', 'B', 'C', 'D'];
@@ -85,6 +86,7 @@
                         $scope.IndiceParoActual = 0;
                         $scope.HabilitarFolio = false;
                         $scope.EsUltimoNivel = false;
+                        $scope.ListaNombres = [];
 
                         $scope.ListaParosPrimerNivel = null;
                         $scope.ListaParosSegundoNivel = null;
@@ -232,20 +234,21 @@
                                     ListaParos = [];
                             }
 
-                            $scope.Paro.Nombre = Enumerable.From(ListaParos)
+                            var Nombre = Enumerable.From(ListaParos)
                                 .Where(function (col) { return col.Indice === IndiceParo; })
                                 .OrderBy(function (col) { return col.Indice; })
                                 .Select(function (col) { return col.Nombre; })
                                 .FirstOrDefault();
 
-
-
+                            $scope.ListaNombres.push(Nombre);
+                                
                             $scope.ObtenerParos(SiguienteNivel);
                         };
 
                         $scope.AgregarParo = function () {
                             var Paro = null;
 
+                            $scope.Paro.Nombre = $scope.ListaNombres.join(' - ');
                             $scope.Cantidad = parseInt($scope.Cantidad);
                             Paro = angular.copy($scope.Paro);
                             $mdDialog.hide(Paro);
@@ -520,6 +523,59 @@
                 });
         };
 
+        $scope.ValidarOrden = function (ev)
+        {
+            if (!$scope.DatosGenerales.Orden)
+                return;
+
+            $log.info($scope.DatosGenerales.Orden);
+
+            return IndicadorService.ValidarOrden($scope.DatosGenerales.Orden)
+                .then(function (response) {
+                    var Estado = response.data.Estado;
+                    if (!Estado) {
+                        var Mensaje = response.data.Mensaje;
+                        $log.info('Se produjo el siguiente error en el método ObtenerProcesos = ' + Mensaje);
+                    }
+                    else {
+                        var Indicador = response.data.Indicador;
+                        if (Indicador !== null) {
+                            $scope.DatosGenerales.Lote = Indicador.Lote;
+                            $scope.DatosGenerales.Material = Indicador.Material;
+                            $scope.DatosGenerales.Descripcion = Indicador.Descripcion;
+                            $scope.Util.EstadoValidacionOrden = 1;
+                        }
+                        else {
+                            $mdDialog.show(
+                                $mdDialog.alert()
+                                    .clickOutsideToClose(false)
+                                    .title('Orden no válida')
+                                    .textContent('La orden no fue encontrada en SAP')
+                                    .ariaLabel('Validando orden')
+                                    .ok('Entendido')
+                                    .targetEvent(ev)
+                            );
+
+                            $scope.DatosGenerales.Lote = null;
+                            $scope.DatosGenerales.Material = null;
+                            $scope.DatosGenerales.Descripcion = null;
+
+                            $scope.Util.EstadoValidacionOrden = -1;
+                        }
+                    }
+                },
+                function (response) {
+                    $log.info('Hubo un error: Estatus = ' + response.status + ', Error = ' + response.data);
+                })
+                .catch(function (response) {
+                    $log.info('Excepcion: ', response);
+                    throw response;
+                })
+                .finally(function () {
+                    $log.info('Método ValidarOrden() finalizado');
+                });
+        };
+
         // Al obtener el Proceso
         function ObtenerIndicadorPorProceso()
         {
@@ -563,14 +619,9 @@
         }
 
         // Al obtener el Material
-        function ObtenerVelocidad()
+        function ObtenerVelocidad(IndiceProceso, Material)
         {
-            if ($scope.DatosGenerales.IndiceProceso === null || $scope.DatosGenerales.IndiceProceso === '')
-                return;
-            if ($scope.DatosGenerales.Material === null || $scope.DatosGenerales.Material === '')
-                return;
-
-            return VelocidadService.ObtenerVelocidadPorMaterial($scope.DatosGenerales.IndiceProceso, $scope.DatosGenerales.Material)
+            return VelocidadService.ObtenerVelocidadPorMaterial(IndiceProceso, Material)
                 .then(function (response) {
                     var Estado = response.data.Estado;
                     if (!Estado) {
@@ -595,33 +646,6 @@
                     $log.info('Método ObtenerVelocidad() finalizado');
                 });
         }
-
-        // Opcional. Validación de la Orden en SAP
-        $scope.ValidarOrden = function () {
-            return SAPService.ValidarOrden($scope.DatosGenerales.Orden)
-                .then(function (response) {
-                    var Estado = response.data.Estado;
-                    if (!Estado) {
-                        var Mensaje = response.data.Mensaje;
-                        $log.info('Se produjo el siguiente error en el método ValidarOrden = ' + Mensaje);
-                    }
-                    else {
-                        $scope.ListaProcesos = response.data.ListaProcesos;
-                        $scope.DatosGenerales.IndiceProceso = $scope.ListaProcesos.length === 1 ? $scope.ListaProcesos[0].Indice : null;
-
-                    }
-                },
-                    function (response) {
-                        $log.info('Hubo un error: Estatus = ' + response.status + ', Error = ' + response.data);
-                    })
-                .catch(function (response) {
-                    $log.info('Excepcion: ', response);
-                    throw response;
-                })
-                .finally(function () {
-                    $log.info('Método ValidarOrden() finalizado');
-                });
-        };
         
         function ObtenerMinutosParos()
         {
@@ -640,25 +664,25 @@
             var CalculoHoras = parseFloat(Piezas / VelocidadReal);
             var CalculoHorasParo = parseInt((1 - CalculoHoras) * Ciclo);
 
-            $scope.Util.CalculoHorasParo = CalculoHorasParo;
-            $scope.Util.CalculoHoras = CalculoHoras;
+            $scope.Util.CalculoHorasParo = CalculoHorasParo > 0 ? CalculoHorasParo : 0;
+            $scope.Util.CalculoHoras = CalculoHoras > 0 ? CalculoHoras : 0;
 
             $scope.Util.ParoSinCausaAsignada = 0;
 
             if ($scope.Util.CalculoHoras < 1 && $scope.Util.CalculoHorasParo > 0) {
-                var Mensaje = $sce.trustAsHtml('Debes capturar lo equivalente a <b>' + CalculoHorasParo + '</b> minutos de paros');
-                $scope.Util.MensajeCalculoHoras = 'Atención';
+                var Mensaje = $sce.trustAsHtml('Debes capturar <b>' + CalculoHorasParo + '</b> minutos');
+                $scope.Util.MensajeCalculoHoras = 'Minutos de paro';
                 $scope.Util.MensajeCalculoHorasParo = Mensaje;
                 $scope.Util.ParoSinCausaAsignada = CalculoHorasParo;
                 $scope.Util.EstadoHorasParo = true;
             }
             else if ($scope.Util.CalculoHoras >= 0 && $scope.Util.CalculoHoras <= 1.1 && $scope.Util.CalculoHorasParo <= 0) {
-                $scope.Util.MensajeCalculoHoras = 'Correcto';
+                $scope.Util.MensajeCalculoHoras = 'Minutos de paros';
                 $scope.Util.MensajeCalculoHorasParo = 'No hay minutos de paros por agregar';
                 $scope.Util.EstadoHorasParo = false;
             }
             else if ($scope.Util.CalculoHoras > 1.1) {
-                $scope.Util.MensajeCalculoHoras = 'Incorrecto';
+                $scope.Util.MensajeCalculoHoras = 'Minutos de paros';
                 $scope.Util.MensajeCalculoHorasParo = 'Corrige las piezas producidas';
                 $scope.Util.EstadoHorasParo = false;
             }
@@ -752,7 +776,7 @@
                 $scope.DatosGenerales.IndiceVelocidad = null;
                 $scope.DatosGenerales.Velocidad = null;
 
-                ObtenerVelocidad();
+                ObtenerVelocidad($scope.DatosGenerales.IndiceProceso, $scope.DatosGenerales.Material);
             }
         });
 

@@ -1,4 +1,5 @@
-﻿@{
+﻿
+@{
     ViewBag.Title = "Captura de indicadores";
 }
 
@@ -16,27 +17,23 @@
         /* Set our own color */
         color: grey;
     }
-
     body[dir=rtl] .hint {
         right: 2px;
         left: auto;
     }
-
     .md-title {
         font-size: 16px;
         font-weight: 500;
         letter-spacing: 0.005em;
     }
-
     .md-datepicker-input {
         min-width: 145px !important;
     }
+
 </style>
 
 <div ng-controller="CapturaIndicadorController" ng-cloak>
-    <h2 style="color: rgb(63, 81, 181); font-weight: 300; letter-spacing: .7px; text-align: center; margin-bottom: 0rem; padding: 2rem !important;">
-        Captura de indicadores
-    </h2>
+    <h2 style="text-align: center; padding: 2rem !important;">Captura de indicadores</h2>
     <md-card md-theme="default" ng-cloak style="min-width: 60rem !important; max-width: 60rem !important;">
         <md-card-title>
             <md-card-title-text>
@@ -373,11 +370,11 @@
         </md-card-content>
         <md-card-actions>
             <div layout="column" layout-gt-xs="row" layout-align="start center">
-                <div flex flex-gt-xs="50" layout-align="start center">
+                <div flex flex-gt-xs="50"  layout-align="start center">
                     <strong style="padding-left: 2.5rem;" ng-class="{'mdb-text-danger': DatosIndicador.Piezas < Util.SumaPiezasRechazadas }" ng-show="DatosIndicador.Piezas < Util.SumaPiezasRechazadas"><md-icon class="text-danger" md-svg-src="../../Content/Icons/report_problem.svg"></md-icon>&nbsp;&nbsp;&nbsp;El límite de piezas rechazadas es de {{ DatosIndicador.Piezas | number }} </strong>
                 </div>
-                <div flex flex-gt-xs="50" layout-gt-xs="row" layout-align="end center">
-                    <md-button layout-align="end center" id="btnAddRechazo" md-no-ink class="md-primary" ng-click="agregarRechazo($event)"
+                <div flex flex-gt-xs="50" layout-gt-xs="row"  layout-align="end center">
+                    <md-button  layout-align="end center" id="btnAddRechazo" md-no-ink class="md-primary"  ng-click="agregarRechazo($event)"
                                ng-show="DatosGenerales.IndiceProceso !== null && DatosIndicador.Piezas >= Util.SumaPiezasRechazadas && DatosIndicador.Piezas > 0">
                         <md-icon md-svg-icon="md-add"></md-icon>
                         AGREGAR
@@ -436,7 +433,7 @@
                 <div flex flex-gt-xs="50" layout-align="start center">
                     <strong style="padding-left: 2.5rem;" ng-class="{'mdb-text-danger': Util.CalculoHorasParo < Util.SumaParos }" ng-show="Util.CalculoHorasParo < Util.SumaParos"><md-icon class="text-danger" md-svg-src="../../Content/Icons/report_problem.svg"></md-icon>&nbsp;&nbsp;&nbsp;El límite de paros es de {{ Util.CalculoHorasParo }} </strong>
                 </div>
-                <div flex flex-gt-xs="50" layout-gt-xs="row" layout-align="end center">
+                <div flex flex-gt-xs="50" layout-gt-xs="row"  layout-align="end center">
                     <md-button id="btnAddParo" md-no-ink class="md-primary" ng-click="agregarParo($event)" ng-show="DatosGenerales.IndiceProceso !== null && (Util.CalculoHorasParo >= Util.SumaParos) && Util.EstadoHorasParo">
                         <md-icon md-svg-icon="md-add"></md-icon>
                         AGREGAR
@@ -447,7 +444,3 @@
     </md-card>
 </div>
 
-
-@*http://logbon72.github.io/angular-material-datetimepicker/*@
-@*https://eonasdan.github.io/bootstrap-datetimepicker/*@
-@*https://codepen.io/mattbajorek/pen/OpGVyv*@

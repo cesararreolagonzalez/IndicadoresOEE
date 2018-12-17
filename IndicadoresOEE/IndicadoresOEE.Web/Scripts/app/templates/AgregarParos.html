@@ -4,9 +4,7 @@
             <div class="md-dialog-content">
                 <h2 class="md-title"><strong>Agregar paro</strong></h2>
 
-                <br />
-
-                <div layout="row" layour-align="center center" flex>
+                <div layout="row" layour-align="center center" style="margin-top: 3rem !important;" flex>
                     <div layout="column" flex="100">
                         <md-input-container class="md-block md-subhead">
                             <label>Nivel 1</label>
@@ -175,17 +173,19 @@
                 </div>
             </div>
         </md-dialog-content>
-        <md-dialog-actions layout="row" flex>
-            <div layout="column" layout-align="start center" flex>
-                <md-button ng-click="Inicializar()" layout-align="start">
-                    Inicializar
-                </md-button>
-            </div>
-            <div layout="column" layout-align="end center" flex>
-                <md-button ng-click="AgregarParo()" layout-align="end" class="md-primary"
-                           ng-disabled="Paro.Indice === null || Paro.Cantidad === null || Paro.Cantidad === undefined">
-                    Agregar
-                </md-button>
+        <md-dialog-actions style="background-color: #FFF !important; padding-left: 2rem; padding-right: 2rem;">
+            <div layout="column" layout-gt-xs="row" layout-align="start center" flex flex-gt-xs>
+                <div flex flex-gt-xs="50" layout-align="start center">
+                    <md-button ng-click="Inicializar()" layout-align="start">
+                        Inicializar
+                    </md-button>
+                </div>
+                <div flex flex-gt-xs="50" layout-gt-xs="row" layout-align="end center">
+                    <md-button ng-click="AgregarParo()" layout-align="end" class="md-primary"
+                               ng-disabled="Paro.Indice === null || Paro.Cantidad === null || Paro.Cantidad === undefined">
+                        Agregar
+                    </md-button>
+                </div>
             </div>
         </md-dialog-actions>
     </form>

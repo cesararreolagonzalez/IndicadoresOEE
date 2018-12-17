@@ -3,40 +3,36 @@
         <md-dialog-content style="background-color: #FFF !important; padding-left: 2rem; padding-right: 2rem; min-width: 40rem!important;">
             <div class="md-dialog-content">
                 <h2 class="md-title"><strong>Agregar rechazo</strong></h2>
-                <br />
-                <div  layout="row" layout-align="center center">
-                    <div layout="column" flex="100">
-                        <md-input-container class="md-block md-subhead"
-                                            flex>
-                            <label>Rechazo</label>
-                            <md-select id="rechazoSeleccionable"
-                                       name="rechazoSeleccionable"
-                                       md-on-open="ObtenerRechazos()"
-                                       md-on-close="ResetearTerminoBusqueda()"
-                                       ng-model="Rechazo.Indice"
-                                       md-container-class="selectdemoSelectHeader"
-                                       md-autofocus
-                                       ng-cloak>
-                                <md-select-header class="demo-select-header">
-                                    <input ng-model="TerminoBusqueda"
-                                           type="search"
-                                           placeholder="Busca un rechazo"
-                                           class="demo-header-searchbox md-text">
-                                </md-select-header>
-                                <md-optgroup label="Rechazos disponibles">
-                                    <md-option ng-repeat="Rechazo in ListaRechazos | filter:TerminoBusqueda"
-                                               ng-value="Rechazo.Indice"
-                                               ng-disabled="DesactivarSiEstaEnUso(Rechazo.Indice)">
-                                        {{ Rechazo.Nombre | uppercase }}
-                                    </md-option>
-                                </md-optgroup>
-                            </md-select>
-                        </md-input-container>
-                    </div>
+                <div layout="column" layout-gt-xs="row" flex flex-gt-sm style="margin-top: 3rem !important;">
+                    <md-input-container class="md-block" flex-gt-sm>
+                        <label>Rechazo</label>
+                        <md-select id="rechazoSeleccionable"
+                                   name="rechazoSeleccionable"
+                                   md-on-open="ObtenerRechazos()"
+                                   md-on-close="ResetearTerminoBusqueda()"
+                                   ng-model="Rechazo.Indice"
+                                   md-container-class="selectdemoSelectHeader"
+                                   md-autofocus
+                                   ng-cloak>
+                            <md-select-header class="demo-select-header">
+                                <input ng-model="TerminoBusqueda"
+                                       type="search"
+                                       placeholder="Busca un rechazo"
+                                       class="demo-header-searchbox md-text">
+                            </md-select-header>
+                            <md-optgroup label="Rechazos disponibles">
+                                <md-option ng-repeat="Rechazo in ListaRechazos | filter:TerminoBusqueda"
+                                           ng-value="Rechazo.Indice"
+                                           ng-disabled="DesactivarSiEstaEnUso(Rechazo.Indice)">
+                                    {{ Rechazo.Nombre | uppercase }}
+                                </md-option>
+                            </md-optgroup>
+                        </md-select>
+                    </md-input-container>
                 </div>
-                <div  layout="row" layout-align="center center">
-                    <div layout="column" flex="100">
-                        <md-input-container class="md-block md-subhead" ng-hide="Rechazo.Indice === null" flex>
+                <div layout="row" layour-align="center center" ng-hide="Rechazo.Indice === null" flex>
+                    <div layout="column" flex>
+                        <md-input-container class="md-block md-subhead" ng-disabled="">
                             <label>Cantidad</label>
                             <input ng-model="Rechazo.Cantidad" solo-digitos formato-numerico valor-valido-mayor-cero>
                         </md-input-container>
@@ -44,17 +40,19 @@
                 </div>
             </div>
         </md-dialog-content>
-        <md-dialog-actions layout="row" flex>
-            <div layout="column" layout-align="start center" flex>
-                <md-button ng-click="Inicializar()" layout-align="start">
-                    Inicializar
-                </md-button>
-            </div>
-            <div layout="column" layout-align="end center" flex>
-                <md-button ng-click="AgregarRechazo()" class="md-primary"
-                           ng-disabled="Rechazo.Indice === null || Rechazo.Cantidad === null || Rechazo.Cantidad === undefined">
-                    Agregar
-                </md-button>
+        <md-dialog-actions style="background-color: #FFF !important; padding-left: 2rem; padding-right: 2rem;">
+            <div layout="column" layout-gt-xs="row" layout-align="start center" flex flex-gt-xs>
+                <div flex flex-gt-xs="50" layout-align="start center">
+                    <md-button ng-click="Inicializar()" layout-align="start">
+                        Inicializar
+                    </md-button>                
+                </div>
+                <div flex flex-gt-xs="50" layout-gt-xs="row" layout-align="end center">
+                    <md-button ng-click="AgregarRechazo()" class="md-primary"
+                               ng-disabled="Rechazo.Indice === null || Rechazo.Cantidad === null || Rechazo.Cantidad === undefined">
+                        Agregar
+                    </md-button>
+                </div>
             </div>
         </md-dialog-actions>
     </form>

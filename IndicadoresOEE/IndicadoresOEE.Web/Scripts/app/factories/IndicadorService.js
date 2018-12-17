@@ -17,6 +17,7 @@
         service.CrearIndicador = CrearIndicador;
         service.ActualizarIndicador = ActualizarIndicador;
         service.EliminarIndicador = EliminarIndicador;
+        service.ValidarOrden = ValidarOrden;
 
         return service;
 
@@ -41,8 +42,13 @@
         }
 
         function EliminarIndicador(id) {
-            return $http.delete('/Indicador/EliminarIndicador' + id).then(handleSuccess, handleError);
+            return $http.delete('/Indicador/EliminarIndicador?IndiceIndicador=' + id).then(handleSuccess, handleError);
         }
+
+        function ValidarOrden(Orden) {
+            return $http.get('/Indicador/ValidarOrden?Orden=' + Orden).then(handleSuccess, handleError);
+        }
+
 
         // private functions
 

@@ -20,6 +20,13 @@
             IndicadorTiempoBusiness = new IndicadorTiempoBusiness();
             ProcesoBusiness = new ProcesoBusiness();
         }
+
+        public IndicadorModel ValidarOrden(string Orden)
+        {
+            IndicadorModel indicador = null;
+
+            return indicador;
+        }
         
         public IndicadorModel ObtenerIndicadorPorProceso(long IndiceProceso)
         {

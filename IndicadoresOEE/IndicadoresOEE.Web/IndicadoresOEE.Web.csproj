@@ -228,6 +228,7 @@
     <Content Include="Content\Icons\navigate-next.svg" />
     <Content Include="Content\Icons\quitar.svg" />
     <Content Include="Content\Icons\report_problem.svg" />
+    <Content Include="Content\Icons\search.svg" />
     <Content Include="Content\Icons\time.svg" />
     <Content Include="Content\Images\indicadoresoee-logo.jpg" />
     <Content Include="favicon.ico" />
@@ -348,6 +349,7 @@
     <Content Include="Views\Velocidad\Inicio.cshtml" />
     <Content Include="Views\Bitacora\Inicio.cshtml" />
     <Content Include="Views\Indicador\Captura.cshtml" />
+    <Content Include="Views\Indicador\Captura2.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
