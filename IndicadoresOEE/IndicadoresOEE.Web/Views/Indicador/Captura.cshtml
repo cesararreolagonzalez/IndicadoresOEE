@@ -31,12 +31,20 @@
     .md-datepicker-input {
         min-width: 145px !important;
     }
+
+    .detalle-cantidad {
+        font-size: 15px;
+        padding-left: 0.5rem;
+        padding-right: 0.5rem;
+        font-weight: 900;
+        line-height: 18px;
+    }
 </style>
 
 <div ng-controller="CapturaIndicadorController" ng-cloak>
-    <h2 style="color: rgb(63, 81, 181); font-weight: 300; letter-spacing: .7px; text-align: center; margin-bottom: 0rem; padding: 2rem !important;">
+    <h3 style="color: rgb(63, 81, 181); font-weight: 300; letter-spacing: .7px; text-align: center; margin-bottom: 0rem; padding: 2rem !important;">
         Captura de indicadores
-    </h2>
+    </h3>
     <md-card md-theme="default" ng-cloak style="min-width: 60rem !important; max-width: 60rem !important;">
         <md-card-title>
             <md-card-title-text>
@@ -271,6 +279,7 @@
 
                                 <div layout-gt-sm="column" flex-gt-sm="45">
                                     <md-datepicker class=""
+                                                   name="fecha"
                                                    ng-model="DatosIndicador.Fecha"
                                                    md-max-date="Util.FechaLimite"
                                                    ng-disabled="DatosGenerales.IndiceIndicador === null"
@@ -311,6 +320,7 @@
                                     </div>
                                 </div>
                             </div>
+
                         </div>
                     </form>
                 </div>
@@ -336,15 +346,15 @@
             </md-card-title-text>
         </md-card-title>
         <md-card-content style="padding-left: 3rem;">
-            <div layout="row" ng-show="DatosIndicador.Piezas > 0" flex>
+            <div layout="row" ng-show="DatosIndicador.Piezas > 0"  style=" margin-bottom: 2rem;" flex>
                 <div layout="row" flex>
-                    <span><span>Piezas totales: {{ DatosIndicador.Piezas | number }}</span></span>
+                    <span class="text-muted" style="font-size: 12px;">{{ 'Piezas totales' | uppercase }}</span> <strong class="text-muted detalle-cantidad">{{ DatosIndicador.Piezas | number }}</strong>
                 </div>
                 <div layout="row" flex>
-                    <span><span>Piezas aceptadas: {{ (DatosIndicador.Piezas - Util.SumaPiezasRechazadas) < 0 ? 0 : DatosIndicador.Piezas - Util.SumaPiezasRechazadas | number }}</span></span>
+                    <span class="text-muted" style="font-size: 12px;">{{ 'Piezas aceptadas' | uppercase }}</span><strong class="text-muted detalle-cantidad">{{ (DatosIndicador.Piezas - Util.SumaPiezasRechazadas) < 0 ? 0 : DatosIndicador.Piezas - Util.SumaPiezasRechazadas | number }}</strong>
                 </div>
                 <div layout="row" flex>
-                    <span><span>Piezas rechazadas: {{ Util.SumaPiezasRechazadas | number }}</span></span>
+                    <span class="text-muted" style="font-size: 12px;">{{ 'Piezas rechazadas' | uppercase }}</span> <strong class="text-muted detalle-cantidad">{{ Util.SumaPiezasRechazadas | number }}</strong>
                 </div>
             </div>
             <md-content class="" layout="column" style="margin-top: 1rem;">
@@ -366,10 +376,10 @@
                     </button>
                 </md-chips>
             </md-content>
-            <span ng-show="ListaRechazosElegidos.length > 0" style="margin-left: 0rem; margin-top: 2rem;" ng-cloak>
+            <span class="text-muted" ng-show="ListaRechazosElegidos.length > 0" style="margin-left: 0rem; margin-top: 2rem;" ng-cloak>
                 {{ ListaRechazosElegidos.length }} {{ ListaRechazosElegidos.length === 1 ? 'rechazo seleccionado' : 'rechazos seleccionados' }}
             </span>
-            <span ng-show="ListaRechazosElegidos.length === 0" style="padding-bottom: 2rem;">No has seleccionado rechazos aún</span>
+            <span class="text-muted" ng-show="ListaRechazosElegidos.length === 0" style="padding-bottom: 2rem;">No has seleccionado rechazos aún</span>
         </md-card-content>
         <md-card-actions>
             <div layout="column" layout-gt-xs="row" layout-align="start center">
@@ -395,15 +405,15 @@
             </md-card-title-text>
         </md-card-title>
         <md-card-content style="padding-left: 3rem;">
-            <div layout="row" flex ng-show="Util.EstadoHorasParo">
+            <div layout="row" flex ng-show="Util.EstadoHorasParo" style=" margin-bottom: 2rem;">
                 <div layout="row" flex>
-                    <span>Minutos de paro disponibles: {{ Util.CalculoHorasParo | number }} </span>
+                    <span class="text-muted" style="font-size: 12px;">{{ 'paros disponibles' | uppercase }}</span> <strong class="text-muted detalle-cantidad">{{ Util.CalculoHorasParo | number }}</strong>
                 </div>
                 <div layout="row" flex>
-                    <span ng-class="{'mdb-text-danger': Util.CalculoHorasParo < Util.SumaParos }">Minutos de paro asignados: {{ Util.SumaParos | number }} </span>
+                    <span class="text-muted" ng-class="{'mdb-text-danger': Util.CalculoHorasParo < Util.SumaParos }" style="font-size: 12px;">{{ 'paros asignados' | uppercase }}</span> <strong class="text-muted detalle-cantidad">{{ Util.SumaParos | number }}</strong>
                 </div>
                 <div layout="row" flex>
-                    <span>Sin causa asignada: {{ Util.ParoSinCausaAsignada | number }} </span>
+                    <span class="text-muted" style="font-size: 12px;">{{ 'Sin causa asignada' | uppercase }}</span> <strong class="text-muted detalle-cantidad">{{ Util.ParoSinCausaAsignada | number }}</strong>
                 </div>
             </div>
             <md-content class="" layout="column" style="margin-top: 1rem;">
@@ -426,10 +436,10 @@
                     </button>
                 </md-chips>
             </md-content>
-            <span ng-show="ListaParosElegidos.length > 0" style="margin-left: 0rem; margin-top: 2rem;" ng-cloak>
+            <span class="text-muted" ng-show="ListaParosElegidos.length > 0" style="margin-left: 0rem; margin-top: 2rem;" ng-cloak>
                 {{ ListaParosElegidos.length }} {{ ListaParosElegidos.length === 1 ? 'paro seleccionado' : 'paros seleccionados' }}
             </span>
-            <span ng-show="ListaParosElegidos.length === 0" style="padding-bottom: 2rem;">No has seleccionado paros aún</span>
+            <span class="text-muted" ng-show="ListaParosElegidos.length === 0" style="padding-bottom: 2rem;">No has seleccionado paros aún</span>
         </md-card-content>
         <md-card-actions>
             <div layout="column" layout-gt-xs="row" layout-align="start center">
@@ -445,9 +455,25 @@
             </div>
         </md-card-actions>
     </md-card>
+    <div layout="column" layout-gt-xs="row" layout-align="start center" flex flex-gt-xs>
+        <div flex flex-gt-xs="50" layout-align="start center">
+            @*<md-button class="md-raised md-primary" ng-click="Inicializar()" layout-align="start" style="padding-left: 2rem; padding-right: 2rem;">
+                <md-icon md-svg-icon="md-save" style="margin-right: 0.5rem;"></md-icon>
+                Guardar indicador
+            </md-button>*@
+        </div>
+        <div flex flex-gt-xs="50" layout-gt-xs="row" layout-align="end center">
+            <md-button ng-click="AgregarRechazo()" class="md-primary">
+                <md-icon md-svg-icon="md-save"  style="margin-right: 0.5rem;"></md-icon>
+                Guardar indicador
+            </md-button>
+        </div>
+    </div>
 </div>
 
 
-@*http://logbon72.github.io/angular-material-datetimepicker/*@
-@*https://eonasdan.github.io/bootstrap-datetimepicker/*@
-@*https://codepen.io/mattbajorek/pen/OpGVyv*@
+@*AÑADIR UN SISTEMA DE ESTADOS PARA EL CÁLCULO DE LAS HORAS PARO
+ESTADO 0: SIN ESTADO
+ESTADO 1: CORRETO
+ESTADO -1: CORREGIR LAS PIEZAS PRODUCIDAS
+ESTADO 2: AGREGAR MINUTOS DE PAROS*@

@@ -228,6 +228,7 @@
     <Content Include="Content\Icons\navigate-next.svg" />
     <Content Include="Content\Icons\quitar.svg" />
     <Content Include="Content\Icons\report_problem.svg" />
+    <Content Include="Content\Icons\save.svg" />
     <Content Include="Content\Icons\search.svg" />
     <Content Include="Content\Icons\time.svg" />
     <Content Include="Content\Images\indicadoresoee-logo.jpg" />

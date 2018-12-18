@@ -10,6 +10,7 @@
 
                 $mdIconProvider.icon('md-close', '../Content/Icons/quitar.svg', 24);
                 $mdIconProvider.icon('md-add', '../Content/Icons/add.svg', 24);
+                $mdIconProvider.icon('md-save', '../Content/Icons/save.svg', 24);
                 
                 $mdDateLocaleProvider.months = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio',
                     'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'];

@@ -833,6 +833,7 @@
             $scope.Util.ParoSinCausaAsignada = 0;
             $scope.Util.CalculoHorasParo = null;
             $scope.Util.CalculoHoras = null;
+            $scope.Util.FechaLimite = null;
 
             $scope.Util.EstadoHorasParo = false;
         };
