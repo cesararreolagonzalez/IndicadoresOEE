@@ -326,10 +326,10 @@
                 </div>
                 <div flex flex-gt-xs="45" style="padding-left: 2rem !important;">
                     <div layout-gt-sm="row" layout-align="center center" flex-gt-sm>
-                        <blockquote class="blockquote bq-primary" ng-class="{'bq-warning': Util.CalculoHoras < 1 && Util.CalculoHorasParo > 0, 'bq-success': Util.CalculoHoras >= 0 && Util.CalculoHoras <= 1.1  && Util.CalculoHorasParo <= 0, 'bq-danger': Util.CalculoHoras > 1.1}" ng-hide="Util.CalculoHoras === null">
+                        <blockquote class="blockquote bq-primary" ng-class="{'bq-warning': Util.Estado === Util.Estados.CON_PAROS, 'bq-success': Util.Estado === Util.Estados.SIN_PAROS, 'bq-danger':  Util.Estado === Util.Estados.ERROR }" ng-hide="Util.Estado === Util.Estados.SIN_ESTADO">
                             <p class="bq-title" ng-bind="Util.MensajeCalculoHoras">
                             </p>
-                            <p ng-bind-html="Util.MensajeCalculoHorasParo" ng-class="{'mdb-text-warning': Util.CalculoHoras < 1 && Util.CalculoHorasParo > 0, 'mdb-text-success': Util.CalculoHoras >= 0 && Util.CalculoHoras <= 1.1 && Util.CalculoHorasParo <= 0, 'mdb-text-danger': Util.CalculoHoras > 1.1}">
+                            <p ng-bind-html="Util.MensajeCalculoHorasParo" ng-class="{'mdb-text-warning': Util.Estado === Util.Estados.CON_PAROS, 'mdb-text-success': Util.Estado === Util.Estados.SIN_PAROS, 'mdb-text-danger': Util.Estado === Util.Estados.ERROR }">
                             </p>
                         </blockquote>
                     </div>
@@ -472,8 +472,15 @@
 </div>
 
 
-@*AÑADIR UN SISTEMA DE ESTADOS PARA EL CÁLCULO DE LAS HORAS PARO
+@*
+- AÑADIR UN SISTEMA DE ESTADOS PARA EL CÁLCULO DE LAS HORAS PARO
 ESTADO 0: SIN ESTADO
 ESTADO 1: CORRETO
 ESTADO -1: CORREGIR LAS PIEZAS PRODUCIDAS
-ESTADO 2: AGREGAR MINUTOS DE PAROS*@
+ESTADO 2: AGREGAR MINUTOS DE PAROS
+
+- CAMBIAR A ESTADO 0 CUANDO ALGUNO DE LOS 3 VALORES PARA EL CALCULO DE HORAS PARO NO ESTÉN
+    - RESETEAR RECHAZOS Y PAROS
+    
+*@
+

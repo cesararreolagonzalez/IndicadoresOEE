@@ -3,5 +3,5 @@
 
     angular
         .module('indicadoresoeeapp')
-        .constant('SERVERS', { DEVELOPMENT: "http://localhost:8080/app", PRODUCTION: "http://myDomain.com/app" });
+        .constant('ESTADO_PAROS', { SIN_ESTADO: 0, ERROR: -1, CON_PAROS: 1, SIN_PAROS: 2  });
 })();

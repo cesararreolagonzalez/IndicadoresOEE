@@ -6,12 +6,12 @@
         .controller('CapturaIndicadorController', CapturaIndicadorController);
     
     CapturaIndicadorController.$inject = ['$element', '$scope', '$sce', '$timeout', '$location',
-        '$anchorScroll', '$log', '$window', '$mdDialog', 'moment',
+        '$anchorScroll', '$log', '$window', '$mdDialog', 'moment', 'ESTADO_PAROS',
         'CentroService', 'DepartamentoService', 'LineaService', 'ProcesoService', 'VelocidadService',
         'IndicadorService', 'SAPService', 'UtilFactory'];
 
     function CapturaIndicadorController($element, $scope, $sce, $timeout, $location, $anchorScroll,
-        $log, $window, $mdDialog, moment,
+        $log, $window, $mdDialog, moment, ESTADO_PAROS,
         CentroService, DepartamentoService, LineaService,
         ProcesoService, VelocidadService, IndicadorService, SAPService, UtilFactory)
     {
@@ -53,7 +53,9 @@
             SumaPiezasRechazadas: 0,
             ParoSinCausaAsignada: 0,
             EstadoHorasParo: false,
-            EstadoValidacionOrden: 0
+            EstadoValidacionOrden: 0,
+            Estado: ESTADO_PAROS.SIN_ESTADO,
+            Estados: ESTADO_PAROS
         };
 
         $scope.Turnos = ['A', 'B', 'C', 'D'];
@@ -670,6 +672,8 @@
             $scope.Util.ParoSinCausaAsignada = 0;
 
             if ($scope.Util.CalculoHoras < 1 && $scope.Util.CalculoHorasParo > 0) {
+                $scope.Util.Estado = $scope.Util.Estados.CON_PAROS;
+
                 var Mensaje = $sce.trustAsHtml('Debes capturar <b>' + CalculoHorasParo + '</b> minutos');
                 $scope.Util.MensajeCalculoHoras = 'Minutos de paro';
                 $scope.Util.MensajeCalculoHorasParo = Mensaje;
@@ -677,14 +681,21 @@
                 $scope.Util.EstadoHorasParo = true;
             }
             else if ($scope.Util.CalculoHoras >= 0 && $scope.Util.CalculoHoras <= 1.1 && $scope.Util.CalculoHorasParo <= 0) {
+                $scope.Util.Estado = $scope.Util.Estados.SIN_PAROS;
+
                 $scope.Util.MensajeCalculoHoras = 'Minutos de paros';
                 $scope.Util.MensajeCalculoHorasParo = 'No hay minutos de paros por agregar';
                 $scope.Util.EstadoHorasParo = false;
             }
             else if ($scope.Util.CalculoHoras > 1.1) {
+                $scope.Util.Estado = $scope.Util.Estados.ERROR;
+
                 $scope.Util.MensajeCalculoHoras = 'Minutos de paros';
                 $scope.Util.MensajeCalculoHorasParo = 'Corrige las piezas producidas';
                 $scope.Util.EstadoHorasParo = false;
+            }
+            else {
+                $scope.Util.Estado = $scope.Util.Estados.SIN_ESTADO;
             }
 
             $log.info('Método ObtenerMinutosParos() finalizado');
@@ -805,10 +816,10 @@
 
                 var EsValido = !UtilFactory.EsNuloOVacio(Piezas) && !UtilFactory.EsNuloOVacio(Fecha) && !UtilFactory.EsNuloOVacio(Ciclo);
                 
-                if (EsValido) {
-                    
+                if (EsValido) 
                     ObtenerMinutosParos();
-                }
+                else
+                    $scope.Util.Estado = ESTADO_PAROS.SIN_ESTADO;
             }
         );
 
@@ -836,6 +847,7 @@
             $scope.Util.FechaLimite = null;
 
             $scope.Util.EstadoHorasParo = false;
+            $scope.Util.Estado = ESTADO_PAROS.SIN_ESTADO;
         };
 
         $scope.ValidarHora = function (Index) {
