@@ -89,5 +89,53 @@
             object data = new { Estado, Mensaje, Indicador };
             return Json(data, JsonRequestBehavior.AllowGet);
         }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet]
+        public ActionResult Guardar(IndicadorModel modelo)
+        {
+            string Mensaje = string.Empty;
+            bool Estado = false;
+
+            try
+            {
+                var x = indicadorBusiness.Guardar(modelo);
+                Estado = true;
+            }
+            catch (Exception e)
+            {
+                Mensaje = e.Message;
+            }
+
+            object data = new { Estado, Mensaje };
+            return Json(data, JsonRequestBehavior.AllowGet);
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet]
+        public ActionResult VerificacionExistenciaIndicadoresPeriodo(IndicadorModel modelo)
+        {
+            string Mensaje = string.Empty;
+            bool Estado = false;
+
+            try
+            {
+                var x = indicadorBusiness.Guardar(modelo);
+                Estado = true;
+            }
+            catch (Exception e)
+            {
+                Mensaje = e.Message;
+            }
+
+            object data = new { Estado, Mensaje };
+            return Json(data, JsonRequestBehavior.AllowGet);
+        }
     }
 }

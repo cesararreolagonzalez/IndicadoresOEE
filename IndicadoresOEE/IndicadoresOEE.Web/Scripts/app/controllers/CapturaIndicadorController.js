@@ -36,8 +36,8 @@
 
         $scope.DatosIndicador = {
             Turno: null,
-            Ciclo: null,
-            Piezas: null,
+            Ciclo: 0,
+            Piezas: 0,
             Fecha: new Date(FechaHoy.getFullYear(), FechaHoy.getMonth(), FechaHoy.getDate(), 0, 0, 0),
             Hora: '0',
             Minuto: '0'
@@ -578,6 +578,27 @@
                 });
         };
 
+        $scope.Guardar = function () {
+
+        };
+
+        $scope.ValidacionBotonGuardar = function () {
+            var SeDesactiva = true; 
+
+            var EstadoConParos =
+                   $scope.Util.Estado === $scope.Util.Estados.CON_PAROS
+                && $scope.Util.SumaParos <= $scope.Util.CalculoHorasParo
+                && $scope.Util.SumaPiezasRechazadas <= $scope.DatosIndicador.Piezas;
+
+            var EstadoSinParos =
+                $scope.Util.Estado === $scope.Util.Estados.SIN_PAROS
+                && $scope.Util.SumaPiezasRechazadas <= $scope.DatosIndicador.Piezas;
+            
+            SeDesactiva = !(EstadoConParos || EstadoSinParos);
+
+            return SeDesactiva;
+        };
+
         // Al obtener el Proceso
         function ObtenerIndicadorPorProceso()
         {
@@ -655,9 +676,10 @@
             var Piezas = angular.copy($scope.DatosIndicador.Piezas);
             var Ciclo = angular.copy($scope.DatosIndicador.Ciclo);
 
-            if (UtilFactory.EsNuloOVacio(Velocidad) || UtilFactory.EsNuloOVacio(Piezas) || UtilFactory.EsNuloOVacio(Ciclo))
+            if (!Velocidad || !Piezas || !Ciclo)
                 return;
 
+            $log.info(Piezas);
             Velocidad = parseInt(Velocidad);
             Piezas = parseInt(Piezas);
             Ciclo = parseInt(Ciclo);
@@ -800,6 +822,30 @@
         $scope.$watch('DatosIndicador.Minuto', function (newValue, oldValue) {
             if (newValue !== undefined && newValue !== null && newValue !== '') {
                 $scope.DatosIndicador.Fecha.setMinutes(newValue);
+            }
+        });
+        
+        $scope.$watch('Util.Estado', function (newValue, oldValue) {
+            if (newValue !== undefined && newValue !== null && newValue !== '' && newValue === 0) {
+                $scope.Util.MensajeCalculoHoras = null;
+                $scope.Util.MensajeCalculoHorasParo = null;
+                $scope.Util.EstadoHorasParo = false;
+
+                $scope.Util.CalculoHoras = 0;
+                $scope.Util.CalculoHorasParo = 0;
+
+                //$scope.SumaParos = 0;
+                //$scope.SumaPiezasRechazadas = 0;
+                //$scope.ParoSinCausaAsignada = 0;
+                $scope.MensajeCalculoHoras = null;
+                $scope.MensajeCalculoHorasParo = null;
+
+                //$scope.ListaRechazosElegidos = [];
+                //$scope.ListaParosElegidos = [];
+                
+                //$scope.ListaIndicesRechazosEnUso = [];
+                //$scope.ListaIndicesParosEnUso = [];
+
             }
         });
 

@@ -21,6 +21,19 @@
             ProcesoBusiness = new ProcesoBusiness();
         }
 
+        public long Guardar(IndicadorModel modelo)
+        {
+
+            return 1;
+        }
+
+        public bool VerificacionExistenciaIndicadoresPeriodo(IndicadorModel modelo)
+        {
+
+            return true;
+        }
+        
+
         public IndicadorModel ValidarOrden(string Orden)
         {
             IndicadorModel indicador = null;

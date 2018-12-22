@@ -42,9 +42,9 @@
 </style>
 
 <div ng-controller="CapturaIndicadorController" ng-cloak>
-    <h3 style="color: rgb(63, 81, 181); font-weight: 300; letter-spacing: .7px; text-align: center; margin-bottom: 0rem; padding: 2rem !important;">
+    <h4 style="color: rgb(63, 81, 181); font-weight: 900; letter-spacing: .7px; text-align: left; margin-bottom: 0rem; padding: 0.5rem !important; margin-bottom: 1rem; margin-top: 1rem;">
         Captura de indicadores
-    </h3>
+    </h4>
     <md-card md-theme="default" ng-cloak style="min-width: 60rem !important; max-width: 60rem !important;">
         <md-card-title>
             <md-card-title-text>
@@ -324,13 +324,23 @@
                         </div>
                     </form>
                 </div>
-                <div flex flex-gt-xs="45" style="padding-left: 2rem !important;">
-                    <div layout-gt-sm="row" layout-align="center center" flex-gt-sm>
-                        <blockquote class="blockquote bq-primary" ng-class="{'bq-warning': Util.Estado === Util.Estados.CON_PAROS, 'bq-success': Util.Estado === Util.Estados.SIN_PAROS, 'bq-danger':  Util.Estado === Util.Estados.ERROR }" ng-hide="Util.Estado === Util.Estados.SIN_ESTADO">
-                            <p class="bq-title" ng-bind="Util.MensajeCalculoHoras">
-                            </p>
-                            <p ng-bind-html="Util.MensajeCalculoHorasParo" ng-class="{'mdb-text-warning': Util.Estado === Util.Estados.CON_PAROS, 'mdb-text-success': Util.Estado === Util.Estados.SIN_PAROS, 'mdb-text-danger': Util.Estado === Util.Estados.ERROR }">
-                            </p>
+                <div flex flex-gt-xs="45" style="padding-left: 2rem !important;" layout="column" layout-align="center center" >
+                    <div layout-gt-sm="row" layout-align="start center" flex-gt-sm>
+                        <blockquote  class="blockquote bq-primary" ng-class="{'bq-warning': Util.Estado === Util.Estados.CON_PAROS, 'bq-success': Util.Estado === Util.Estados.SIN_PAROS, 'bq-danger':  Util.Estado === Util.Estados.ERROR }" ng-hide="Util.Estado === Util.Estados.SIN_ESTADO">
+                           
+                            <p class="bq-title" style="font-size: 0.9em;"><strong>{{ 'Minutos de paro' }}</strong></p>
+
+                            <div class="mdb-text-danger" ng-show="Util.Estado === Util.Estados.ERROR"  style="font-size: 0.9em;">
+                                <strong>Corrige las piezas producidas</strong>
+                            </div>
+
+                            <div class="mdb-text-warning" ng-show="Util.Estado === Util.Estados.CON_PAROS" style="font-size: 0.9em;">
+                                <strong>Debes capturar </strong> <div class="step-marker step-marker--centered-pulled background-color--primary">{{ Util.CalculoHorasParo }}</div> <strong>minutos</strong>
+                            </div>
+
+                            <div class="mdb-text-success" ng-show="Util.Estado === Util.Estados.SIN_PAROS" style="font-size: 0.9em;">
+                                <strong>No hay minutos de paros por capturar</strong>
+                            </div>
                         </blockquote>
                     </div>
                 </div>
@@ -346,15 +356,21 @@
             </md-card-title-text>
         </md-card-title>
         <md-card-content style="padding-left: 3rem;">
-            <div layout="row" ng-show="DatosIndicador.Piezas > 0"  style=" margin-bottom: 2rem;" flex>
+            <div layout="row" style=" margin-bottom: 2rem;" flex>
                 <div layout="row" flex>
-                    <span class="text-muted" style="font-size: 12px;">{{ 'Piezas totales' | uppercase }}</span> <strong class="text-muted detalle-cantidad">{{ DatosIndicador.Piezas | number }}</strong>
+
+                    <label class="c01971 c01973 c01969">{{ 'Piezas totales' | uppercase }} <strong class="text-muted" style="padding-left: 0.7rem;">{{ (DatosIndicador.Piezas - Util.SumaPiezasRechazadas) < 0 ? 0 : DatosIndicador.Piezas - Util.SumaPiezasRechazadas | number }}</strong></label>
+                    @*<span class="text-muted" style="font-size: 12px;">{{ 'Piezas totales' | uppercase }}</span> <strong class="text-muted detalle-cantidad">{{ DatosIndicador.Piezas < 0 || !DatosIndicador.Piezas ? 0 : DatosIndicador.Piezas | number }}</strong>*@
                 </div>
                 <div layout="row" flex>
-                    <span class="text-muted" style="font-size: 12px;">{{ 'Piezas aceptadas' | uppercase }}</span><strong class="text-muted detalle-cantidad">{{ (DatosIndicador.Piezas - Util.SumaPiezasRechazadas) < 0 ? 0 : DatosIndicador.Piezas - Util.SumaPiezasRechazadas | number }}</strong>
+
+                    <label class="c01971 c01973 c01969">{{ 'Piezas aceptadas' | uppercase }} <strong class="text-muted" style="padding-left: 0.7rem;">{{ (DatosIndicador.Piezas - Util.SumaPiezasRechazadas) < 0 ? 0 : DatosIndicador.Piezas - Util.SumaPiezasRechazadas | number }}</strong></label>
+                    @*<span class="text-muted" style="font-size: 12px;">{{ 'Piezas aceptadas' | uppercase }}</span><strong class="text-muted detalle-cantidad">{{ (DatosIndicador.Piezas - Util.SumaPiezasRechazadas) < 0 ? 0 : DatosIndicador.Piezas - Util.SumaPiezasRechazadas | number }}</strong>*@
                 </div>
                 <div layout="row" flex>
-                    <span class="text-muted" style="font-size: 12px;">{{ 'Piezas rechazadas' | uppercase }}</span> <strong class="text-muted detalle-cantidad">{{ Util.SumaPiezasRechazadas | number }}</strong>
+
+                    <label class="c01971 c01973 c01969">{{ 'Piezas rechazadas' | uppercase }} <strong class="text-muted" style="padding-left: 0.7rem;">{{ Util.SumaPiezasRechazadas | number }}</strong></label>
+                    @*<span class="text-muted" style="font-size: 12px;">{{ 'Piezas rechazadas' | uppercase }}</span> <strong class="text-muted detalle-cantidad">{{ Util.SumaPiezasRechazadas | number }}</strong>*@
                 </div>
             </div>
             <md-content class="" layout="column" style="margin-top: 1rem;">
@@ -376,9 +392,9 @@
                     </button>
                 </md-chips>
             </md-content>
-            <span class="text-muted" ng-show="ListaRechazosElegidos.length > 0" style="margin-left: 0rem; margin-top: 2rem;" ng-cloak>
+            <small class="text-muted" ng-show="ListaRechazosElegidos.length > 0" style="margin-left: 0.5rem; margin-top: 2rem;" ng-cloak>
                 {{ ListaRechazosElegidos.length }} {{ ListaRechazosElegidos.length === 1 ? 'rechazo seleccionado' : 'rechazos seleccionados' }}
-            </span>
+            </small>
             <span class="text-muted" ng-show="ListaRechazosElegidos.length === 0" style="padding-bottom: 2rem;">No has seleccionado rechazos aún</span>
         </md-card-content>
         <md-card-actions>
@@ -405,15 +421,21 @@
             </md-card-title-text>
         </md-card-title>
         <md-card-content style="padding-left: 3rem;">
-            <div layout="row" flex ng-show="Util.EstadoHorasParo" style=" margin-bottom: 2rem;">
+            <div layout="row" flex style=" margin-bottom: 2rem;">
                 <div layout="row" flex>
-                    <span class="text-muted" style="font-size: 12px;">{{ 'paros disponibles' | uppercase }}</span> <strong class="text-muted detalle-cantidad">{{ Util.CalculoHorasParo | number }}</strong>
+                    <label class="c01971 c01973 c01969">{{ 'Paros disponibles' | uppercase }} <strong class="text-muted" style="padding-left: 0.7rem;">{{ Util.CalculoHorasParo | number }}</strong></label>
+
+                    @*<span class="text-muted" style="font-size: 12px;">{{ 'paros disponibles' | uppercase }}</span> <strong class="text-muted detalle-cantidad">{{ Util.CalculoHorasParo | number }}</strong>*@
                 </div>
                 <div layout="row" flex>
-                    <span class="text-muted" ng-class="{'mdb-text-danger': Util.CalculoHorasParo < Util.SumaParos }" style="font-size: 12px;">{{ 'paros asignados' | uppercase }}</span> <strong class="text-muted detalle-cantidad">{{ Util.SumaParos | number }}</strong>
+                    <label class="c01971 c01973 c01969">{{ 'Paros asignados' | uppercase }} <strong class="text-muted" style="padding-left: 0.7rem;">{{ Util.SumaParos | number }}</strong></label>
+
+                    @*<span class="text-muted" ng-class="{'mdb-text-danger': Util.CalculoHorasParo < Util.SumaParos }" style="font-size: 12px;">{{ 'paros asignados' | uppercase }}</span> <strong class="text-muted detalle-cantidad">{{ Util.SumaParos | number }}</strong>*@
                 </div>
                 <div layout="row" flex>
-                    <span class="text-muted" style="font-size: 12px;">{{ 'Sin causa asignada' | uppercase }}</span> <strong class="text-muted detalle-cantidad">{{ Util.ParoSinCausaAsignada | number }}</strong>
+                    <label class="c01971 c01973 c01969">{{ 'Sin causa asignada' | uppercase }} <strong class="text-muted" style="padding-left: 0.7rem;">{{ Util.ParoSinCausaAsignada | number }}</strong></label>
+
+                    @*<span class="text-muted" style="font-size: 12px;">{{ 'Sin causa asignada' | uppercase }}</span> <strong class="text-muted detalle-cantidad">{{ Util.ParoSinCausaAsignada | number }}</strong>*@
                 </div>
             </div>
             <md-content class="" layout="column" style="margin-top: 1rem;">
@@ -436,15 +458,20 @@
                     </button>
                 </md-chips>
             </md-content>
-            <span class="text-muted" ng-show="ListaParosElegidos.length > 0" style="margin-left: 0rem; margin-top: 2rem;" ng-cloak>
+            <small class="text-muted" ng-show="ListaParosElegidos.length > 0" style="margin-left: 0.5rem; margin-top: 2rem;" ng-cloak>
                 {{ ListaParosElegidos.length }} {{ ListaParosElegidos.length === 1 ? 'paro seleccionado' : 'paros seleccionados' }}
-            </span>
-            <span class="text-muted" ng-show="ListaParosElegidos.length === 0" style="padding-bottom: 2rem;">No has seleccionado paros aún</span>
+            </small>
+            <span class="text-muted" ng-show="Util.Estado === Util.Estados.CON_PAROS && ListaParosElegidos.length === 0" style="padding-bottom: 2rem;">No has seleccionado paros aún</span>
         </md-card-content>
         <md-card-actions>
             <div layout="column" layout-gt-xs="row" layout-align="start center">
                 <div flex flex-gt-xs="50" layout-align="start center">
-                    <strong style="padding-left: 2.5rem;" ng-class="{'mdb-text-danger': Util.CalculoHorasParo < Util.SumaParos }" ng-show="Util.CalculoHorasParo < Util.SumaParos"><md-icon class="text-danger" md-svg-src="../../Content/Icons/report_problem.svg"></md-icon>&nbsp;&nbsp;&nbsp;El límite de paros es de {{ Util.CalculoHorasParo }} </strong>
+                    <strong style="padding-left: 2.5rem;" 
+                            ng-class="{'mdb-text-danger': Util.CalculoHorasParo < Util.SumaParos }" 
+                            ng-show="Util.Estado > 0 && Util.CalculoHorasParo < Util.SumaParos">
+                        <md-icon class="text-danger" md-svg-src="../../Content/Icons/report_problem.svg"></md-icon>
+                    &nbsp;&nbsp;&nbsp;El límite de paros es de {{ Util.CalculoHorasParo }} 
+                    </strong>
                 </div>
                 <div flex flex-gt-xs="50" layout-gt-xs="row" layout-align="end center">
                     <md-button id="btnAddParo" md-no-ink class="md-primary" ng-click="agregarParo($event)" ng-show="DatosGenerales.IndiceProceso !== null && (Util.CalculoHorasParo >= Util.SumaParos) && Util.EstadoHorasParo">
@@ -455,32 +482,15 @@
             </div>
         </md-card-actions>
     </md-card>
-    <div layout="column" layout-gt-xs="row" layout-align="start center" flex flex-gt-xs>
-        <div flex flex-gt-xs="50" layout-align="start center">
-            @*<md-button class="md-raised md-primary" ng-click="Inicializar()" layout-align="start" style="padding-left: 2rem; padding-right: 2rem;">
+    <div layout="column" layout-gt-xs="row" layout-align="center center" flex flex-gt-xs style="margin-top: 1rem;">
+        
+        <div flex flex-gt-xs="50" layout-gt-xs="row" layout-align="center center">
+            <md-button ng-click="Guardar()" 
+                       ng-disabled="ValidacionBotonGuardar()"
+                       class="md-primary">
                 <md-icon md-svg-icon="md-save" style="margin-right: 0.5rem;"></md-icon>
-                Guardar indicador
-            </md-button>*@
-        </div>
-        <div flex flex-gt-xs="50" layout-gt-xs="row" layout-align="end center">
-            <md-button ng-click="AgregarRechazo()" class="md-primary">
-                <md-icon md-svg-icon="md-save"  style="margin-right: 0.5rem;"></md-icon>
                 Guardar indicador
             </md-button>
         </div>
     </div>
 </div>
-
-
-@*
-- AÑADIR UN SISTEMA DE ESTADOS PARA EL CÁLCULO DE LAS HORAS PARO
-ESTADO 0: SIN ESTADO
-ESTADO 1: CORRETO
-ESTADO -1: CORREGIR LAS PIEZAS PRODUCIDAS
-ESTADO 2: AGREGAR MINUTOS DE PAROS
-
-- CAMBIAR A ESTADO 0 CUANDO ALGUNO DE LOS 3 VALORES PARA EL CALCULO DE HORAS PARO NO ESTÉN
-    - RESETEAR RECHAZOS Y PAROS
-    
-*@
-
