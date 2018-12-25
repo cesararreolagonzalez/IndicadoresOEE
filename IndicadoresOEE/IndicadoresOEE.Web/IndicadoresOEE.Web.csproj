@@ -254,6 +254,7 @@
     <Content Include="Scripts\angular.min.js" />
     <Content Include="Scripts\app\app.js" />
     <Content Include="Scripts\app\constants\AplicacionConstant.js" />
+    <Content Include="Scripts\app\controllers\ReporteIndicadorController.js" />
     <Content Include="Scripts\app\controllers\CapturaIndicadorController.js" />
     <Content Include="Scripts\app\controllers\CuentaController.js" />
     <Content Include="Scripts\app\directives\FormatoNumericoDirective.js" />

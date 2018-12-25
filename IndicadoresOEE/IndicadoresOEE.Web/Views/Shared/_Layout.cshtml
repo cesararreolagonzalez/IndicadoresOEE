@@ -43,15 +43,31 @@
 
                 <!-- Dropdown -->
                 <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true"
-                       aria-expanded="false">Indicadores</a>
-                    <div class="dropdown-menu dropdown-primary" aria-labelledby="navbarDropdownMenuLink">
+                    <a class="nav-link dropdown-toggle" id="capturaIndicadoresMenu" data-toggle="dropdown" aria-haspopup="true"
+                       aria-expanded="false">Captura de indicadores</a>
+                    <div class="dropdown-menu dropdown-primary" aria-labelledby="capturaIndicadoresMenu">
                         @Html.ActionLink("Captura de indicadores", "Captura", "Indicador", null, new { @class = "dropdown-item" })
                         @Html.ActionLink("Captura masiva de indicadores", "CapturaMasiva", "Indicador", null, new { @class = "dropdown-item" })
-                        @Html.ActionLink("Reporte de Indicadores", "Reporte", "Indicador", null, new { @class = "dropdown-item" })
                     </div>
                 </li>
 
+                <!-- Dropdown -->
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" id="reporteMenu" data-toggle="dropdown" aria-haspopup="true"
+                       aria-expanded="false">Reportes</a>
+                    <div class="dropdown-menu dropdown-primary" aria-labelledby="reporteMenu">
+                        @Html.ActionLink("Reporte de indicadores", "Reporte", "Indicador", null, new { @class = "dropdown-item" })
+                    </div>
+                </li>
+
+                <!-- Dropdown -->
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" id="reporteMenu" data-toggle="dropdown" aria-haspopup="true"
+                       aria-expanded="false">Gráficas</a>
+                    <div class="dropdown-menu dropdown-primary" aria-labelledby="reporteMenu">
+                        @Html.ActionLink("Gráfoa de indicadores", "Reporte", "Indicador", null, new { @class = "dropdown-item" })
+                    </div>
+                </li>
             </ul>
 
             @Html.Partial("_LoginPartial")

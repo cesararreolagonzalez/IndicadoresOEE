@@ -3,7 +3,182 @@
     ViewBag.Title = "Reporte";
 }
 
-<h2 style=" color: rgb(63, 81, 181); font-weight: 400; letter-spacing: .5px; text-align: center; margin-top: 5rem; margin-bottom: 3rem;">
-    Reporte de indicadores
-</h2>
+<div ng-controller="ReporteIndicadorController" ng-cloak>
+    <h4 style="color: rgb(63, 81, 181); font-weight: 700; letter-spacing: .7px; text-align: left; margin-bottom: 1rem; padding: 0.5rem !important; margin-bottom: 1rem; margin-top: 1rem;">
+        Reporte de indicadores
+    </h4>
+
+    <md-card md-theme="default" ng-cloak style="min-width: 65rem !important; max-width: 65rem !important;">
+        <md-card-title>
+            <md-card-title-text>
+                <span class="md-title text-muted" style="padding-left: 2rem;"></span>
+                <span class="md-subhead"></span>
+            </md-card-title-text>
+        </md-card-title>
+
+        <md-card-content style="padding-left: 3rem !important; padding-right: 3rem !important; margin-top: 1rem; padding-bottom: 3rem !important;">
+            <div layout="column" layout-gt-xs="row">
+
+                <div flex flex-gt-xs="55" style="padding-right: 2rem !important;">
+                    <form name="datosIndicadorForm">
+
+                        <div layout="column" layout-gt-xs="row" flex-gt-sm>
+                            <md-input-container class="md-block" flex-gt-sm>
+                                <label>Centro</label>
+                                <md-select id="centroSeleccionable"
+                                           name="centroSeleccionable"
+                                           md-on-open="ObtenerCentros()"
+                                           md-on-close="ResetearTerminoBusqueda()"
+                                           ng-model="DatosGenerales.IndiceCentro"
+                                           md-container-class="selectdemoSelectHeader"
+                                           ng-cloak>
+                                    <md-select-header class="demo-select-header">
+                                        <input ng-model="TerminoBusqueda"
+                                               type="search"
+                                               placeholder="Busca un centro"
+                                               class="demo-header-searchbox md-text">
+                                    </md-select-header>
+                                    <md-optgroup label="Centros disponibles">
+                                        <md-option ng-repeat="Centro in ListaCentros | filter:TerminoBusqueda" ng-value="Centro.Indice">
+                                            {{ Centro.Nombre }}
+                                        </md-option>
+                                    </md-optgroup>
+                                </md-select>
+                            </md-input-container>
+                        </div>
+                        <div layout="column" layout-gt-xs="row" flex-gt-sm>
+                            <md-input-container class="md-block" flex-gt-sm>
+                                <label>Departamento</label>
+                                <md-select id="departamentoSeleccionable"
+                                           name="departamentoSeleccionable"
+                                           ng-disabled="DatosGenerales.IndiceCentro === null"
+                                           md-on-open="ObtenerDepartamentos()"
+                                           md-on-close="ResetearTerminoBusqueda()"
+                                           ng-model="DatosGenerales.IndiceDepartamento"
+                                           md-container-class="selectdemoSelectHeader"
+                                           ng-cloak>
+                                    <md-select-header class="demo-select-header">
+                                        <input ng-model="TerminoBusqueda"
+                                               type="search"
+                                               placeholder="Busca un departamento"
+                                               class="demo-header-searchbox md-text">
+                                    </md-select-header>
+                                    <md-optgroup label="Centros disponibles">
+                                        <md-option ng-repeat="Departamento in ListaDepartamentos | filter:TerminoBusqueda" ng-value="Departamento.Indice">
+                                            {{ Departamento.Nombre }}
+                                        </md-option>
+                                    </md-optgroup>
+                                </md-select>
+                            </md-input-container>
+                        </div>
+                        <div layout="column" layout-gt-xs="row" flex-gt-sm>
+                            <md-input-container class="md-block" flex-gt-sm>
+                                <label>Línea</label>
+                                <md-select id="lineaSeleccionable"
+                                           name="lineaSeleccionable"
+                                           ng-disabled="DatosGenerales.IndiceDepartamento === null"
+                                           md-on-open="ObtenerLineas()"
+                                           md-on-close="ResetearTerminoBusqueda()"
+                                           ng-model="DatosGenerales.IndiceLinea"
+                                           md-container-class="selectdemoSelectHeader"
+                                           ng-cloak>
+                                    <md-select-header class="demo-select-header">
+                                        <input ng-model="TerminoBusqueda"
+                                               type="search"
+                                               placeholder="Busca una línea"
+                                               class="demo-header-searchbox md-text">
+                                    </md-select-header>
+                                    <md-optgroup label="Lineas disponibles">
+                                        <md-option ng-repeat="Linea in ListaLineas | filter:TerminoBusqueda" ng-value="Linea.Indice">
+                                            {{ Linea.Nombre }}
+                                        </md-option>
+                                    </md-optgroup>
+                                </md-select>
+                            </md-input-container>
+                        </div>
+                        <div layout="column" layout-gt-xs="row" flex-gt-sm>
+                            <md-input-container class="md-block" flex-gt-sm>
+                                <label>Proceso</label>
+                                <md-select id="procesoSeleccionable"
+                                           name="procesoSeleccionable"
+                                           ng-disabled="DatosGenerales.IndiceLinea === null"
+                                           md-on-open="ObtenerProcesos()"
+                                           md-on-close="ResetearTerminoBusqueda()"
+                                           ng-model="DatosGenerales.IndiceProceso"
+                                           md-container-class="selectdemoSelectHeader"
+                                           ng-cloak>
+                                    <md-select-header class="demo-select-header">
+                                        <input ng-model="TerminoBusqueda"
+                                               type="search"
+                                               placeholder="Busca un proceso"
+                                               class="demo-header-searchbox md-text">
+                                    </md-select-header>
+                                    <md-optgroup label="Lineas disponibles">
+                                        <md-option ng-repeat="Proceso in ListaProcesos | filter:TerminoBusqueda" ng-value="Proceso.Indice">
+                                            {{ Proceso.Nombre }}
+                                        </md-option>
+                                    </md-optgroup>
+                                </md-select>
+                            </md-input-container>
+                        </div>
+                        <div layout="column" layout-gt-xs="row" flex-gt-sm>
+                            <md-input-container class="md-block" flex-gt-sm>
+                                <label>Velocidad</label>
+                                <md-select id="procesoSeleccionable"
+                                           name="procesoSeleccionable"
+                                           ng-disabled="DatosGenerales.IndiceProceso === null"
+                                           md-on-open="ObtenerVelocidades()"
+                                           md-on-close="ResetearTerminoBusqueda()"
+                                           ng-model="DatosGenerales.IndiceVelocidad"
+                                           md-container-class="selectdemoSelectHeader"
+                                           ng-cloak>
+                                    <md-select-header class="demo-select-header">
+                                        <input ng-model="TerminoBusqueda"
+                                               type="search"
+                                               placeholder="Busca un proceso"
+                                               class="demo-header-searchbox md-text">
+                                    </md-select-header>
+                                    <md-optgroup label="Velocidades disponibles">
+                                        <md-option ng-repeat="Velocidad in ListaVelocidades | filter:TerminoBusqueda" ng-value="Velocidad.Indice">
+                                            {{ Velocidad.Nombre }}
+                                        </md-option>
+                                    </md-optgroup>
+                                </md-select>
+                            </md-input-container>
+                        </div>
+
+                    </form>
+                </div>
+                <div flex flex-gt-xs="45" style="padding-left: 2rem !important;" layout="column" layout-align="center center">
+                    <div layout-gt-sm="row" layout-align="start center" flex-gt-sm>
+                        <div layout="column" flex-order="1" flex-order-gt-sm="0">
+                            <md-subheader style="background: #FFF !important; padding-left: 3rem;">Desde</md-subheader>
+                            <md-datepicker ng-model="DatosGenerales.FechaInicial" md-placeholder="Desde"></md-datepicker>
+                        </div>
+                        <div layout="column" flex-order="1" flex-order-gt-sm="1">
+                            <md-subheader style="background: #FFF !important; padding-left: 3rem;">Hasta</md-subheader>
+                            <md-datepicker ng-model="DatosGenerales.FechaFinal" md-placeholder="Hasta"></md-datepicker>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </md-card-content>
+        <md-card-actions style="background-color: #FFF !important; padding-left: 2rem; padding-right: 2rem;">
+            <div layout="column" layout-gt-xs="row" layout-align="start center" flex flex-gt-xs>
+                <div flex flex-gt-xs="50" layout-align="start center">
+                    <md-button ng-click="Inicializar()" layout-align="start">
+                        Inicializar
+                    </md-button>
+                </div>
+                <div flex flex-gt-xs="50" layout-gt-xs="row" layout-align="end center">
+                    <md-button ng-click="BuscarIndicadores()" layout-align="end" class="md-primary"
+                               ng-disabled="DatosGenerales.IndiceCentro === null">
+                        <md-icon md-svg-icon="md-search" style="margin-right: 0.2rem;"></md-icon>
+                        Buscar
+                    </md-button>
+                </div>
+            </div>
+        </md-card-actions>
+    </md-card>
+</div>
 
