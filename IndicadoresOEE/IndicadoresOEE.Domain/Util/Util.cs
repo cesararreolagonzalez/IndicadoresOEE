@@ -37,8 +37,8 @@
                 Minuto = indicadorBD.fecha_hora.GetValueOrDefault().Minute,
                 Turno = indicadorBD.turno,
                 Ciclo = int.Parse(string.IsNullOrEmpty(indicadorBD.ciclo) ? "0" : indicadorBD.ciclo),
-                Paros = indicadorBD.Indicador_Paro.ToList().Select(c => new ParoModel { Indice = c.id_paro, Cantidad = int.Parse(c.cantidad.GetValueOrDefault().ToString()), Folio = c.Folio }).ToList(),
-                Rechazos = indicadorBD.Indicador_Rechazo.ToList().Select(c => new RechazoModel { Indice = c.id_rechazo, Cantidad = int.Parse(c.cantidad.GetValueOrDefault().ToString()) }).ToList()
+                ListaParos = indicadorBD.Indicador_Paro.ToList().Select(c => new ParoModel { Indice = c.id_paro, Cantidad = int.Parse(c.cantidad.GetValueOrDefault().ToString()), Folio = c.Folio }).ToList(),
+                ListaRechazos = indicadorBD.Indicador_Rechazo.ToList().Select(c => new RechazoModel { Indice = c.id_rechazo, Cantidad = int.Parse(c.cantidad.GetValueOrDefault().ToString()) }).ToList()
             };
 
             return Indicador;
@@ -74,8 +74,8 @@
                 Minuto = indicadorBD.Fecha.GetValueOrDefault().Minute,
                 Turno = indicadorBD.Turno,
                 Ciclo = int.Parse(string.IsNullOrEmpty(indicadorBD.Ciclo) ? "0" : indicadorBD.Ciclo),
-                Paros = indicadorBD.IndicadorParo_V2.ToList().Select(c => new ParoModel { Indice = c.IndiceParo, Cantidad = c.Cantidad, Folio = c.Folio, EsParoPlanificado = c.EsParoPlanificado }).ToList(),
-                Rechazos = indicadorBD.IndicadorRechazo_V2.ToList().Select(c => new RechazoModel { Indice = c.IndiceRechazo, Cantidad = c.Cantidad }).ToList(),
+                ListaParos = indicadorBD.IndicadorParo_V2.ToList().Select(c => new ParoModel { Indice = c.IndiceParo, Cantidad = c.Cantidad, Folio = c.Folio, EsParoPlanificado = c.EsParoPlanificado }).ToList(),
+                ListaRechazos = indicadorBD.IndicadorRechazo_V2.ToList().Select(c => new RechazoModel { Indice = c.IndiceRechazo, Cantidad = c.Cantidad }).ToList(),
             };
 
             return Indicador;
@@ -133,8 +133,8 @@
                 Minuto = columna.Fecha.Minute,
                 Turno = columna.Turno,
                 Ciclo = columna.Ciclo,
-                Paros = columna.Paros,
-                Rechazos = columna.Rechazos
+                ListaParos = columna.Paros,
+                ListaRechazos = columna.Rechazos
             })
             .ToList();
 

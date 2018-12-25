@@ -17,7 +17,8 @@ namespace IndicadoresOEE.Domain
     
     public partial class PrimaryConnection : DbContext
     {
-        public PrimaryConnection() : base("name=PrimaryConnection")
+        public PrimaryConnection()
+            : base("name=PrimaryConnection")
         {
         }
     
@@ -48,7 +49,6 @@ namespace IndicadoresOEE.Domain
         public virtual DbSet<Logs> Logs { get; set; }
         public virtual DbSet<Paro> Paro { get; set; }
         public virtual DbSet<ParosPlaneadosMes_V2> ParosPlaneadosMes_V2 { get; set; }
-        public virtual DbSet<ParosPlanificados_V2> ParosPlanificados_V2 { get; set; }
         public virtual DbSet<Perfil> Perfil { get; set; }
         public virtual DbSet<Planta> Planta { get; set; }
         public virtual DbSet<Proceso> Proceso { get; set; }
@@ -74,6 +74,8 @@ namespace IndicadoresOEE.Domain
         public virtual DbSet<vw_paros_V2> vw_paros_V2 { get; set; }
         public virtual DbSet<vw_usuarios> vw_usuarios { get; set; }
         public virtual DbSet<vw_usuarios_procesos> vw_usuarios_procesos { get; set; }
+        public virtual DbSet<BitacoraIndicador> BitacoraIndicador { get; set; }
+        public virtual DbSet<BitacoraMovimientosIndicador> BitacoraMovimientosIndicador { get; set; }
     
         [DbFunction("PrimaryConnection", "fn_acum_paros")]
         public virtual IQueryable<fn_acum_paros_Result> fn_acum_paros(Nullable<System.DateTime> fecha_inicial, Nullable<System.DateTime> fecha_final, string turno_inicial, string turno_final)
@@ -124,29 +126,33 @@ namespace IndicadoresOEE.Domain
         }
     
         [DbFunction("PrimaryConnection", "fn_sumatoria_paro")]
-        public virtual IQueryable<fn_sumatoria_paro_Result> fn_sumatoria_paro(string fecha_Inicio, string fecha_Fin, string turno_Inicio, string turno_Fin, Nullable<long> velocidad)
+        public virtual IQueryable<fn_sumatoria_paro_Result> fn_sumatoria_paro(string fechaInicio, string fechaFin, string turnoInicio, string turnoFin, Nullable<long> indiceVelocidad, string listaIndicesProcesos)
         {
-            var fecha_InicioParameter = fecha_Inicio != null ?
-                new ObjectParameter("Fecha_Inicio", fecha_Inicio) :
-                new ObjectParameter("Fecha_Inicio", typeof(string));
+            var fechaInicioParameter = fechaInicio != null ?
+                new ObjectParameter("FechaInicio", fechaInicio) :
+                new ObjectParameter("FechaInicio", typeof(string));
     
-            var fecha_FinParameter = fecha_Fin != null ?
-                new ObjectParameter("Fecha_Fin", fecha_Fin) :
-                new ObjectParameter("Fecha_Fin", typeof(string));
+            var fechaFinParameter = fechaFin != null ?
+                new ObjectParameter("FechaFin", fechaFin) :
+                new ObjectParameter("FechaFin", typeof(string));
     
-            var turno_InicioParameter = turno_Inicio != null ?
-                new ObjectParameter("Turno_Inicio", turno_Inicio) :
-                new ObjectParameter("Turno_Inicio", typeof(string));
+            var turnoInicioParameter = turnoInicio != null ?
+                new ObjectParameter("TurnoInicio", turnoInicio) :
+                new ObjectParameter("TurnoInicio", typeof(string));
     
-            var turno_FinParameter = turno_Fin != null ?
-                new ObjectParameter("Turno_Fin", turno_Fin) :
-                new ObjectParameter("Turno_Fin", typeof(string));
+            var turnoFinParameter = turnoFin != null ?
+                new ObjectParameter("TurnoFin", turnoFin) :
+                new ObjectParameter("TurnoFin", typeof(string));
     
-            var velocidadParameter = velocidad.HasValue ?
-                new ObjectParameter("velocidad", velocidad) :
-                new ObjectParameter("velocidad", typeof(long));
+            var indiceVelocidadParameter = indiceVelocidad.HasValue ?
+                new ObjectParameter("IndiceVelocidad", indiceVelocidad) :
+                new ObjectParameter("IndiceVelocidad", typeof(long));
     
-            return ((IObjectContextAdapter)this).ObjectContext.CreateQuery<fn_sumatoria_paro_Result>("[PrimaryConnection].[fn_sumatoria_paro](@Fecha_Inicio, @Fecha_Fin, @Turno_Inicio, @Turno_Fin, @velocidad)", fecha_InicioParameter, fecha_FinParameter, turno_InicioParameter, turno_FinParameter, velocidadParameter);
+            var listaIndicesProcesosParameter = listaIndicesProcesos != null ?
+                new ObjectParameter("ListaIndicesProcesos", listaIndicesProcesos) :
+                new ObjectParameter("ListaIndicesProcesos", typeof(string));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.CreateQuery<fn_sumatoria_paro_Result>("[PrimaryConnection].[fn_sumatoria_paro](@FechaInicio, @FechaFin, @TurnoInicio, @TurnoFin, @IndiceVelocidad, @ListaIndicesProcesos)", fechaInicioParameter, fechaFinParameter, turnoInicioParameter, turnoFinParameter, indiceVelocidadParameter, listaIndicesProcesosParameter);
         }
     
         [DbFunction("PrimaryConnection", "fn_sumatoria_paro_folio")]
@@ -254,29 +260,33 @@ namespace IndicadoresOEE.Domain
         }
     
         [DbFunction("PrimaryConnection", "fn_sumatoria_paro_V2")]
-        public virtual IQueryable<fn_sumatoria_paro_V2_Result> fn_sumatoria_paro_V2(string fecha_Inicio, string fecha_Fin, string turno_Inicio, string turno_Fin, Nullable<long> velocidad)
+        public virtual IQueryable<fn_sumatoria_paro_V2_Result> fn_sumatoria_paro_V2(string fechaInicio, string fechaFin, string turnoInicio, string turnoFin, Nullable<long> indiceVelocidad, string listaIndicesProcesos)
         {
-            var fecha_InicioParameter = fecha_Inicio != null ?
-                new ObjectParameter("Fecha_Inicio", fecha_Inicio) :
-                new ObjectParameter("Fecha_Inicio", typeof(string));
+            var fechaInicioParameter = fechaInicio != null ?
+                new ObjectParameter("FechaInicio", fechaInicio) :
+                new ObjectParameter("FechaInicio", typeof(string));
     
-            var fecha_FinParameter = fecha_Fin != null ?
-                new ObjectParameter("Fecha_Fin", fecha_Fin) :
-                new ObjectParameter("Fecha_Fin", typeof(string));
+            var fechaFinParameter = fechaFin != null ?
+                new ObjectParameter("FechaFin", fechaFin) :
+                new ObjectParameter("FechaFin", typeof(string));
     
-            var turno_InicioParameter = turno_Inicio != null ?
-                new ObjectParameter("Turno_Inicio", turno_Inicio) :
-                new ObjectParameter("Turno_Inicio", typeof(string));
+            var turnoInicioParameter = turnoInicio != null ?
+                new ObjectParameter("TurnoInicio", turnoInicio) :
+                new ObjectParameter("TurnoInicio", typeof(string));
     
-            var turno_FinParameter = turno_Fin != null ?
-                new ObjectParameter("Turno_Fin", turno_Fin) :
-                new ObjectParameter("Turno_Fin", typeof(string));
+            var turnoFinParameter = turnoFin != null ?
+                new ObjectParameter("TurnoFin", turnoFin) :
+                new ObjectParameter("TurnoFin", typeof(string));
     
-            var velocidadParameter = velocidad.HasValue ?
-                new ObjectParameter("velocidad", velocidad) :
-                new ObjectParameter("velocidad", typeof(long));
+            var indiceVelocidadParameter = indiceVelocidad.HasValue ?
+                new ObjectParameter("IndiceVelocidad", indiceVelocidad) :
+                new ObjectParameter("IndiceVelocidad", typeof(long));
     
-            return ((IObjectContextAdapter)this).ObjectContext.CreateQuery<fn_sumatoria_paro_V2_Result>("[PrimaryConnection].[fn_sumatoria_paro_V2](@Fecha_Inicio, @Fecha_Fin, @Turno_Inicio, @Turno_Fin, @velocidad)", fecha_InicioParameter, fecha_FinParameter, turno_InicioParameter, turno_FinParameter, velocidadParameter);
+            var listaIndicesProcesosParameter = listaIndicesProcesos != null ?
+                new ObjectParameter("ListaIndicesProcesos", listaIndicesProcesos) :
+                new ObjectParameter("ListaIndicesProcesos", typeof(string));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.CreateQuery<fn_sumatoria_paro_V2_Result>("[PrimaryConnection].[fn_sumatoria_paro_V2](@FechaInicio, @FechaFin, @TurnoInicio, @TurnoFin, @IndiceVelocidad, @ListaIndicesProcesos)", fechaInicioParameter, fechaFinParameter, turnoInicioParameter, turnoFinParameter, indiceVelocidadParameter, listaIndicesProcesosParameter);
         }
     
         public virtual int spr_grafica_indicadores_paros_programados(string fechainicial, string fechafinal, string turnoinicial, string turnofinal, string agrupador, string conturno, Nullable<int> velocidad, string procesos)

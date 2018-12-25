@@ -20,6 +20,7 @@ namespace IndicadoresOEE.Domain
             this.Bitacora = new HashSet<Bitacora>();
             this.UsuarioCapacidad = new HashSet<UsuarioCapacidad>();
             this.Proceso = new HashSet<Proceso>();
+            this.BitacoraIndicador = new HashSet<BitacoraIndicador>();
         }
     
         public long id_usuario { get; set; }
@@ -41,5 +42,7 @@ namespace IndicadoresOEE.Domain
         public virtual ICollection<UsuarioCapacidad> UsuarioCapacidad { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<Proceso> Proceso { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<BitacoraIndicador> BitacoraIndicador { get; set; }
     }
 }

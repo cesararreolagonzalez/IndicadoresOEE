@@ -4,7 +4,7 @@
   <edmx:Runtime>
     <!-- SSDL content -->
     <edmx:StorageModels>
-      <Schema Namespace="IndicadoresOEEModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+    <Schema Namespace="IndicadoresOEEModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
         <EntityType Name="Almacen">
           <Key>
             <PropertyRef Name="id_almacen" />
@@ -33,6 +33,23 @@
           <Property Name="idUsuario" Type="bigint" />
           <Property Name="seccion" Type="varchar" MaxLength="100" />
           <Property Name="fecha" Type="datetime" />
+        </EntityType>
+        <EntityType Name="BitacoraIndicador">
+          <Key>
+            <PropertyRef Name="Indice" />
+          </Key>
+          <Property Name="Indice" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="IndiceIndicador" Type="bigint" Nullable="false" />
+          <Property Name="IndiceUsuario" Type="bigint" Nullable="false" />
+          <Property Name="IndiceMovimiento" Type="int" Nullable="false" />
+          <Property Name="Fecha" Type="datetime" Nullable="false" />
+        </EntityType>
+        <EntityType Name="BitacoraMovimientosIndicador">
+          <Key>
+            <PropertyRef Name="Indice" />
+          </Key>
+          <Property Name="Indice" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Nombre" Type="nvarchar" MaxLength="256" Nullable="false" />
         </EntityType>
         <EntityType Name="Centro">
           <Key>
@@ -282,14 +299,6 @@ advertencia 6002: La tabla o vista 'INDICADORES_OEEV2.dbo.Indicador_Servicio' no
           <Property Name="IndiceProceso" Type="bigint" />
           <Property Name="IndiceParo" Type="bigint" />
         </EntityType>
-        <EntityType Name="ParosPlanificados_V2">
-          <Key>
-            <PropertyRef Name="Indice" />
-          </Key>
-          <Property Name="Indice" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
-          <Property Name="ParoPlanificado" Type="nvarchar" MaxLength="50" Nullable="false" />
-          <Property Name="Activo" Type="bit" Nullable="false" />
-        </EntityType>
         <EntityType Name="Perfil">
           <Key>
             <PropertyRef Name="id_perfil" />
@@ -387,9 +396,12 @@ advertencia 6002: La tabla o vista 'INDICADORES_OEEV2.dbo.Indicador_Servicio' no
           <Property Name="descripcion" Type="varchar" MaxLength="50" />
           <Property Name="url" Type="varchar" MaxLength="50" />
         </EntityType>
+        <!--Errores durante la generación:
+advertencia 6002: La tabla o vista 'INDICADORES_OEEV2.dbo.Servicio' no tiene definida ninguna clave principal. Se ha inferido la clave y la definición se creado como una vista o tabla de solo lectura.-->
         <EntityType Name="Servicio">
           <Key>
             <PropertyRef Name="id_servicio" />
+            
           </Key>
           <Property Name="id_servicio" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="nombre" Type="varchar" MaxLength="50" Nullable="false" />
@@ -735,6 +747,30 @@ advertencia 6002: La tabla o vista 'INDICADORES_OEEV2.dbo.vw_usuarios_procesos' 
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="FK_BitacoraIndicador_BitacoraMovimientosIndicador">
+          <End Role="BitacoraMovimientosIndicador" Type="Self.BitacoraMovimientosIndicador" Multiplicity="1" />
+          <End Role="BitacoraIndicador" Type="Self.BitacoraIndicador" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="BitacoraMovimientosIndicador">
+              <PropertyRef Name="Indice" />
+            </Principal>
+            <Dependent Role="BitacoraIndicador">
+              <PropertyRef Name="IndiceMovimiento" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_BitacoraIndicador_Usuario">
+          <End Role="Usuario" Type="Self.Usuario" Multiplicity="1" />
+          <End Role="BitacoraIndicador" Type="Self.BitacoraIndicador" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Usuario">
+              <PropertyRef Name="id_usuario" />
+            </Principal>
+            <Dependent Role="BitacoraIndicador">
+              <PropertyRef Name="IndiceUsuario" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="FK_Centro_ParosPlaneadosV2">
           <End Role="Centro" Type="Self.Centro" Multiplicity="0..1" />
           <End Role="ParosPlaneadosMes_V2" Type="Self.ParosPlaneadosMes_V2" Multiplicity="*" />
@@ -959,7 +995,7 @@ advertencia 6002: La tabla o vista 'INDICADORES_OEEV2.dbo.vw_usuarios_procesos' 
               <PropertyRef Name="id_paro" />
             </Principal>
             <Dependent Role="IndicadorParo_V2">
-              <PropertyRef Name="IndiceIndicador" />
+              <PropertyRef Name="IndiceParo" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -1288,11 +1324,12 @@ advertencia 6002: La tabla o vista 'INDICADORES_OEEV2.dbo.vw_usuarios_procesos' 
         </Function>
         <Function Name="fn_diagramobjects" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="true" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" ReturnType="int" />
         <Function Name="fn_sumatoria_paro" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="true" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
-          <Parameter Name="Fecha_Inicio" Type="varchar" Mode="In" />
-          <Parameter Name="Fecha_Fin" Type="varchar" Mode="In" />
-          <Parameter Name="Turno_Inicio" Type="char" Mode="In" />
-          <Parameter Name="Turno_Fin" Type="char" Mode="In" />
-          <Parameter Name="velocidad" Type="bigint" Mode="In" />
+          <Parameter Name="FechaInicio" Type="varchar" Mode="In" />
+          <Parameter Name="FechaFin" Type="varchar" Mode="In" />
+          <Parameter Name="TurnoInicio" Type="char" Mode="In" />
+          <Parameter Name="TurnoFin" Type="char" Mode="In" />
+          <Parameter Name="IndiceVelocidad" Type="bigint" Mode="In" />
+          <Parameter Name="ListaIndicesProcesos" Type="nvarchar(max)" Mode="In" />
           <ReturnType>
             <CollectionType>
               <RowType>
@@ -1399,11 +1436,12 @@ advertencia 6002: La tabla o vista 'INDICADORES_OEEV2.dbo.vw_usuarios_procesos' 
           </ReturnType>
         </Function>
         <Function Name="fn_sumatoria_paro_V2" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="true" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
-          <Parameter Name="Fecha_Inicio" Type="varchar" Mode="In" />
-          <Parameter Name="Fecha_Fin" Type="varchar" Mode="In" />
-          <Parameter Name="Turno_Inicio" Type="char" Mode="In" />
-          <Parameter Name="Turno_Fin" Type="char" Mode="In" />
-          <Parameter Name="velocidad" Type="bigint" Mode="In" />
+          <Parameter Name="FechaInicio" Type="varchar" Mode="In" />
+          <Parameter Name="FechaFin" Type="varchar" Mode="In" />
+          <Parameter Name="TurnoInicio" Type="char" Mode="In" />
+          <Parameter Name="TurnoFin" Type="char" Mode="In" />
+          <Parameter Name="IndiceVelocidad" Type="bigint" Mode="In" />
+          <Parameter Name="ListaIndicesProcesos" Type="nvarchar(max)" Mode="In" />
           <ReturnType>
             <CollectionType>
               <RowType>
@@ -1447,6 +1485,8 @@ advertencia 6002: La tabla o vista 'INDICADORES_OEEV2.dbo.vw_usuarios_procesos' 
           <EntitySet Name="Almacen" EntityType="Self.Almacen" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Almacen_UnidadMedida" EntityType="Self.Almacen_UnidadMedida" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Bitacora" EntityType="Self.Bitacora" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="BitacoraIndicador" EntityType="Self.BitacoraIndicador" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="BitacoraMovimientosIndicador" EntityType="Self.BitacoraMovimientosIndicador" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Centro" EntityType="Self.Centro" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Departamento" EntityType="Self.Departamento" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Equipo" EntityType="Self.Equipo" Schema="dbo" store:Type="Tables" />
@@ -1466,7 +1506,6 @@ advertencia 6002: La tabla o vista 'INDICADORES_OEEV2.dbo.vw_usuarios_procesos' 
           <EntitySet Name="Logs" EntityType="Self.Logs" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Paro" EntityType="Self.Paro" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="ParosPlaneadosMes_V2" EntityType="Self.ParosPlaneadosMes_V2" Schema="dbo" store:Type="Tables" />
-          <EntitySet Name="ParosPlanificados_V2" EntityType="Self.ParosPlanificados_V2" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Perfil" EntityType="Self.Perfil" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Perfil_Seccion" EntityType="Self.Perfil_Seccion" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Planta" EntityType="Self.Planta" Schema="dbo" store:Type="Tables" />
@@ -1478,7 +1517,6 @@ advertencia 6002: La tabla o vista 'INDICADORES_OEEV2.dbo.vw_usuarios_procesos' 
           <EntitySet Name="Proceso_Velocidad" EntityType="Self.Proceso_Velocidad" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Rechazo" EntityType="Self.Rechazo" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Seccion" EntityType="Self.Seccion" Schema="dbo" store:Type="Tables" />
-          <EntitySet Name="Servicio" EntityType="Self.Servicio" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="sysdiagrams" EntityType="Self.sysdiagrams" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="TipoAlmacen" EntityType="Self.TipoAlmacen" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="UnidadMedida" EntityType="Self.UnidadMedida" Schema="dbo" store:Type="Tables" />
@@ -1503,6 +1541,13 @@ advertencia 6002: La tabla o vista 'INDICADORES_OEEV2.dbo.vw_usuarios_procesos' 
     [Indicador_Servicio].[capacidad_historica] AS [capacidad_historica], 
     [Indicador_Servicio].[fecha_captura] AS [fecha_captura]
     FROM [dbo].[Indicador_Servicio] AS [Indicador_Servicio]</DefiningQuery>
+          </EntitySet>
+          <EntitySet Name="Servicio" EntityType="Self.Servicio" store:Type="Tables" store:Schema="dbo">
+            <DefiningQuery>SELECT 
+    [Servicio].[id_servicio] AS [id_servicio], 
+    [Servicio].[nombre] AS [nombre], 
+    [Servicio].[descripcion] AS [descripcion]
+    FROM [dbo].[Servicio] AS [Servicio]</DefiningQuery>
           </EntitySet>
           <EntitySet Name="vw_grafica_indicadores" EntityType="Self.vw_grafica_indicadores" store:Type="Views" store:Schema="dbo">
             <DefiningQuery>SELECT 
@@ -1693,6 +1738,14 @@ advertencia 6002: La tabla o vista 'INDICADORES_OEEV2.dbo.vw_usuarios_procesos' 
             <End Role="Usuario" EntitySet="Usuario" />
             <End Role="Bitacora" EntitySet="Bitacora" />
           </AssociationSet>
+          <AssociationSet Name="FK_BitacoraIndicador_BitacoraMovimientosIndicador" Association="Self.FK_BitacoraIndicador_BitacoraMovimientosIndicador">
+            <End Role="BitacoraMovimientosIndicador" EntitySet="BitacoraMovimientosIndicador" />
+            <End Role="BitacoraIndicador" EntitySet="BitacoraIndicador" />
+          </AssociationSet>
+          <AssociationSet Name="FK_BitacoraIndicador_Usuario" Association="Self.FK_BitacoraIndicador_Usuario">
+            <End Role="Usuario" EntitySet="Usuario" />
+            <End Role="BitacoraIndicador" EntitySet="BitacoraIndicador" />
+          </AssociationSet>
           <AssociationSet Name="FK_Centro_ParosPlaneadosV2" Association="Self.FK_Centro_ParosPlaneadosV2">
             <End Role="Centro" EntitySet="Centro" />
             <End Role="ParosPlaneadosMes_V2" EntitySet="ParosPlaneadosMes_V2" />
@@ -1866,8 +1919,7 @@ advertencia 6002: La tabla o vista 'INDICADORES_OEEV2.dbo.vw_usuarios_procesos' 
             <End Role="UsuarioCapacidad" EntitySet="UsuarioCapacidad" />
           </AssociationSet>
         </EntityContainer>
-      </Schema>
-    </edmx:StorageModels>
+      </Schema></edmx:StorageModels>
     <!-- CSDL content -->
     <edmx:ConceptualModels>
       <Schema Namespace="IndicadoresOEEModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
@@ -2142,6 +2194,7 @@ advertencia 6002: La tabla o vista 'INDICADORES_OEEV2.dbo.vw_usuarios_procesos' 
           <Property Name="EsParoPlanificado" Type="Boolean" Nullable="false" />
           <NavigationProperty Name="Indicador_V2" Relationship="Self.FK_IndicadorParoV2_IndicadorV2" FromRole="IndicadorParo_V2" ToRole="Indicador_V2" />
           <NavigationProperty Name="Paro" Relationship="Self.FK_IndicadorParoV2_Paro" FromRole="IndicadorParo_V2" ToRole="Paro" />
+          <NavigationProperty Name="Paro1" Relationship="IndicadoresOEEModel.FK_IndicadorParoV2_Paro1" FromRole="IndicadorParo_V2" ToRole="Paro" />
         </EntityType>
         <EntityType Name="IndicadorRechazo_V2">
           <Key>
@@ -2229,6 +2282,7 @@ advertencia 6002: La tabla o vista 'INDICADORES_OEEV2.dbo.vw_usuarios_procesos' 
           <NavigationProperty Name="Paro2" Relationship="Self.FK_Paro_Paro" FromRole="Paro1" ToRole="Paro" />
           <NavigationProperty Name="Proceso" Relationship="Self.FK_Paro_Proceso" FromRole="Paro" ToRole="Proceso" />
           <NavigationProperty Name="ParosPlaneadosMes_V2" Relationship="Self.FK_ParosPlaneadosPorMes_V2_Paro" FromRole="Paro" ToRole="ParosPlaneadosMes_V2" />
+          <NavigationProperty Name="IndicadorParo_V21" Relationship="IndicadoresOEEModel.FK_IndicadorParoV2_Paro1" FromRole="Paro" ToRole="IndicadorParo_V2" />
         </EntityType>
         <EntityType Name="ParosPlaneadosMes_V2">
           <Key>
@@ -2247,14 +2301,6 @@ advertencia 6002: La tabla o vista 'INDICADORES_OEEV2.dbo.vw_usuarios_procesos' 
           <NavigationProperty Name="Linea" Relationship="Self.FK_Linea_ParosPlaneadosV2" FromRole="ParosPlaneadosMes_V2" ToRole="Linea" />
           <NavigationProperty Name="Paro" Relationship="Self.FK_ParosPlaneadosPorMes_V2_Paro" FromRole="ParosPlaneadosMes_V2" ToRole="Paro" />
           <NavigationProperty Name="Proceso" Relationship="Self.FK_ParosPlaneadosPorMes_V2_Proceso" FromRole="ParosPlaneadosMes_V2" ToRole="Proceso" />
-        </EntityType>
-        <EntityType Name="ParosPlanificados_V2">
-          <Key>
-            <PropertyRef Name="Indice" />
-          </Key>
-          <Property Name="Indice" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="ParoPlanificado" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
-          <Property Name="Activo" Type="Boolean" Nullable="false" />
         </EntityType>
         <EntityType Name="Perfil">
           <Key>
@@ -2400,6 +2446,7 @@ advertencia 6002: La tabla o vista 'INDICADORES_OEEV2.dbo.vw_usuarios_procesos' 
           <NavigationProperty Name="Perfil" Relationship="Self.FK_Usuario_Perfil" FromRole="Usuario" ToRole="Perfil" />
           <NavigationProperty Name="UsuarioCapacidad" Relationship="Self.FK_UsuarioCapacidad_UsuarioCapacidad" FromRole="Usuario" ToRole="UsuarioCapacidad" />
           <NavigationProperty Name="Proceso" Relationship="Self.Proceso_Usuario" FromRole="Usuario" ToRole="Proceso" />
+          <NavigationProperty Name="BitacoraIndicador" Relationship="IndicadoresOEEModel.FK_BitacoraIndicador_Usuario" FromRole="Usuario" ToRole="BitacoraIndicador" />
         </EntityType>
         <EntityType Name="UsuarioCapacidad">
           <Key>
@@ -3172,7 +3219,6 @@ advertencia 6002: La tabla o vista 'INDICADORES_OEEV2.dbo.vw_usuarios_procesos' 
           <EntitySet Name="Logs" EntityType="Self.Logs" />
           <EntitySet Name="Paro" EntityType="Self.Paro" />
           <EntitySet Name="ParosPlaneadosMes_V2" EntityType="Self.ParosPlaneadosMes_V2" />
-          <EntitySet Name="ParosPlanificados_V2" EntityType="Self.ParosPlanificados_V2" />
           <EntitySet Name="Perfil" EntityType="Self.Perfil" />
           <EntitySet Name="Planta" EntityType="Self.Planta" />
           <EntitySet Name="Proceso" EntityType="Self.Proceso" />
@@ -3388,11 +3434,12 @@ advertencia 6002: La tabla o vista 'INDICADORES_OEEV2.dbo.vw_usuarios_procesos' 
             <Parameter Name="id_proceso" Mode="In" Type="Int64" />
           </FunctionImport>
           <FunctionImport Name="fn_sumatoria_paro" IsComposable="true" ReturnType="Collection(IndicadoresOEEModel.fn_sumatoria_paro_Result)">
-            <Parameter Name="Fecha_Inicio" Mode="In" Type="String" />
-            <Parameter Name="Fecha_Fin" Mode="In" Type="String" />
-            <Parameter Name="Turno_Inicio" Mode="In" Type="String" />
-            <Parameter Name="Turno_Fin" Mode="In" Type="String" />
-            <Parameter Name="velocidad" Mode="In" Type="Int64" />
+            <Parameter Name="FechaInicio" Mode="In" Type="String" />
+            <Parameter Name="FechaFin" Mode="In" Type="String" />
+            <Parameter Name="TurnoInicio" Mode="In" Type="String" />
+            <Parameter Name="TurnoFin" Mode="In" Type="String" />
+            <Parameter Name="IndiceVelocidad" Mode="In" Type="Int64" />
+            <Parameter Name="ListaIndicesProcesos" Mode="In" Type="String" />
           </FunctionImport>
           <FunctionImport Name="fn_sumatoria_paro_folio" IsComposable="true" ReturnType="Collection(IndicadoresOEEModel.fn_sumatoria_paro_folio_Result)">
             <Parameter Name="Fecha_Inicio" Mode="In" Type="String" />
@@ -3423,11 +3470,12 @@ advertencia 6002: La tabla o vista 'INDICADORES_OEEV2.dbo.vw_usuarios_procesos' 
             <Parameter Name="velocidad" Mode="In" Type="Int64" />
           </FunctionImport>
           <FunctionImport Name="fn_sumatoria_paro_V2" IsComposable="true" ReturnType="Collection(IndicadoresOEEModel.fn_sumatoria_paro_V2_Result)">
-            <Parameter Name="Fecha_Inicio" Mode="In" Type="String" />
-            <Parameter Name="Fecha_Fin" Mode="In" Type="String" />
-            <Parameter Name="Turno_Inicio" Mode="In" Type="String" />
-            <Parameter Name="Turno_Fin" Mode="In" Type="String" />
-            <Parameter Name="velocidad" Mode="In" Type="Int64" />
+            <Parameter Name="FechaInicio" Mode="In" Type="String" />
+            <Parameter Name="FechaFin" Mode="In" Type="String" />
+            <Parameter Name="TurnoInicio" Mode="In" Type="String" />
+            <Parameter Name="TurnoFin" Mode="In" Type="String" />
+            <Parameter Name="IndiceVelocidad" Mode="In" Type="Int64" />
+            <Parameter Name="ListaIndicesProcesos" Mode="In" Type="String" />
           </FunctionImport>
           <FunctionImport Name="spr_grafica_indicadores_paros_programados">
             <Parameter Name="fechainicial" Mode="In" Type="String" />
@@ -3453,7 +3501,77 @@ advertencia 6002: La tabla o vista 'INDICADORES_OEEV2.dbo.vw_usuarios_procesos' 
             <Parameter Name="procesos" Mode="In" Type="String" />
             <Parameter Name="paros" Mode="In" Type="String" />
           </FunctionImport>
+          <EntitySet Name="BitacoraIndicador" EntityType="IndicadoresOEEModel.BitacoraIndicador" />
+          <EntitySet Name="BitacoraMovimientosIndicador" EntityType="IndicadoresOEEModel.BitacoraMovimientosIndicador" />
+          <AssociationSet Name="FK_BitacoraIndicador_BitacoraMovimientosIndicador" Association="IndicadoresOEEModel.FK_BitacoraIndicador_BitacoraMovimientosIndicador">
+            <End Role="BitacoraMovimientosIndicador" EntitySet="BitacoraMovimientosIndicador" />
+            <End Role="BitacoraIndicador" EntitySet="BitacoraIndicador" />
+          </AssociationSet>
+          <AssociationSet Name="FK_BitacoraIndicador_Usuario" Association="IndicadoresOEEModel.FK_BitacoraIndicador_Usuario">
+            <End Role="Usuario" EntitySet="Usuario" />
+            <End Role="BitacoraIndicador" EntitySet="BitacoraIndicador" />
+          </AssociationSet>
+          <AssociationSet Name="FK_IndicadorParoV2_Paro1" Association="IndicadoresOEEModel.FK_IndicadorParoV2_Paro1">
+            <End Role="Paro" EntitySet="Paro" />
+            <End Role="IndicadorParo_V2" EntitySet="IndicadorParo_V2" />
+          </AssociationSet>
         </EntityContainer>
+        <EntityType Name="BitacoraIndicador">
+          <Key>
+            <PropertyRef Name="Indice" />
+          </Key>
+          <Property Name="Indice" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="IndiceIndicador" Type="Int64" Nullable="false" />
+          <Property Name="IndiceUsuario" Type="Int64" Nullable="false" />
+          <Property Name="IndiceMovimiento" Type="Int32" Nullable="false" />
+          <Property Name="Fecha" Type="DateTime" Nullable="false" Precision="3" />
+          <NavigationProperty Name="BitacoraMovimientosIndicador" Relationship="IndicadoresOEEModel.FK_BitacoraIndicador_BitacoraMovimientosIndicador" FromRole="BitacoraIndicador" ToRole="BitacoraMovimientosIndicador" />
+          <NavigationProperty Name="Usuario" Relationship="IndicadoresOEEModel.FK_BitacoraIndicador_Usuario" FromRole="BitacoraIndicador" ToRole="Usuario" />
+        </EntityType>
+        <EntityType Name="BitacoraMovimientosIndicador">
+          <Key>
+            <PropertyRef Name="Indice" />
+          </Key>
+          <Property Name="Indice" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Nombre" Type="String" Nullable="false" MaxLength="256" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="BitacoraIndicador" Relationship="IndicadoresOEEModel.FK_BitacoraIndicador_BitacoraMovimientosIndicador" FromRole="BitacoraMovimientosIndicador" ToRole="BitacoraIndicador" />
+        </EntityType>
+        <Association Name="FK_BitacoraIndicador_BitacoraMovimientosIndicador">
+          <End Type="IndicadoresOEEModel.BitacoraMovimientosIndicador" Role="BitacoraMovimientosIndicador" Multiplicity="1" />
+          <End Type="IndicadoresOEEModel.BitacoraIndicador" Role="BitacoraIndicador" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="BitacoraMovimientosIndicador">
+              <PropertyRef Name="Indice" />
+            </Principal>
+            <Dependent Role="BitacoraIndicador">
+              <PropertyRef Name="IndiceMovimiento" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_BitacoraIndicador_Usuario">
+          <End Type="IndicadoresOEEModel.Usuario" Role="Usuario" Multiplicity="1" />
+          <End Type="IndicadoresOEEModel.BitacoraIndicador" Role="BitacoraIndicador" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Usuario">
+              <PropertyRef Name="id_usuario" />
+            </Principal>
+            <Dependent Role="BitacoraIndicador">
+              <PropertyRef Name="IndiceUsuario" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_IndicadorParoV2_Paro1">
+          <End Type="IndicadoresOEEModel.Paro" Role="Paro" Multiplicity="1" />
+          <End Type="IndicadoresOEEModel.IndicadorParo_V2" Role="IndicadorParo_V2" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Paro">
+              <PropertyRef Name="id_paro" />
+            </Principal>
+            <Dependent Role="IndicadorParo_V2">
+              <PropertyRef Name="IndiceParo" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
       </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -3715,15 +3833,6 @@ advertencia 6002: La tabla o vista 'INDICADORES_OEEV2.dbo.vw_usuarios_procesos' 
                 <ScalarProperty Name="IndiceLinea" ColumnName="IndiceLinea" />
                 <ScalarProperty Name="IndiceProceso" ColumnName="IndiceProceso" />
                 <ScalarProperty Name="IndiceParo" ColumnName="IndiceParo" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-          <EntitySetMapping Name="ParosPlanificados_V2">
-            <EntityTypeMapping TypeName="IndicadoresOEEModel.ParosPlanificados_V2">
-              <MappingFragment StoreEntitySet="ParosPlanificados_V2">
-                <ScalarProperty Name="Indice" ColumnName="Indice" />
-                <ScalarProperty Name="ParoPlanificado" ColumnName="ParoPlanificado" />
-                <ScalarProperty Name="Activo" ColumnName="Activo" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
@@ -4222,6 +4331,25 @@ advertencia 6002: La tabla o vista 'INDICADORES_OEEV2.dbo.vw_usuarios_procesos' 
           <FunctionImportMapping FunctionImportName="spr_grafica_indicadores_paros_programados" FunctionName="IndicadoresOEEModel.Store.spr_grafica_indicadores_paros_programados" />
           <FunctionImportMapping FunctionImportName="spr_grafica_paros" FunctionName="IndicadoresOEEModel.Store.spr_grafica_paros" />
           <FunctionImportMapping FunctionImportName="spr_grafica_parosV2" FunctionName="IndicadoresOEEModel.Store.spr_grafica_parosV2" />
+          <EntitySetMapping Name="BitacoraIndicador">
+            <EntityTypeMapping TypeName="IndicadoresOEEModel.BitacoraIndicador">
+              <MappingFragment StoreEntitySet="BitacoraIndicador">
+                <ScalarProperty Name="Fecha" ColumnName="Fecha" />
+                <ScalarProperty Name="IndiceMovimiento" ColumnName="IndiceMovimiento" />
+                <ScalarProperty Name="IndiceUsuario" ColumnName="IndiceUsuario" />
+                <ScalarProperty Name="IndiceIndicador" ColumnName="IndiceIndicador" />
+                <ScalarProperty Name="Indice" ColumnName="Indice" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="BitacoraMovimientosIndicador">
+            <EntityTypeMapping TypeName="IndicadoresOEEModel.BitacoraMovimientosIndicador">
+              <MappingFragment StoreEntitySet="BitacoraMovimientosIndicador">
+                <ScalarProperty Name="Nombre" ColumnName="Nombre" />
+                <ScalarProperty Name="Indice" ColumnName="Indice" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
         </EntityContainerMapping>
       </Mapping>
     </edmx:Mappings>

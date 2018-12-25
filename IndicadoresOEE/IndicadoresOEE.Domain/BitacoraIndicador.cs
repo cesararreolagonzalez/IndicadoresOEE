@@ -12,10 +12,15 @@ namespace IndicadoresOEE.Domain
     using System;
     using System.Collections.Generic;
     
-    public partial class ParosPlanificados_V2
+    public partial class BitacoraIndicador
     {
         public long Indice { get; set; }
-        public string ParoPlanificado { get; set; }
-        public bool Activo { get; set; }
+        public long IndiceIndicador { get; set; }
+        public long IndiceUsuario { get; set; }
+        public int IndiceMovimiento { get; set; }
+        public System.DateTime Fecha { get; set; }
+    
+        public virtual BitacoraMovimientosIndicador BitacoraMovimientosIndicador { get; set; }
+        public virtual Usuario Usuario { get; set; }
     }
 }

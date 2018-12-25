@@ -52,17 +52,17 @@
         public int Ciclo { get; set; }
 
         [DataMember]
-        public List<ParoModel> Paros { get; set; }
+        public List<ParoModel> ListaParos { get; set; }
         [DataMember]
-        public List<RechazoModel> Rechazos { get; set; }
+        public List<RechazoModel> ListaRechazos { get; set; }
 
         [DataMember]
         public bool EsHistorico { get; set; }
 
         public IndicadorModel()
         {
-            Paros = new List<ParoModel>();
-            Rechazos = new List<RechazoModel>();
+            ListaParos = new List<ParoModel>();
+            ListaRechazos = new List<RechazoModel>();
         }
     }
 }

@@ -1,0 +1,35 @@
+﻿<md-dialog aria-label="Captura de indicador">
+    <form ng-cloak>
+        <md-dialog-content style="background-color: #FFF !important; padding-left: 2rem; padding-right: 2rem; min-width: 40rem!important;">
+            <div class="md-dialog-content">
+                <h2 class="md-title"><strong>Captura de indicador</strong></h2>
+
+                <p class="am-text-primary" style="margin-top: 1rem;"><strong>¡El indicador #{{ IndiceIndicador }} fue creado correctamente!</strong></p>
+                <p><strong>¿Qué deseas hacer?</strong></p>
+            </div>
+        </md-dialog-content>
+        <md-dialog-actions style="background-color: #FFF !important; padding-left: 2rem; padding-right: 2rem;">
+            <div layout="column" layout-gt-xs="row" layout-align="start center" flex flex-gt-xs>
+                <div flex flex-gt-xs="33" layout-align="start center">
+                    <md-button ng-click="Inicializar()" layout-align="start">
+                        <md-icon md-svg-icon="md-exit" style="margin-right: 0.5rem;"></md-icon>
+                        Salir
+                    </md-button>
+                </div>
+                <div flex flex-gt-xs="34" layout-align="center center">
+                    <md-button class="md-primary" ng-click="Inicializar()" layout-align="start">
+                        <md-icon md-svg-icon="md-create" style="margin-right: 0.5rem;"></md-icon>
+                        Crear uno nuevo
+                    </md-button>
+                </div>
+                <div flex flex-gt-xs="33" layout-gt-xs="row" layout-align="end center">
+                    <md-button ng-click="AgregarParo()" layout-align="end" class="md-primary"
+                               ng-disabled="Paro.Indice === null || Paro.Cantidad === null || Paro.Cantidad === undefined">
+                        <md-icon md-svg-icon="md-edit" style="margin-right: 0.5rem;"></md-icon>
+                        Editarlo
+                    </md-button>
+                </div>
+            </div>
+        </md-dialog-actions>
+    </form>
+</md-dialog>

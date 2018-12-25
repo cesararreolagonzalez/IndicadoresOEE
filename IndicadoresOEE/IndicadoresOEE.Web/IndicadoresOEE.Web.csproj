@@ -224,6 +224,7 @@
     <Content Include="Content\Icons\close.svg" />
     <Content Include="Content\Icons\edit.svg" />
     <Content Include="Content\Icons\error.svg" />
+    <Content Include="Content\Icons\exit_to_app.svg" />
     <Content Include="Content\Icons\navigate-before.svg" />
     <Content Include="Content\Icons\navigate-next.svg" />
     <Content Include="Content\Icons\quitar.svg" />
@@ -269,6 +270,7 @@
     <Content Include="Scripts\app\factories\LineaService.js" />
     <Content Include="Scripts\app\factories\DepartamentoService.js" />
     <Content Include="Scripts\app\factories\CentroService.js" />
+    <Content Include="Scripts\app\templates\OpcionesGuardar.html" />
     <Content Include="Scripts\app\templates\AgregarParos.html" />
     <Content Include="Scripts\app\templates\AgregarRechazos.html" />
     <Content Include="Scripts\app\values\AplicacionConstant.js" />

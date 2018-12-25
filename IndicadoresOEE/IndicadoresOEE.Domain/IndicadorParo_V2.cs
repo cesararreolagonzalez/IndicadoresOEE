@@ -22,5 +22,6 @@ namespace IndicadoresOEE.Domain
     
         public virtual Indicador_V2 Indicador_V2 { get; set; }
         public virtual Paro Paro { get; set; }
+        public virtual Paro Paro1 { get; set; }
     }
 }

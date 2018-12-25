@@ -13,24 +13,130 @@
         private readonly PrimaryConnection db;
         private readonly IndicadorTiempoBusiness IndicadorTiempoBusiness;
         private readonly ProcesoBusiness ProcesoBusiness;
+        private readonly ParoBusiness ParoBusiness;
+        private readonly RechazoBusiness RechazoBusiness;
 
         public IndicadorBusiness()
         {
             db = new PrimaryConnection();
             IndicadorTiempoBusiness = new IndicadorTiempoBusiness();
             ProcesoBusiness = new ProcesoBusiness();
+            ParoBusiness = new ParoBusiness();
+            RechazoBusiness = new RechazoBusiness();
         }
 
-        public long Guardar(IndicadorModel modelo)
+        public long CrearIndicador(IndicadorModel modelo)
         {
+            long IndiceIndicador = 0;
 
-            return 1;
+            var FechaInicial = modelo.Fecha;
+            var FechaFinal = FechaInicial.AddMinutes(modelo.Ciclo);
+
+            bool ExisteIndicadorPeriodoTiempo = BusquedaIndicadoresPeriodo(modelo.IndiceProceso, FechaInicial, FechaFinal);
+
+            if (ExisteIndicadorPeriodoTiempo)
+            {
+                IndiceIndicador = -1;
+            }
+            else
+            {
+                Indicador_V2 Indicador = new Indicador_V2
+                {
+                    IndiceVelocidad = modelo.IndiceVelocidad,
+                    IndiceProceso = modelo.IndiceProceso,
+                    Orden = modelo.Orden,
+                    Lote = modelo.Lote,
+                    Maquina = "" + modelo.Piezas,
+                    Material = modelo.Material,
+                    Descripcion = modelo.DescripcionMaterial,
+                    Reales = modelo.Reales,
+                    Fecha = modelo.Fecha,
+                    Turno = modelo.Turno,
+                    Ciclo = "" + modelo.Ciclo
+                };
+
+                db.Indicador_V2.Add(Indicador);
+                db.SaveChanges();
+
+                IndiceIndicador = Indicador.Indice;
+            }
+
+            return IndiceIndicador;
         }
 
-        public bool VerificacionExistenciaIndicadoresPeriodo(IndicadorModel modelo)
+        public void AgregarEntradaMovimientoIndicador(long IndiceUsuario, long IndiceIndicador, int IndiceMovimiento)
         {
+            BitacoraIndicador bitacoraIndicador = new BitacoraIndicador()
+            {
+                IndiceUsuario = IndiceUsuario,
+                IndiceIndicador = IndiceIndicador,
+                IndiceMovimiento = IndiceMovimiento,
+                Fecha = DateTime.Now
+            };
 
-            return true;
+            db.BitacoraIndicador.Add(bitacoraIndicador);
+            db.SaveChanges();
+        }
+
+        public void ActualizarIndicadorTiempo(long IndiceProceso, DateTime Fecha, int Ciclo)
+        {
+            DateTime FechaActualizada = Fecha.AddMinutes(Ciclo);
+
+            IndicadorTiempo_V2 IndicadorTiempo = db.IndicadorTiempo_V2
+                .Where(c => c.IndiceProceso == IndiceProceso)
+                .FirstOrDefault();
+
+            if (IndicadorTiempo == null)
+            {
+                Indicador_Tiempo IndicadorTiempoV1 = db.Indicador_Tiempo.Where(c => c.id_proceso == IndiceProceso).FirstOrDefault();
+
+                if (IndicadorTiempoV1 != null)
+                {
+                    // Si el indicador sólo existe en V1, se convierte a objeto V2
+                    DateTime? FechaActualIndicadorTiempo = IndicadorTiempoV1.fecha_hora;
+                    if (FechaActualIndicadorTiempo == null)
+                        FechaActualIndicadorTiempo = FechaActualizada;
+                    else if (FechaActualIndicadorTiempo.GetValueOrDefault() < FechaActualizada)
+                        FechaActualIndicadorTiempo = FechaActualizada;
+
+                    IndicadorTiempo = new IndicadorTiempo_V2()
+                    {
+                        IndiceProceso = IndiceProceso,
+                        Fecha = FechaActualIndicadorTiempo.GetValueOrDefault()
+                    };
+
+                    db.IndicadorTiempo_V2.Add(IndicadorTiempo);
+                    db.SaveChanges();
+                }
+                else
+                {
+                    // No existe ni en V1 y V2 un indicador de tiempo, por lo que se crea
+                    IndicadorTiempo = new IndicadorTiempo_V2()
+                    {
+                        IndiceProceso = IndiceProceso,
+                        Fecha = FechaActualizada
+                    };
+
+                    db.IndicadorTiempo_V2.Add(IndicadorTiempo);
+                    db.SaveChanges();
+                }
+            }
+            else
+            {
+                if (IndicadorTiempo.Fecha.GetValueOrDefault() < FechaActualizada)
+                {
+                    IndicadorTiempo.Fecha = FechaActualizada;
+                    db.SaveChanges();
+                }
+            }
+        }
+
+        public bool BusquedaIndicadoresPeriodo(long IndiceProceso, DateTime FechaInicial, DateTime FechaFinal)
+        {
+            bool Existe = db.Indicador_V2.Any(c => c.IndiceProceso == IndiceProceso && c.Fecha >= FechaInicial && c.Fecha <= FechaFinal);
+            if(!Existe)
+                Existe = db.Indicador.Any(c => c.id_proceso == IndiceProceso && c.fecha_hora >= FechaInicial && c.fecha_hora <= FechaFinal);
+            return Existe;
         }
         
 
@@ -214,70 +320,70 @@
             return ListaIndicadores;
         }
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="DatosIndicador"></param>
-        /// <returns></returns>
-        public bool InsertarIndicador(IndicadorModel DatosIndicador)
-        {
-            bool Estado = false;
+        ///// <summary>
+        ///// 
+        ///// </summary>
+        ///// <param name="DatosIndicador"></param>
+        ///// <returns></returns>
+        //public bool InsertarIndicador(IndicadorModel DatosIndicador)
+        //{
+        //    bool Estado = false;
 
-            try
-            {
-                Indicador_V2 IndicadorBD = new Indicador_V2()
-                {
-                    Fecha = DatosIndicador.Fecha,
-                    Orden = DatosIndicador.Orden,
-                    Lote = DatosIndicador.Lote,
-                    Maquina = DatosIndicador.Piezas.ToString(),
-                    Reales = DatosIndicador.Reales,
-                    Ciclo = DatosIndicador.Ciclo.ToString(),
-                    Turno = string.IsNullOrEmpty(DatosIndicador.Turno) ? null : DatosIndicador.Turno,
-                    Material = string.IsNullOrEmpty(DatosIndicador.Material) ? null : DatosIndicador.Material,
-                    Descripcion = string.IsNullOrEmpty(DatosIndicador.DescripcionMaterial) ? null : DatosIndicador.DescripcionMaterial,
-                    IndiceVelocidad = DatosIndicador.IndiceVelocidad > 0 ? (long?)null : DatosIndicador.IndiceVelocidad,
-                    IndiceProceso = DatosIndicador.IndiceProceso
-                };
+        //    try
+        //    {
+        //        Indicador_V2 IndicadorBD = new Indicador_V2()
+        //        {
+        //            Fecha = DatosIndicador.Fecha,
+        //            Orden = DatosIndicador.Orden,
+        //            Lote = DatosIndicador.Lote,
+        //            Maquina = DatosIndicador.Piezas.ToString(),
+        //            Reales = DatosIndicador.Reales,
+        //            Ciclo = DatosIndicador.Ciclo.ToString(),
+        //            Turno = string.IsNullOrEmpty(DatosIndicador.Turno) ? null : DatosIndicador.Turno,
+        //            Material = string.IsNullOrEmpty(DatosIndicador.Material) ? null : DatosIndicador.Material,
+        //            Descripcion = string.IsNullOrEmpty(DatosIndicador.DescripcionMaterial) ? null : DatosIndicador.DescripcionMaterial,
+        //            IndiceVelocidad = DatosIndicador.IndiceVelocidad > 0 ? (long?)null : DatosIndicador.IndiceVelocidad,
+        //            IndiceProceso = DatosIndicador.IndiceProceso
+        //        };
 
-                foreach (RechazoModel Rechazo in DatosIndicador.Rechazos)
-                {
-                    IndicadorRechazo_V2 IndicadorRechazo = new IndicadorRechazo_V2()
-                    {
-                        IndiceRechazo = Rechazo.Indice,
-                        Cantidad = Rechazo.Cantidad
-                    };
+        //        foreach (RechazoModel Rechazo in DatosIndicador.Rechazos)
+        //        {
+        //            IndicadorRechazo_V2 IndicadorRechazo = new IndicadorRechazo_V2()
+        //            {
+        //                IndiceRechazo = Rechazo.Indice,
+        //                Cantidad = Rechazo.Cantidad
+        //            };
 
-                    IndicadorBD.IndicadorRechazo_V2.Add(IndicadorRechazo);
-                }
+        //            IndicadorBD.IndicadorRechazo_V2.Add(IndicadorRechazo);
+        //        }
 
-                foreach (ParoModel Paro in DatosIndicador.Paros)
-                {
-                    IndicadorParo_V2 IndicadorParo = new IndicadorParo_V2()
-                    {
-                        IndiceParo = Paro.Indice,
-                        Cantidad = Paro.Cantidad,
-                        Folio = Paro.Folio,
-                        EsParoPlanificado = Paro.EsParoPlanificado
-                    };
+        //        foreach (ParoModel Paro in DatosIndicador.Paros)
+        //        {
+        //            IndicadorParo_V2 IndicadorParo = new IndicadorParo_V2()
+        //            {
+        //                IndiceParo = Paro.Indice,
+        //                Cantidad = Paro.Cantidad,
+        //                Folio = Paro.Folio,
+        //                EsParoPlanificado = Paro.EsParoPlanificado
+        //            };
 
-                    IndicadorBD.IndicadorParo_V2.Add(IndicadorParo);
-                }
+        //            IndicadorBD.IndicadorParo_V2.Add(IndicadorParo);
+        //        }
 
-                db.Indicador_V2.Add(IndicadorBD);
-                db.SaveChanges();
+        //        db.Indicador_V2.Add(IndicadorBD);
+        //        db.SaveChanges();
 
-                Estado = true;
+        //        Estado = true;
 
-                bool EstadoIndicadorTiempo = IndicadorTiempoBusiness.ActualizarIndicadorTiempo(DatosIndicador.IndiceProceso, DatosIndicador.Fecha);
-            }
-            catch (Exception)
-            {
+        //        bool EstadoIndicadorTiempo = IndicadorTiempoBusiness.ActualizarIndicadorTiempo(DatosIndicador.IndiceProceso, DatosIndicador.Fecha);
+        //    }
+        //    catch (Exception)
+        //    {
 
-            }
+        //    }
 
-            return Estado;
-        }
+        //    return Estado;
+        //}
 
         /// <summary>
         /// 

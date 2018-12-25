@@ -5,12 +5,12 @@
         .module('indicadoresoeeapp')
         .controller('CapturaIndicadorController', CapturaIndicadorController);
     
-    CapturaIndicadorController.$inject = ['$element', '$scope', '$sce', '$timeout', '$location',
+    CapturaIndicadorController.$inject = ['$element', '$scope', '$sce', '$timeout', '$filter',
         '$anchorScroll', '$log', '$window', '$mdDialog', 'moment', 'ESTADO_PAROS',
         'CentroService', 'DepartamentoService', 'LineaService', 'ProcesoService', 'VelocidadService',
         'IndicadorService', 'SAPService', 'UtilFactory'];
 
-    function CapturaIndicadorController($element, $scope, $sce, $timeout, $location, $anchorScroll,
+    function CapturaIndicadorController($element, $scope, $sce, $timeout, $filter, $anchorScroll,
         $log, $window, $mdDialog, moment, ESTADO_PAROS,
         CentroService, DepartamentoService, LineaService,
         ProcesoService, VelocidadService, IndicadorService, SAPService, UtilFactory)
@@ -30,7 +30,7 @@
             Orden: null,
             Lote: null,
             Material: null,
-            Descripcion: null,
+            DescripcionMaterial: null,
             Velocidad: null
         };
 
@@ -54,6 +54,7 @@
             ParoSinCausaAsignada: 0,
             EstadoHorasParo: false,
             EstadoValidacionOrden: 0,
+            ExistenIndicadoresPeriodo: false,
             Estado: ESTADO_PAROS.SIN_ESTADO,
             Estados: ESTADO_PAROS
         };
@@ -308,16 +309,15 @@
                 fullscreen: true,
                 closeTo: angular.element(document.querySelector('#btnAddParo'))
             })
-                .then(function (Paro) {
-                    $scope.ListaParosElegidos.push(Paro);
-                    $scope.ListaIndicesParosEnUso.push(Paro.Indice);
-                    $scope.Util.SumaParos += Paro.Cantidad;
-                    var resta = $scope.Util.ParoSinCausaAsignada - Paro.Cantidad;
-                    $scope.Util.ParoSinCausaAsignada = resta >= 0 ? resta : 0;
-                }, function () {
-                })
-                .finally(function () {
-                });
+            .then(function (Paro) {
+                $scope.ListaParosElegidos.push(Paro);
+                $scope.ListaIndicesParosEnUso.push(Paro.Indice);
+                $scope.Util.SumaParos += Paro.Cantidad;
+                var resta = $scope.Util.ParoSinCausaAsignada - Paro.Cantidad;
+                $scope.Util.ParoSinCausaAsignada = resta >= 0 ? resta : 0;
+            },
+            function () { })
+            .finally(function () { });
         };
 
         $scope.agregarRechazo = function (ev) {
@@ -529,9 +529,7 @@
         {
             if (!$scope.DatosGenerales.Orden)
                 return;
-
-            $log.info($scope.DatosGenerales.Orden);
-
+            
             return IndicadorService.ValidarOrden($scope.DatosGenerales.Orden)
                 .then(function (response) {
                     var Estado = response.data.Estado;
@@ -544,7 +542,7 @@
                         if (Indicador !== null) {
                             $scope.DatosGenerales.Lote = Indicador.Lote;
                             $scope.DatosGenerales.Material = Indicador.Material;
-                            $scope.DatosGenerales.Descripcion = Indicador.Descripcion;
+                            $scope.DatosGenerales.DescripcionMaterial = Indicador.Descripcion;
                             $scope.Util.EstadoValidacionOrden = 1;
                         }
                         else {
@@ -560,7 +558,7 @@
 
                             $scope.DatosGenerales.Lote = null;
                             $scope.DatosGenerales.Material = null;
-                            $scope.DatosGenerales.Descripcion = null;
+                            $scope.DatosGenerales.DescripcionMaterial = null;
 
                             $scope.Util.EstadoValidacionOrden = -1;
                         }
@@ -578,8 +576,126 @@
                 });
         };
 
-        $scope.Guardar = function () {
+        $scope.Guardar = function (ev)
+        {
+            var ListaParos = angular.copy($scope.ListaParosElegidos);
 
+            if ($scope.Util.ParoSinCausaAsignada > 0) {
+                ListaParos.push({ Indice: 0, Nombre: 'Sin causa asignada', Cantidad: $scope.Util.ParoSinCausaAsignada, Folio: null });
+            }
+
+            $scope.Indicador =
+            {
+                IndiceProceso: angular.copy($scope.DatosGenerales.IndiceProceso),
+                IndiceVelocidad: angular.copy($scope.DatosGenerales.IndiceVelocidad),
+                Orden: angular.copy($scope.DatosGenerales.Orden),
+                Lote: angular.copy($scope.DatosGenerales.Lote),
+                Material: angular.copy($scope.DatosGenerales.Material),
+                DescripcionMaterial: angular.copy($scope.DatosGenerales.DescripcionMaterial),
+                Piezas: angular.copy($scope.DatosGenerales.Piezas),
+                Reales: 0,
+                Ciclo: angular.copy($scope.DatosIndicador.Ciclo),
+                Turno: angular.copy($scope.DatosIndicador.Turno),
+                Fecha: angular.copy($scope.DatosIndicador.Fecha),
+                ListaParos: ListaParos,
+                ListaRechazos: $scope.ListaRechazosElegidos
+            };
+
+            $log.info($scope.Indicador);
+
+            return IndicadorService.CrearIndicador($scope.Indicador)
+                .then(function (response) {
+                    var Estado = response.data.Estado;
+                    if (!Estado) {
+                        var Mensaje = response.data.Mensaje;
+                        $log.info('Se produjo el siguiente error en el método CrearIndicador() = ' + Mensaje);
+                    }
+                    else {
+                        var IndiceIndicador = response.data.IndiceIndicador;
+                        
+                        if (IndiceIndicador > 0) {
+                            $mdDialog.show({
+                                locals: { IndiceIndicador: IndiceIndicador },
+                                controller: ['$scope', 'IndiceIndicador', function ($scope, IndiceIndicador) {
+                                    $scope.IndiceIndicador = IndiceIndicador;
+                                }],
+                                templateUrl: '../Scripts/app/templates/OpcionesGuardar.html',
+                                parent: angular.element(document.body),
+                                targetEvent: ev,
+                                clickOutsideToClose: true,
+                                onShowing: function () {
+                                },
+                                onComplete: function () {
+                                },
+                                onRemoving: function (event, removePromise) {
+                                },
+                                fullscreen: true,
+                                closeTo: angular.element(document.querySelector('#btnGuardar'))
+                            })
+                                .then(function (result) {
+                                },
+                                    function () { })
+                                .finally(function () { });
+                        }
+                        else {
+                            $mdDialog.show(
+                                $mdDialog.alert()
+                                    .clickOutsideToClose(false)
+                                    .title('Creación de indicadores')
+                                    .textContent('Hubo un error al intentar crear el indicador')
+                                    .ariaLabel('creacion indicadores')
+                                    .ok('Entendido'));
+                        }
+                    }
+                },
+                    function (response) {
+                        $log.info('Hubo un error: Estatus = ' + response.status + ', Error = ' + response.data);
+                    })
+                .catch(function (response) {
+                    $log.info('Excepcion: ', response);
+                    throw response;
+                })
+                .finally(function () {
+                    $log.info('Método BusquedaIndicadoresPeriodo() finalizado');
+                });
+        };
+
+        $scope.BusquedaIndicadoresPeriodo = function (IndiceProceso, FechaInicial, FechaFinal)
+        {
+            return IndicadorService.BusquedaIndicadoresPeriodo(IndiceProceso, FechaInicial, FechaFinal)
+                .then(function (response) {
+                    var Estado = response.data.Estado;
+                    if (!Estado) {
+                        var Mensaje = response.data.Mensaje;
+                        $log.info('Se produjo el siguiente error en el método ObtenerProcesos = ' + Mensaje);
+                    }
+                    else {
+                        $scope.ExistenIndicadoresPeriodo = response.data.Existe;
+                        
+                        $log.info('Existe = ' + $scope.ExistenIndicadoresPeriodo);
+                        //if ($scope.ExistenIndicadoresPeriodo) {
+                        //    $scope.Util.Estado = ESTADO_PAROS.SIN_ESTADO;
+
+                        //    $mdDialog.show(
+                        //        $mdDialog.alert()
+                        //            .clickOutsideToClose(false)
+                        //            .title('Búsqueda de indicadores')
+                        //            .textContent('Ya existe un indicador en el período que estableciste')
+                        //            .ariaLabel('existencia indicadores')
+                        //            .ok('Entendido'));
+                        //}
+                    }
+                },
+                    function (response) {
+                        $log.info('Hubo un error: Estatus = ' + response.status + ', Error = ' + response.data);
+                    })
+                .catch(function (response) {
+                    $log.info('Excepcion: ', response);
+                    throw response;
+                })
+                .finally(function () {
+                    $log.info('Método BusquedaIndicadoresPeriodo() finalizado');
+                });
         };
 
         $scope.ValidacionBotonGuardar = function () {
@@ -611,12 +727,12 @@
                     }
                     else {
                         var Indicador = response.data.Indicador;
-                        var Fecha = moment().year(Indicador.Año).month(Indicador.Mes).date(Indicador.Dia).hour(Indicador.Hora).minute(Indicador.Minuto).second(0).toDate();
+                        var Fecha = moment().year(Indicador.Año).month(Indicador.Mes - 1).date(Indicador.Dia).hour(Indicador.Hora).minute(Indicador.Minuto).second(0).toDate();
 
                         $scope.DatosGenerales.Orden = Indicador.Orden;
                         $scope.DatosGenerales.Lote = Indicador.Lote;
                         $scope.DatosGenerales.Material = Indicador.Material;
-                        $scope.DatosGenerales.Descripcion = Indicador.DescripcionMaterial;
+                        $scope.DatosGenerales.DescripcionMaterial = Indicador.DescripcionMaterial;
                         $scope.DatosGenerales.Velocidad = Indicador.Velocidad;
                         $scope.DatosGenerales.IndiceVelocidad = Indicador.IndiceVelocidad;
 
@@ -647,6 +763,7 @@
             return VelocidadService.ObtenerVelocidadPorMaterial(IndiceProceso, Material)
                 .then(function (response) {
                     var Estado = response.data.Estado;
+                
                     if (!Estado) {
                         var Mensaje = response.data.Mensaje;
                         $log.info('Se produjo el siguiente error en el método ObtenerVelocidad = ' + Mensaje);
@@ -654,13 +771,12 @@
                     else {
                         var Velocidad = response.data.velocidadModel;
                         $scope.DatosGenerales.Velocidad = Velocidad.Velocidad;
-                        $scope.DatosGenerales.IndiceVelocidad = Velocidad.IndiceVelocidad;
-
+                        $scope.DatosGenerales.IndiceVelocidad = Velocidad.Indice;
                     }
                 },
-                    function (response) {
-                        $log.info('Hubo un error: Estatus = ' + response.status + ', Error = ' + response.data);
-                    })
+                function (response) {
+                    $log.info('Hubo un error: Estatus = ' + response.status + ', Error = ' + response.data);
+                })
                 .catch(function (response) {
                     $log.info('Excepcion: ', response);
                     throw response;
@@ -735,7 +851,7 @@
                 $scope.DatosGenerales.IndiceVelocidad = null;
                 $scope.DatosGenerales.Velocidad = null;
                 $scope.DatosGenerales.Material = null;
-                $scope.DatosGenerales.Descripcion = null;
+                $scope.DatosGenerales.DescripcionMaterial = null;
                 $scope.ResetearDatosIndicador();
 
                 $scope.ListaDepartamentos = null;
@@ -757,7 +873,7 @@
                 $scope.DatosGenerales.IndiceVelocidad = null;
                 $scope.DatosGenerales.Velocidad = null;
                 $scope.DatosGenerales.Material = null;
-                $scope.DatosGenerales.Descripcion = null;
+                $scope.DatosGenerales.DescripcionMaterial = null;
                 $scope.ResetearDatosIndicador();
                 
                 $scope.ListaLineas = null;
@@ -777,7 +893,7 @@
                 $scope.DatosGenerales.IndiceVelocidad = null;
                 $scope.DatosGenerales.Velocidad = null;
                 $scope.DatosGenerales.Material = null;
-                $scope.DatosGenerales.Descripcion = null;
+                $scope.DatosGenerales.DescripcionMaterial = null;
                 $scope.ResetearDatosIndicador();
 
                 $scope.ListaProcesos = null;
@@ -795,7 +911,7 @@
                 $scope.DatosGenerales.IndiceVelocidad = null;
                 $scope.DatosGenerales.Velocidad = null;
                 $scope.DatosGenerales.Material = null;
-                $scope.DatosGenerales.Descripcion = null;
+                $scope.DatosGenerales.DescripcionMaterial = null;
                 $scope.ResetearDatosIndicador();
                 
                 ObtenerIndicadorPorProceso();
@@ -866,6 +982,39 @@
                     ObtenerMinutosParos();
                 else
                     $scope.Util.Estado = ESTADO_PAROS.SIN_ESTADO;
+            }
+        );
+
+        $scope.$watchGroup(['DatosGenerales.IndiceProceso', 'DatosIndicador.Fecha', 'DatosIndicador.Hora', 'DatosIndicador.Minuto', 'DatosIndicador.Ciclo'],
+            function (newValues, oldValues)
+            {
+                if (newValues === oldValues)
+                    return;
+
+                var IndiceProceso = newValues[0];
+                var FechaInicial = newValues[1];
+                var Hora = newValues[2];
+                var Ciclo = newValues[3];
+
+                if (!IndiceProceso || !FechaInicial || !Ciclo)
+                    return;
+
+                var FechaFinal = angular.copy(FechaInicial);
+                FechaFinal.setMinutes(FechaFinal.getMinutes() + Ciclo);
+
+                var FechaInicialFormateada = $filter('date')(FechaInicial, "yyyy-MM-dd HH:mm");
+                var FechaFinalFormateada = $filter('date')(FechaFinal, "yyyy-MM-dd HH:mm");
+
+                $log.info('$watchGroup');
+                $log.info('IndiceProceso = ' + IndiceProceso);
+                $log.info('Ciclo = ' + Ciclo);
+                $log.info('FechaInicial = ' + FechaInicial);
+                $log.info('FechaFinal = ' + FechaFinal);
+                $log.info('FechaInicio = ' + FechaInicialFormateada);
+                $log.info('FechaFin = ' + FechaFinalFormateada);
+                $log.info('Hora = ' + Hora);
+
+                $scope.BusquedaIndicadoresPeriodo(IndiceProceso, FechaInicialFormateada, FechaFinalFormateada);
             }
         );
 

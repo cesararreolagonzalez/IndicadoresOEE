@@ -63,6 +63,12 @@
     <Compile Include="Bitacora.cs">
       <DependentUpon>IndicadoresOEEModel.tt</DependentUpon>
     </Compile>
+    <Compile Include="BitacoraIndicador.cs">
+      <DependentUpon>IndicadoresOEEModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="BitacoraMovimientosIndicador.cs">
+      <DependentUpon>IndicadoresOEEModel.tt</DependentUpon>
+    </Compile>
     <Compile Include="Business\CentroBusiness.cs" />
     <Compile Include="Business\DepartamentoBusiness.cs" />
     <Compile Include="Business\IndicadorBusiness.cs" />
@@ -172,9 +178,6 @@
       <DependentUpon>IndicadoresOEEModel.tt</DependentUpon>
     </Compile>
     <Compile Include="ParosPlaneadosMes_V2.cs">
-      <DependentUpon>IndicadoresOEEModel.tt</DependentUpon>
-    </Compile>
-    <Compile Include="ParosPlanificados_V2.cs">
       <DependentUpon>IndicadoresOEEModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Perfil.cs">

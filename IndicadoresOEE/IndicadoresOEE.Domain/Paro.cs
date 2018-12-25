@@ -21,6 +21,7 @@ namespace IndicadoresOEE.Domain
             this.IndicadorParo_V2 = new HashSet<IndicadorParo_V2>();
             this.Paro1 = new HashSet<Paro>();
             this.ParosPlaneadosMes_V2 = new HashSet<ParosPlaneadosMes_V2>();
+            this.IndicadorParo_V21 = new HashSet<IndicadorParo_V2>();
         }
     
         public long id_paro { get; set; }
@@ -41,5 +42,7 @@ namespace IndicadoresOEE.Domain
         public virtual Proceso Proceso { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<ParosPlaneadosMes_V2> ParosPlaneadosMes_V2 { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<IndicadorParo_V2> IndicadorParo_V21 { get; set; }
     }
 }
