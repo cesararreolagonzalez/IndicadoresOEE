@@ -5,13 +5,14 @@
         .module('indicadoresoeeapp')
         .factory('LineaService', LineaService);
 
-    LineaService.$inject = ['$http'];
+    LineaService.$inject = ['$http', '$httpParamSerializer'];
 
-    function LineaService($http)
+    function LineaService($http, $httpParamSerializer)
     {
         var service = {};
 
         service.ObtenerLineasPorDepartamento = ObtenerLineasPorDepartamento;
+        service.ObtenerLineasPorDepartamentos = ObtenerLineasPorDepartamentos;
         service.ObtenerLineas = ObtenerLineas;
         service.ObtenerLinea = ObtenerLinea;
         service.CrearLinea = CrearLinea;
@@ -21,7 +22,11 @@
         return service;
 
         function ObtenerLineasPorDepartamento(IndiceDepartamento) {
-            return $http.get('/Linea/ObtenerLineas?IndiceDepartamento=' + IndiceDepartamento).then(handleSuccess, handleError);
+            return $http.get('/Linea/ObtenerLineasPorDepartamento?IndiceDepartamento=' + IndiceDepartamento).then(handleSuccess, handleError);
+        }
+
+        function ObtenerLineasPorDepartamentos(ListaIndicesDepartamentos) {
+            return $http.get('/Linea/ObtenerLineasPorDepartamentos?' + $httpParamSerializer({ IndiceDepartamento: ListaIndicesDepartamentos })).then(handleSuccess, handleError);
         }
 
         function ObtenerLineas() {

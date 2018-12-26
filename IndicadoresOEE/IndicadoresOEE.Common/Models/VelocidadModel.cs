@@ -12,7 +12,11 @@
         [DataMember]
         public long Material { get; set; }
         [DataMember]
+        public string Nombre { get; set; }
+        [DataMember]
         public long IndiceProceso { get; set; }
+        [DataMember]
+        public string NombreProceso { get; set; }
     }
 
 }

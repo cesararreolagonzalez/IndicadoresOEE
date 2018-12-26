@@ -37,7 +37,7 @@
         /// <param name="IndiceUsuario"></param>
         /// <param name="IndiceDepartamento"></param>
         /// <returns></returns>
-        public List<ProcesoModel> ObtenerProcesos(long IndiceUsuario, long IndiceLinea)
+        public List<ProcesoModel> ObtenerProcesosPorLinea(long IndiceUsuario, long IndiceLinea)
         {
             List<ProcesoModel> ListaProcesos = new List<ProcesoModel>();
 
@@ -48,6 +48,37 @@
                             .Distinct()
                             .ToList()
                             .Select(columna => new ProcesoModel() { Indice = columna.Indice, Nombre = columna.Nombre, IndiceLinea = IndiceLinea })
+                            .OrderBy(columna => columna.Nombre)
+                            .ToList();
+
+            return ListaProcesos;
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="IndiceUsuario"></param>
+        /// <param name="IndiceDepartamento"></param>
+        /// <returns></returns>
+        public List<ProcesoModel> ObtenerProcesosPorLineas(long IndiceUsuario, long[] IndiceLinea)
+        {
+            List<ProcesoModel> ListaProcesos = new List<ProcesoModel>();
+
+            ListaProcesos = db
+                            .vw_usuarios_procesos
+                            .Where(columna => columna.id_usuario == IndiceUsuario && IndiceLinea.Contains(columna.id_linea))
+                            .Select(columna => new {
+                                IndiceProceso = columna.id_proceso,
+                                NombreProceso = columna.nombre_proceso,
+                                IndiceLinea = columna.id_linea,
+                                NombreCentro = db.Centro.Where(c => c.id_centro == columna.id_centro).Select(c => c.nombre).FirstOrDefault(),
+                                NombreDepartamento = db.Departamento.Where(c => c.id_departamento == columna.id_departamento).Select(c => c.nombre).FirstOrDefault(),
+                                NombreLinea = db.Linea.Where(c => c.id_linea == columna.id_linea).Select(c => c.nombre).FirstOrDefault()
+                            })
+                            .Distinct()
+                            .GroupBy(columna => columna.IndiceProceso)
+                            .SelectMany(fila => fila)
+                            .Select(columna => new ProcesoModel() { Indice = columna.IndiceProceso, Nombre = columna.NombreProceso.ToUpper(), IndiceLinea = columna.IndiceLinea, NombreCentro = columna.NombreCentro.ToUpper(), NombreDepartamento = columna.NombreDepartamento.ToUpper(), NombreLinea = columna.NombreLinea.ToUpper() })
                             .OrderBy(columna => columna.Nombre)
                             .ToList();
 

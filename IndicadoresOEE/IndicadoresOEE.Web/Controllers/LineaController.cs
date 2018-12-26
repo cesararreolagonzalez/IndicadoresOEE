@@ -27,7 +27,7 @@
         /// <returns></returns>
 
         [HttpGet]
-        public ActionResult ObtenerLineas(long IndiceDepartamento)
+        public ActionResult ObtenerLineasPorDepartamento(long IndiceDepartamento)
         {
             string Mensaje = string.Empty;
             bool Estado = false;
@@ -37,7 +37,34 @@
             {
                 long IndiceUsuario = 1;
 
-                ListaLineas = lineaBusiness.ObtenerLineas(IndiceUsuario, IndiceDepartamento);
+                ListaLineas = lineaBusiness.ObtenerLineasPorDepartamento(IndiceUsuario, IndiceDepartamento);
+                Estado = true;
+            }
+            catch (Exception e)
+            {
+                Mensaje = e.Message;
+            }
+
+            return Json(new { Estado, Mensaje, ListaLineas }, JsonRequestBehavior.AllowGet);
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
+
+        [HttpGet]
+        public ActionResult ObtenerLineasPorDepartamentos(long[] IndiceDepartamento)
+        {
+            string Mensaje = string.Empty;
+            bool Estado = false;
+            List<LineaModel> ListaLineas = new List<LineaModel>();
+
+            try
+            {
+                long IndiceUsuario = 1;
+
+                ListaLineas = lineaBusiness.ObtenerLineasPorDepartamentos(IndiceUsuario, IndiceDepartamento);
                 Estado = true;
             }
             catch (Exception e)

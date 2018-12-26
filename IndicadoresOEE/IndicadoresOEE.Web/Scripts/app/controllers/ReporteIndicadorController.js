@@ -15,29 +15,30 @@
         CentroService, DepartamentoService, LineaService,
         ProcesoService, VelocidadService, IndicadorService, SAPService, UtilFactory)
     {
+        $scope.TerminoBusqueda = '';
+
         $element.find('input').on('keydown', function (ev) {
             ev.stopPropagation();
         });
 
         var FechaHoy = new Date();
 
-        $scope.DatosGenerales = {
-            IndiceCentro: null,
-            IndiceDepartamento: null,
-            IndiceLinea: null,
-            IndiceProceso: null,
-            IndiceVelocidad: null,
-            FechaInicial: new Date(FechaHoy.getFullYear(), FechaHoy.getMonth(), FechaHoy.getDate(), 0, 0, 0),
-            FechaFinal: new Date(FechaHoy.getFullYear(), FechaHoy.getMonth(), FechaHoy.getDate(), 23, 59, 59)
-        };
-        
-        $scope.TerminoBusqueda = '';
-
         $scope.ListaCentros = null;
         $scope.ListaDepartamentos = null;
         $scope.ListaLineas = null;
         $scope.ListaProcesos = null;
         $scope.ListaVelocidades = null;
+
+        $scope.DatosGenerales = {
+            ListaIndicesCentros: null,
+            ListaIndicesDepartamentos: null,
+            ListaIndicesLineas: null,
+            ListaIndicesProcesos: null,
+            ListaIndicesVelocidades: null,
+            FechaInicial: new Date(FechaHoy.getFullYear(), FechaHoy.getMonth(), FechaHoy.getDate(), 0, 0, 0),
+            FechaFinal: new Date(FechaHoy.getFullYear(), FechaHoy.getMonth(), FechaHoy.getDate(), 23, 59, 59)
+        };
+        
         
         $scope.agregarParo = function (ev) {
             $mdDialog.show({
@@ -403,10 +404,10 @@
 
         $scope.ObtenerDepartamentos = function ()
         {
-            if ($scope.ListaDepartamentos)
-                return;
+            //if ($scope.ListaDepartamentos)
+            //    return;
 
-            return DepartamentoService.ObtenerDepartamentosPorCentro($scope.DatosGenerales.IndiceCentro)
+            return DepartamentoService.ObtenerDepartamentosPorCentros($scope.DatosGenerales.ListaIndicesCentros)
                 .then(function (response)
                 {
                     var Estado = response.data.Estado;
@@ -416,7 +417,7 @@
                     }
                     else {
                         $scope.ListaDepartamentos = response.data.ListaDepartamentos;
-                        $scope.DatosGenerales.IndiceDepartamento = $scope.ListaDepartamentos.length === 1 ? $scope.ListaDepartamentos[0].Indice : null;
+                        //$scope.DatosGenerales.IndiceDepartamento = $scope.ListaDepartamentos.length === 1 ? $scope.ListaDepartamentos[0].Indice : null;
                     }
                 })
                 .catch(function (response) {
@@ -429,10 +430,14 @@
 
         $scope.ObtenerLineas = function ()
         {
-            if ($scope.ListaLineas)
-                return;
+            //if ($scope.ListaLineas)
+            //    return;
+            
+            var ListaIndicesDepartamentos = Enumerable.From($scope.DatosGenerales.ListaIndicesDepartamentos)
+                .Select(function (columna) { return columna.IndiceDepartamento; })
+                .ToArray();
 
-            return LineaService.ObtenerLineasPorDepartamento($scope.DatosGenerales.IndiceDepartamento)
+            return LineaService.ObtenerLineasPorDepartamentos(ListaIndicesDepartamentos)
                 .then(function (response) {
                     var Estado = response.data.Estado;
                     if (!Estado) {
@@ -458,10 +463,20 @@
 
         $scope.ObtenerProcesos = function ()
         {
-            if ($scope.ListaProcesos)
-                return;
+            var ListaIndicesCentros = Enumerable.From($scope.DatosGenerales.ListaIndicesDepartamentos)
+                .Select(function (columna) { return columna.IndiceCentro; })
+                .ToArray();
 
-            return ProcesoService.ObtenerProcesosPorLinea($scope.DatosGenerales.IndiceLinea)
+            var ListaIndicesDepartamentos = Enumerable.From($scope.DatosGenerales.ListaIndicesLineas)
+                .Select(function (columna) { return columna.IndiceDepartamento; })
+                .ToArray();
+
+            var ListaIndicesLineas = Enumerable.From($scope.DatosGenerales.ListaIndicesLineas)
+                .Select(function (columna) { return columna.IndiceLinea; })
+                .ToArray();
+
+
+            return ProcesoService.ObtenerProcesosPorLineas(ListaIndicesCentros, ListaIndicesDepartamentos, ListaIndicesLineas)
                 .then(function (response) {
                     var Estado = response.data.Estado;
                     if (!Estado) {
@@ -471,6 +486,38 @@
                     else {
                         $scope.ListaProcesos = response.data.ListaProcesos;
                         $scope.DatosGenerales.IndiceProceso = $scope.ListaProcesos.length === 1 ? $scope.ListaProcesos[0].Indice : null;
+                    }
+                },
+                function (response) {
+                    $log.info('Hubo un error: Estatus = ' + response.status + ', Error = ' + response.data);
+                })
+                .catch(function (response) {
+                    $log.info('Excepcion: ', response);
+                    throw response;
+                })
+                .finally(function () {
+                    $log.info('Método ObtenerProcesos() finalizado');
+                });
+        };
+
+        $scope.ObtenerVelocidades = function ()
+        {
+            var ListaIndicesProcesos = Enumerable.From($scope.DatosGenerales.ListaIndicesProcesos)
+                .Select(function (columna) { return columna.IndiceProceso; })
+                .ToArray();
+
+            $log.info(ListaIndicesProcesos);
+            
+            return VelocidadService.ObtenerVelocidadesPorProcesos(ListaIndicesProcesos)
+                .then(function (response) {
+                    var Estado = response.data.Estado;
+                    if (!Estado) {
+                        var Mensaje = response.data.Mensaje;
+                        $log.info('Se produjo el siguiente error en el método ObtenerProcesos = ' + Mensaje);
+                    }
+                    else {
+                        $scope.ListaVelocidades = response.data.ListaVelocidades;
+                        //$scope.DatosGenerales.IndiceProceso = $scope.ListaProcesos.length === 1 ? $scope.ListaProcesos[0].Indice : null;
                     }
                 },
                 function (response) {

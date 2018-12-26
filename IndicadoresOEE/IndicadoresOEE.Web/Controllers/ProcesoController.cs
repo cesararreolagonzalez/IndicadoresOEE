@@ -27,7 +27,7 @@
         /// <returns></returns>
 
         [HttpGet]
-        public JsonResult ObtenerProcesos(long IndiceLinea)
+        public JsonResult ObtenerProcesosPorLinea(long IndiceLinea)
         {
             string Mensaje = string.Empty;
             bool Estado = false;
@@ -37,7 +37,34 @@
             {
                 long IndiceUsuario = 1;
 
-                ListaProcesos = procesoBusiness.ObtenerProcesos(IndiceUsuario, IndiceLinea);
+                ListaProcesos = procesoBusiness.ObtenerProcesosPorLinea(IndiceUsuario, IndiceLinea);
+                Estado = true;
+            }
+            catch (Exception e)
+            {
+                Mensaje = e.Message;
+            }
+
+            return Json(new { Estado, Mensaje, ListaProcesos }, JsonRequestBehavior.AllowGet);
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
+
+        [HttpGet]
+        public JsonResult ObtenerProcesosPorLineas(long[] IndiceLinea)
+        {
+            string Mensaje = string.Empty;
+            bool Estado = false;
+            List<ProcesoModel> ListaProcesos = new List<ProcesoModel>();
+
+            try
+            {
+                long IndiceUsuario = 1;
+
+                ListaProcesos = procesoBusiness.ObtenerProcesosPorLineas(IndiceUsuario, IndiceLinea);
                 Estado = true;
             }
             catch (Exception e)

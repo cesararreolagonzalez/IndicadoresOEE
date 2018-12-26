@@ -12,7 +12,7 @@ Enumerable = (function ()
     var Enumerable = function (getEnumerator)
     {
         this.GetEnumerator = getEnumerator;
-    }
+    };
 
     Enumerable.Choice = function (Params_Contents)
     {
@@ -20,7 +20,7 @@ Enumerable = (function ()
         /// Ex: Choice(1,2,3) - 1,3,2,3,3,2,1...</summary>
         /// <param type="T" name="Params_Contents" parameterArray="true">Array or Params Contents</param>
         /// <returns type="Enumerable"></returns>
-    }
+    };
 
     Enumerable.Cycle = function (Params_Contents)
     {
@@ -28,13 +28,13 @@ Enumerable = (function ()
         /// Ex: Cycle(1,2,3) - 1,2,3,1,2,3,1,2,3...</summary>
         /// <param type="T" name="Params_Contents" parameterArray="true">Array or Params Contents</param>
         /// <returns type="Enumerable"></returns>
-    }
+    };
 
     Enumerable.Empty = function ()
     {
         /// <summary>Returns an empty Enumerable.</summary>
         /// <returns type="Enumerable"></returns>
-    }
+    };
 
     Enumerable.From = function (obj)
     {
@@ -50,14 +50,14 @@ Enumerable = (function ()
         /// </summary>
         /// <param name="obj">object</param>
         /// <returns type="Enumerable"></returns>
-    }
+    };
 
     Enumerable.Return = function (element)
     {
         /// <summary>Make one sequence. This equals Repeat(element, 1)</summary>
         /// <param name="element">element</param>
         /// <returns type="Enumerable"></returns>
-    }
+    };
 
     Enumerable.Matches = function (input, pattern, flags)
     {
@@ -67,7 +67,7 @@ Enumerable = (function ()
         /// <param type="RegExp/String" name="pattern">RegExp or Pattern string</param>
         /// <param type="Optional:String" name="flags" optional="true">If pattern is String then can use regexp flags "i" or "m" or "im"</param>
         /// <returns type="Enumerable"></returns>
-    }
+    };
 
     Enumerable.Range = function (start, count, step)
     {
@@ -77,7 +77,7 @@ Enumerable = (function ()
         /// <param type="Number" integer="true" name="count">The number of sequential integers to generate.</param>
         /// <param type="Optional:Number" integer="true" name="step" optional="true">Step of generate number.(Ex:Range(0,3,5) - 0,5,10)</param>
         /// <returns type="Enumerable"></returns>
-    }
+    };
 
     Enumerable.RangeDown = function (start, count, step)
     {
@@ -87,7 +87,7 @@ Enumerable = (function ()
         /// <param type="Number" integer="true" name="count">The number of sequential integers to generate.</param>
         /// <param type="Optional:Number" integer="true" name="step" optional="true">Step of generate number.(Ex:RangeDown(0,3,5) - 0,-5,-10)</param>
         /// <returns type="Enumerable"></returns>
-    }
+    };
 
     Enumerable.RangeTo = function (start, to, step)
     {
@@ -97,7 +97,7 @@ Enumerable = (function ()
         /// <param type="Number" integer="true" name="to">to integer</param>
         /// <param type="Optional:Number" integer="true" name="step" optional="true">Step of generate number.(Ex:RangeTo(0,7,3) - 0,3,6)</param>
         /// <returns type="Enumerable"></returns>
-    }
+    };
 
     Enumerable.Repeat = function (obj, count)
     {
@@ -107,7 +107,7 @@ Enumerable = (function ()
         /// <param type="TResult" name="obj">The value to be repeated.</param>
         /// <param type="Optional:Number" integer="true" name="count" optional="true">The number of times to repeat the value in the generated sequence.</param>
         /// <returns type="Enumerable"></returns>
-    }
+    };
 
     Enumerable.RepeatWithFinalize = function (initializer, finalizer)
     {
@@ -115,7 +115,7 @@ Enumerable = (function ()
         /// <param type="Func&lt;T>" name="initializer">value factory.</param>
         /// <param type="Action&lt;T>" name="finalizer">execute when finalize.</param>
         /// <returns type="Enumerable"></returns>
-    }
+    };
 
     Enumerable.Generate = function (func, count)
     {
@@ -125,7 +125,7 @@ Enumerable = (function ()
         /// <param type="Func&lt;T>" name="func">The value of execute func to be repeated.</param>
         /// <param type="Optional:Number" integer="true" name="count" optional="true">The number of times to repeat the value in the generated sequence.</param>
         /// <returns type="Enumerable"></returns>
-    }
+    };
 
     Enumerable.ToInfinity = function (start, step)
     {
@@ -134,7 +134,7 @@ Enumerable = (function ()
         /// <param type="Optional:Number" integer="true" name="start" optional="true">start integer</param>
         /// <param type="Optional:Number" integer="true" name="step" optional="true">Step of generate number.(Ex:ToInfinity(10,3) - 10,13,16,19,...)</param>
         /// <returns type="Enumerable"></returns>
-    }
+    };
 
     Enumerable.ToNegativeInfinity = function (start, step)
     {
@@ -143,7 +143,7 @@ Enumerable = (function ()
         /// <param type="Optional:Number" integer="true" name="start" optional="true">start integer</param>
         /// <param type="Optional:Number" integer="true" name="step" optional="true">Step of generate number.(Ex:ToNegativeInfinity(10,3) - 10,7,4,1,...)</param>
         /// <returns type="Enumerable"></returns>
-    }
+    };
 
     Enumerable.Unfold = function (seed, func)
     {
@@ -152,7 +152,7 @@ Enumerable = (function ()
         /// <param type="T" name="seed">The initial accumulator value.</param>
         /// <param type="Func&lt;T,T>" name="func">An accumulator function to be invoked on each element.</param>
         /// <returns type="Enumerable"></returns>
-    }
+    };
 
     Enumerable.prototype =
     {
@@ -727,7 +727,7 @@ Enumerable = (function ()
             /// <param name="selector" type="Optional:Func&lt;T,String>">A transform function to apply to each source element.</param>
             /// <returns type="Enumerable"></returns>
         }
-    }
+    };
 
     // vsdoc-dummy
 
@@ -735,26 +735,30 @@ Enumerable = (function ()
     {
         /// <summary>Returns an enumerator that iterates through the collection.</summary>
         return new IEnumerator();
-    }
+    };
 
-    var IEnumerator = function () { }
+    var IEnumerator = function () { };
+
     IEnumerator.prototype.Current = function ()
     {
         /// <summary>Gets the element in the collection at the current position of the enumerator.</summary>
         /// <returns type="T"></returns>
-    }
+    };
+
     IEnumerator.prototype.MoveNext = function ()
     {
         /// <summary>Advances the enumerator to the next element of the collection.</summary>
         /// <returns type="Boolean"></returns>
-    }
+    };
+
     IEnumerator.prototype.Dispose = function ()
     {
         /// <summary>Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.</summary>
         /// <returns type="Void"></returns>
-    }
+    };
 
-    var Dictionary = function () { }
+    var Dictionary = function () { };
+
     Dictionary.prototype =
     {
         Add: function (key, value)
@@ -804,9 +808,10 @@ Enumerable = (function ()
             /// <summary>Convert to Enumerable&lt;{Key:, Value:}&gt;.</summary>
             /// <returns type="Enumerable"></returns>
         }
-    }
+        };
 
-    var Lookup = function () { }
+    var Lookup = function () { };
+
     Lookup.prototype =
     {
         Count: function ()
@@ -832,18 +837,19 @@ Enumerable = (function ()
             /// <summary>Convert to Enumerable&lt;Grouping&gt;.</summary>
             /// <returns type="Enumerable"></returns>
         }
-    }
+    };
+    
+    var Grouping = function () { };
 
-
-    var Grouping = function () { }
     Grouping.prototype = new Enumerable();
+
     Grouping.prototype.Key = function ()
     {
         /// <summary>get grouping key.</summary>
         /// <returns type="T"></returns>  
-    }
+    };
 
-    var OrderedEnumerable = function () { }
+    var OrderedEnumerable = function () { };
     OrderedEnumerable.prototype = new Enumerable();
 
     OrderedEnumerable.prototype.ThenBy = function (keySelector)
@@ -851,14 +857,14 @@ Enumerable = (function ()
         /// <summary>Performs a subsequent ordering of the elements in a sequence in ascending order according to a key.</summary>
         /// <param name="keySelector" type="Func&lt;T,TKey>">A function to extract a key from each element.</param>
         return Enumerable.Empty().OrderBy();
-    }
+    };
 
     OrderedEnumerable.prototype.ThenByDescending = function (keySelector)
     {
         /// <summary>Performs a subsequent ordering of the elements in a sequence in descending order, according to a key.</summary>
         /// <param name="keySelector" type="Func&lt;T,TKey>">A function to extract a key from each element.</param>
         return Enumerable.Empty().OrderBy();
-    }
+    };
 
     return Enumerable;
-})()
+})();

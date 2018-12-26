@@ -3,6 +3,7 @@
     using IndicadoresOEE.Common.Models;
     using IndicadoresOEE.Domain.Business;
     using System;
+    using System.Collections.Generic;
     using System.Web.Mvc;
 
     public class VelocidadController : Controller
@@ -21,7 +22,7 @@
         }
 
         [HttpGet]
-        public JsonResult ObtenerVelocidad(long IndiceProceso, long Material)
+        public JsonResult ObtenerVelocidadPorMaterial(long IndiceProceso, long Material)
         {
             string Mensaje = string.Empty;
             bool Estado = false;
@@ -29,7 +30,7 @@
 
             try
             {
-                velocidadModel = velocidadBusiness.ObtenerVelocidad(IndiceProceso, Material);
+                velocidadModel = velocidadBusiness.ObtenerVelocidadPorMaterial(IndiceProceso, Material);
 
                 if (velocidadModel != null)
                     Estado = true;
@@ -42,6 +43,28 @@
             }
 
             return Json(new { Mensaje, Estado, velocidadModel }, JsonRequestBehavior.AllowGet);
+        }
+
+        [HttpGet]
+        public JsonResult ObtenerVelocidadesPorProcesos(long[] IndiceProceso)
+        {
+            string Mensaje = string.Empty;
+            bool Estado = false;
+            List<VelocidadModel> ListaVelocidades = null;
+
+            try
+            {
+                ListaVelocidades = velocidadBusiness.ObtenerVelocidadesPorProcesos(IndiceProceso);
+
+                if (ListaVelocidades != null)
+                    Estado = true;
+            }
+            catch (Exception e)
+            {
+                Mensaje = e.Message;
+            }
+
+            return Json(new { Mensaje, Estado, ListaVelocidades }, JsonRequestBehavior.AllowGet);
         }
     }
 }

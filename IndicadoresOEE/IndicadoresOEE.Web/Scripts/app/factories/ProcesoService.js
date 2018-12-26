@@ -5,13 +5,14 @@
         .module('indicadoresoeeapp')
         .factory('ProcesoService', ProcesoService);
 
-    ProcesoService.$inject = ['$http'];
+    ProcesoService.$inject = ['$http', '$httpParamSerializer'];
 
-    function ProcesoService($http)
+    function ProcesoService($http, $httpParamSerializer)
     {
         var service = {};
 
         service.ObtenerProcesosPorLinea = ObtenerProcesosPorLinea;
+        service.ObtenerProcesosPorLineas = ObtenerProcesosPorLineas;
         service.ObtenerProcesos = ObtenerProcesos;
         service.ObtenerProceso = ObtenerProceso;
         service.CrearProceso = CrearProceso;
@@ -21,7 +22,11 @@
         return service;
 
         function ObtenerProcesosPorLinea(IndiceLinea) {
-            return $http.get('/Proceso/ObtenerProcesos?IndiceLinea=' + IndiceLinea).then(handleSuccess, handleError);
+            return $http.get('/Proceso/ObtenerProcesosPorLinea?IndiceLinea=' + IndiceLinea).then(handleSuccess, handleError);
+        }
+
+        function ObtenerProcesosPorLineas(ListaIndicesLineas) {
+            return $http.get('/Proceso/ObtenerProcesosPorLineas?' + $httpParamSerializer({ IndiceLinea: ListaIndicesLineas })).then(handleSuccess, handleError);
         }
 
         function ObtenerProcesos() {

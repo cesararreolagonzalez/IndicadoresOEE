@@ -5,13 +5,14 @@
         .module('indicadoresoeeapp')
         .factory('DepartamentoService', DepartamentoService);
 
-    DepartamentoService.$inject = ['$http'];
+    DepartamentoService.$inject = ['$http', '$httpParamSerializer'];
 
-    function DepartamentoService($http)
+    function DepartamentoService($http, $httpParamSerializer)
     {
         var service = {};
 
         service.ObtenerDepartamentosPorCentro = ObtenerDepartamentosPorCentro;
+        service.ObtenerDepartamentosPorCentros = ObtenerDepartamentosPorCentros;
         service.ObtenerDepartamentos = ObtenerDepartamentos;
         service.ObtenerDepartamento = ObtenerDepartamento;
         service.CrearDepartamento = CrearDepartamento;
@@ -21,9 +22,18 @@
         return service;
 
         function ObtenerDepartamentosPorCentro(IndiceCentro) {
-            return $http.get('/Departamento/ObtenerDepartamentos?IndiceCentro=' + IndiceCentro).then(handleSuccess, handleError);
+            return $http.get('/Departamento/ObtenerDepartamentosPorCentro?IndiceCentro=' + IndiceCentro).then(handleSuccess, handleError);
         }
 
+        function ObtenerDepartamentosPorCentros(ListaIndicesCentros) {
+
+            //var shallowDecoded1 = $httpParamSerializer({ IndiceCentro: ListaIndicesCentros });
+            //console.log(shallowDecoded1);
+            //var parametros = $.param({ IndiceCentro: ListaIndicesCentros }).replace(/%5B/g, '').replace(/%5D/g, '');
+            //console.log(parametros);
+            return $http.get('/Departamento/ObtenerDepartamentosPorCentros?' + $httpParamSerializer({ IndiceCentro: ListaIndicesCentros })).then(handleSuccess, handleError);
+        } 
+        
         function ObtenerDepartamentos() {
             return $http.get('/Departamento/ObtenerDepartamentos').then(handleSuccess, handleError);
         }

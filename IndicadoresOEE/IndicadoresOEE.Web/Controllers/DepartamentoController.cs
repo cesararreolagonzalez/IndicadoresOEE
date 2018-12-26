@@ -25,9 +25,9 @@
         /// 
         /// </summary>
         /// <returns></returns>
-        
+
         [HttpGet]
-        public ActionResult ObtenerDepartamentos(long IndiceCentro)
+        public ActionResult ObtenerDepartamentosPorCentro(long IndiceCentro)
         {
             string Mensaje = string.Empty;
             bool Estado = false;
@@ -37,7 +37,34 @@
             {
                 long IndiceUsuario = 1;
 
-                ListaDepartamentos = departamentoBusiness.ObtenerDepartamentos(IndiceUsuario, IndiceCentro);
+                ListaDepartamentos = departamentoBusiness.ObtenerDepartamentosPorCentro(IndiceUsuario, IndiceCentro);
+                Estado = true;
+            }
+            catch (Exception e)
+            {
+                Mensaje = e.Message;
+            }
+
+            return Json(new { Estado, Mensaje, ListaDepartamentos }, JsonRequestBehavior.AllowGet);
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
+
+        [HttpGet]
+        public ActionResult ObtenerDepartamentosPorCentros(long[] IndiceCentro)
+        {
+            string Mensaje = string.Empty;
+            bool Estado = false;
+            List<DepartamentoModel> ListaDepartamentos = new List<DepartamentoModel>();
+
+            try
+            {
+                long IndiceUsuario = 1;
+
+                ListaDepartamentos = departamentoBusiness.ObtenerDepartamentosPorCentros(IndiceUsuario, IndiceCentro);
                 Estado = true;
             }
             catch (Exception e)

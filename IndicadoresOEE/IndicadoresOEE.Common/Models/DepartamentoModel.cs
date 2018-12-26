@@ -11,5 +11,7 @@
         public string Nombre { get; set; }
         [DataMember]
         public long IndiceCentro { get; set; }
+        [DataMember]
+        public string NombreCentro { get; set; }
     }
 }

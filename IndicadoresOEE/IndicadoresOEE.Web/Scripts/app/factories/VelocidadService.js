@@ -5,12 +5,13 @@
         .module('indicadoresoeeapp')
         .factory('VelocidadService', VelocidadService);
 
-    VelocidadService.$inject = ['$http'];
+    VelocidadService.$inject = ['$http', '$httpParamSerializer'];
 
-    function VelocidadService($http)
+    function VelocidadService($http, $httpParamSerializer)
     {
         var service = {};
 
+        service.ObtenerVelocidadesPorProcesos = ObtenerVelocidadesPorProcesos;
         service.ObtenerVelocidadPorMaterial = ObtenerVelocidadPorMaterial;
         service.ObtenerVelocidades = ObtenerVelocidades;
         service.ObtenerVelocidad = ObtenerVelocidad;
@@ -20,8 +21,12 @@
 
         return service;
 
+        function ObtenerVelocidadesPorProcesos(ListaIndicesProcesos) {
+            return $http.get('/Velocidad/ObtenerVelocidadesPorProcesos?' + $httpParamSerializer({ IndiceProceso: ListaIndicesProcesos })).then(handleSuccess, handleError);
+        }
+        
         function ObtenerVelocidadPorMaterial(IndiceProceso, Material) {
-            return $http.get('/Velocidad/ObtenerVelocidad?IndiceProceso=' + IndiceProceso + '&Material=' + Material).then(handleSuccess, handleError);
+            return $http.get('/Velocidad/ObtenerVelocidadPorMaterial?IndiceProceso=' + IndiceProceso + '&Material=' + Material).then(handleSuccess, handleError);
         }
 
         function ObtenerVelocidades() {
