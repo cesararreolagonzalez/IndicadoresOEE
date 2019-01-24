@@ -1,6 +1,6 @@
 ﻿(function () {
     'use strict';
-
+    
     angular.module('indicadoresoeeapp', ['ngMaterial', 'ngMessages', 'ngSanitize', 'angularMoment'])
 
         .config(['$mdIconProvider', '$mdDateLocaleProvider', '$mdThemingProvider',

@@ -1,10 +1,666 @@
 ﻿
 @{
-    ViewBag.Title = "CapturaMasiva";
+    ViewBag.Title = "Captura masiva de indicadores";
 }
 
-<h3 style=" color: rgb(63, 81, 181); font-weight: 400; letter-spacing: .5px; text-align: center; margin-top: 5rem; margin-bottom: 3rem;">
-    Captura masiva de indicadores
-</h3>
+<style>
+    .hint {
+        /* Position the hint */
+        position: absolute;
+        left: 2px;
+        right: auto;
+        bottom: 7px;
+        /* Copy styles from ng-messages */
+        font-size: 12px;
+        line-height: 14px;
+        transition: all 0.3s cubic-bezier(0.55, 0, 0.55, 0.2);
+        /* Set our own color */
+        color: grey;
+    }
+
+    body[dir=rtl] .hint {
+        right: 2px;
+        left: auto;
+    }
+
+    .md-title {
+        font-size: 16px;
+        font-weight: 500;
+        letter-spacing: 0.005em;
+    }
+
+    .md-datepicker-input {
+        min-width: 145px !important;
+    }
+
+    .detalle-cantidad {
+        font-size: 15px;
+        padding-left: 0.5rem;
+        padding-right: 0.5rem;
+        font-weight: 900;
+        line-height: 18px;
+    }
+
+    .chipsdemoContactChips md-content.autocomplete {
+        min-height: 250px;
+    }
+
+        .chipsdemoContactChips md-content.autocomplete input {
+            min-width: 400px;
+        }
+
+    .chipsdemoContactChips .md-item-text.compact {
+        padding-top: 8px;
+        padding-bottom: 8px;
+    }
+
+    .chipsdemoContactChips md-contact-chips {
+        margin-bottom: 10px;
+    }
+
+    .chipsdemoContactChips .md-chips {
+        padding: 5px 0 8px;
+    }
+
+    .chipsdemoContactChips .fixedRows {
+        height: 250px;
+        overflow: hidden;
+    }
+
+    .chipsdemoContactChips .contact-item {
+        box-sizing: border-box;
+    }
+
+        .chipsdemoContactChips .contact-item.selected {
+            background-color: #E3ECF5;
+        }
+
+            .chipsdemoContactChips .contact-item.selected p {
+                color: rgba(0, 0, 0, 0.87);
+                font-weight: 400;
+            }
+
+        .chipsdemoContactChips .contact-item .md-list-item-text {
+            padding: 14px 0;
+            max-width: 190px;
+        }
+
+            .chipsdemoContactChips .contact-item .md-list-item-text h3 {
+                margin: 0 !important;
+                padding: 0;
+                line-height: 1.2em !important;
+            }
+
+            .chipsdemoContactChips .contact-item .md-list-item-text h3, .chipsdemoContactChips .contact-item .md-list-item-text p {
+                text-overflow: ellipsis;
+                white-space: nowrap;
+                overflow: hidden;
+            }
+
+    @@media (min-width: 960px) {
+        .chipsdemoContactChips .contact-item {
+            float: left;
+            width: 33%;
+        }
+    }
+</style>
+
+@*<ul>
+    <li ng-repeat="i in getNumber(number)"><span>{{$index+1}}</span></li>
+</ul>
+And somewhere in your controller:
+
+$scope.number = 5;
+$scope.getNumber = function(num) {
+    return new Array(num);
+}*@
 
 
+<div ng-controller="CapturaMasivaIndicadorController" ng-cloak>
+    <h4 style="color: rgb(63, 81, 181); font-weight: 700; letter-spacing: .7px; text-align: left; margin-bottom: 1rem; padding: 0.5rem !important; margin-bottom: 1rem; margin-top: 1rem;">
+        Captura masiva de indicadores
+    </h4>
+    <md-content style="overflow: hidden !important;">
+        <div class="row">
+            <div class="col">
+                <md-list>
+                    <md-list-item class="md-3-line" ng-repeat="Indicador in ObtenerListaCapturasIndicadoresPorIndice(0, 4)">
+                        <img ng-src="{{ Indicador.Icono }}" class="md-avatar" alt="{{ Indicador }}" />
+                        <div class="md-list-item-text">
+                            <h3>Indicador #{{ $index + 1 }}</h3>
+                            <p>{{ Indicador.NombreCentro }} – {{ Indicador.NombreDepartamento }} – {{ Indicador.NombreLinea }} – {{ Indicador.NombreProceso }}</p>
+                            <p>{{ Indicador.NumeroPiezas | number }} piezas / {{ Indicador.Ciclo }} minutos / {{ Indicador.NumeroParos }} paros / {{ Indicador.NumeroRechazos }} rechazos</p>
+                        </div>
+                        <md-button class="md-secondary">Detalles</md-button>
+                        <md-divider ng-if="!$last"></md-divider>
+                    </md-list-item>
+                </md-list>
+            </div>
+            <div class="col">
+                <md-list>
+                    <md-list-item class="md-3-line" ng-repeat="Indicador in ObtenerListaCapturasIndicadoresPorIndice(4, 4)">
+                        <img ng-src="{{ Indicador.Icono }}" class="md-avatar" alt="{{ Indicador }}" />
+                        <div class="md-list-item-text">
+                            <h3>Indicador #{{ $index + 5 }}</h3>
+                            <p>{{ Indicador.NombreCentro }} – {{ Indicador.NombreDepartamento }} – {{ Indicador.NombreLinea }} – {{ Indicador.NombreProceso }}</p>
+                            <p>{{ Indicador.NumeroPiezas | number }} piezas / {{ Indicador.Ciclo }} minutos / {{ Indicador.NumeroParos }} paros / {{ Indicador.NumeroRechazos }} rechazos</p>
+                        </div>
+                        <md-button class="md-secondary">Detalles</md-button>
+                        <md-divider ng-if="!$last"></md-divider>
+                    </md-list-item>
+                </md-list>
+            </div>
+            <div class="col">
+                <md-list>
+                    <md-list-item class="md-3-line" ng-repeat="Indicador in ObtenerListaCapturasIndicadoresPorIndice(8, 4)">
+                        <img ng-src="{{ Indicador.Icono }}" class="md-avatar" alt="{{ Indicador }}" />
+                        <div class="md-list-item-text">
+                            <h3>Indicador #{{ $index + 9 }}</h3>
+                            <p>{{ Indicador.NombreCentro }} – {{ Indicador.NombreDepartamento }} – {{ Indicador.NombreLinea }} – {{ Indicador.NombreProceso }}</p>
+                            <p>{{ Indicador.NumeroPiezas | number }} piezas / {{ Indicador.Ciclo }} minutos / {{ Indicador.NumeroParos }} paros / {{ Indicador.NumeroRechazos }} rechazos</p>
+                        </div>
+                        <md-button class="md-secondary">Detalles</md-button>
+                        <md-divider ng-if="!$last"></md-divider>
+                    </md-list-item>
+                </md-list>
+            </div>
+        </div>
+    </md-content>
+    <br />
+    <br />
+    <md-content style="overflow: hidden !important;">
+        <div class="row">
+            <div class="col">
+                <md-list>
+                    <md-list-item class="md-3-line" ng-repeat="Indicador in ObtenerListaCapturasIndicadoresPorIndice(0, 6)">
+                        <img ng-src="{{ Indicador.Icono }}" class="md-avatar" alt="{{ Indicador }}" />
+                        <div class="md-list-item-text">
+                            <h3>Indicador #{{ $index + 1 }}</h3>
+                            <p>{{ Indicador.NombreCentro }} – {{ Indicador.NombreDepartamento }} – {{ Indicador.NombreLinea }} – {{ Indicador.NombreProceso }}</p>
+                            <p>{{ Indicador.NumeroPiezas | number }} piezas / {{ Indicador.Ciclo }} minutos / {{ Indicador.NumeroParos }} paros / {{ Indicador.NumeroRechazos }} rechazos</p>
+                        </div>
+                        <md-button class="md-secondary">Detalles</md-button>
+                        <md-divider ng-if="!$last"></md-divider>
+                    </md-list-item>
+                </md-list>
+            </div>
+            <div class="col">
+                <md-list>
+                    <md-list-item class="md-3-line" ng-repeat="Indicador in ObtenerListaCapturasIndicadoresPorIndice(6, 6)">
+                        <img ng-src="{{ Indicador.Icono }}" class="md-avatar" alt="{{ Indicador }}" />
+                        <div class="md-list-item-text">
+                            <h3>Indicador #{{ $index + 5 }}</h3>
+                            <p>{{ Indicador.NombreCentro }} – {{ Indicador.NombreDepartamento }} – {{ Indicador.NombreLinea }} – {{ Indicador.NombreProceso }}</p>
+                            <p>{{ Indicador.NumeroPiezas | number }} piezas / {{ Indicador.Ciclo }} minutos / {{ Indicador.NumeroParos }} paros / {{ Indicador.NumeroRechazos }} rechazos</p>
+                        </div>
+                        <md-button class="md-secondary">Detalles</md-button>
+                        <md-divider ng-if="!$last"></md-divider>
+                    </md-list-item>
+                </md-list>
+            </div>
+        </div>
+    </md-content>
+    <md-list class="fixedRows">
+        <md-subheader class="md-no-sticky">Contacts</md-subheader>
+        <md-list-item class="md-2-line contact-item" ng-repeat="(index, contact) in allContacts"
+                      ng-if="contacts.indexOf(contact) < 0">
+            <img ng-src="{{contact.image}}" class="md-avatar" alt="{{contact.name}}" />
+            <div class="md-list-item-text compact">
+                <h3>{{contact.name}}</h3>
+                <p>{{contact.email}}</p>
+            </div>
+        </md-list-item>
+        <md-list-item class="md-2-line contact-item selected"
+                      ng-repeat="(index, contact) in ctrl.contacts">
+            <img ng-src="{{contact.image}}" class="md-avatar" alt="{{contact.name}}" />
+            <div class="md-list-item-text compact">
+                <h3>{{contact.name}}</h3>
+                <p>{{contact.email}}</p>
+            </div>
+        </md-list-item>
+    </md-list>
+
+    <md-card md-theme="default" ng-cloak style="min-width: 60rem !important; max-width: 60rem !important;">
+        <md-card-title>
+            <md-card-title-text>
+                <span class="md-title text-muted" style="padding-left: 2rem;">Datos generales</span>
+                <span class="md-subhead"></span>
+            </md-card-title-text>
+        </md-card-title>
+
+        <md-card-content style="padding-left: 3rem !important; padding-right: 3rem !important; margin-top: 1rem; padding-bottom: 3rem !important;">
+            <div layout="column" layout-gt-xs="row">
+                <div flex flex-gt-xs="50" style="padding-right: 2rem !important;">
+                    <div layout="column" layout-gt-xs="row" flex-gt-sm flex-gt-xs>
+                        <md-input-container class="md-block" flex-gt-sm>
+                            <label>Centro</label>
+                            <md-select id="centroSeleccionable"
+                                       name="centroSeleccionable"
+                                       md-on-open="ObtenerCentros()"
+                                       md-on-close="ResetearTerminoBusqueda()"
+                                       ng-model="DatosGenerales.IndiceCentro"
+                                       md-container-class="selectdemoSelectHeader"
+                                       required
+                                       md-no-asterisk
+                                       ng-cloak>
+                                <md-select-header class="demo-select-header">
+                                    <input ng-model="TerminoBusqueda"
+                                           type="search"
+                                           placeholder="Busca un centro"
+                                           class="demo-header-searchbox md-text">
+                                </md-select-header>
+                                <md-optgroup label="Centros disponibles">
+                                    <md-option ng-repeat="Centro in ListaCentros | filter:TerminoBusqueda" ng-value="Centro.Indice">
+                                        {{ Centro.Nombre }}
+                                    </md-option>
+                                </md-optgroup>
+                            </md-select>
+                        </md-input-container>
+                    </div>
+                    <div layout="column" layout-gt-xs="row" flex-gt-sm flex-gt-xs>
+                        <md-input-container class="md-block" flex-gt-sm>
+                            <label>Departamento</label>
+                            <md-select id="departamentoSeleccionable"
+                                       name="departamentoSeleccionable"
+                                       ng-disabled="DatosGenerales.IndiceCentro === null"
+                                       md-on-open="ObtenerDepartamentos()"
+                                       md-on-close="ResetearTerminoBusqueda()"
+                                       ng-model="DatosGenerales.IndiceDepartamento"
+                                       md-container-class="selectdemoSelectHeader"
+                                       required
+                                       md-no-asterisk
+                                       ng-cloak>
+                                <md-select-header class="demo-select-header">
+                                    <input ng-model="TerminoBusqueda"
+                                           type="search"
+                                           placeholder="Busca un departamento"
+                                           class="demo-header-searchbox md-text">
+                                </md-select-header>
+                                <md-optgroup label="Centros disponibles">
+                                    <md-option ng-repeat="Departamento in ListaDepartamentos | filter:TerminoBusqueda" ng-value="Departamento.Indice">
+                                        {{ Departamento.Nombre }}
+                                    </md-option>
+                                </md-optgroup>
+                            </md-select>
+                        </md-input-container>
+                    </div>
+                    <div layout="column" layout-gt-xs="row" flex-gt-sm flex-gt-xs>
+                        <md-input-container class="md-block" flex-gt-sm>
+                            <label>Línea</label>
+                            <md-select id="lineaSeleccionable"
+                                       name="lineaSeleccionable"
+                                       ng-disabled="DatosGenerales.IndiceDepartamento === null"
+                                       md-on-open="ObtenerLineas()"
+                                       md-on-close="ResetearTerminoBusqueda()"
+                                       ng-model="DatosGenerales.IndiceLinea"
+                                       md-container-class="selectdemoSelectHeader"
+                                       required
+                                       md-no-asterisk
+                                       ng-cloak>
+                                <md-select-header class="demo-select-header">
+                                    <input ng-model="TerminoBusqueda"
+                                           type="search"
+                                           placeholder="Busca una línea"
+                                           class="demo-header-searchbox md-text">
+                                </md-select-header>
+                                <md-optgroup label="Lineas disponibles">
+                                    <md-option ng-repeat="Linea in ListaLineas | filter:TerminoBusqueda" ng-value="Linea.Indice">
+                                        {{ Linea.Nombre }}
+                                    </md-option>
+                                </md-optgroup>
+                            </md-select>
+                        </md-input-container>
+                    </div>
+                    <div layout="column" layout-gt-xs="row" flex-gt-sm flex-gt-xs>
+                        <md-input-container class="md-block" flex-gt-sm>
+                            <label>Proceso</label>
+                            <md-select id="procesoSeleccionable"
+                                       name="procesoSeleccionable"
+                                       ng-disabled="DatosGenerales.IndiceLinea === null"
+                                       md-on-open="ObtenerProcesos()"
+                                       md-on-close="ResetearTerminoBusqueda()"
+                                       ng-model="DatosGenerales.IndiceProceso"
+                                       md-container-class="selectdemoSelectHeader"
+                                       required
+                                       md-no-asterisk
+                                       ng-cloak>
+                                <md-select-header class="demo-select-header">
+                                    <input ng-model="TerminoBusqueda"
+                                           type="search"
+                                           placeholder="Busca un proceso"
+                                           class="demo-header-searchbox md-text">
+                                </md-select-header>
+                                <md-optgroup label="Lineas disponibles">
+                                    <md-option ng-repeat="Proceso in ListaProcesos | filter:TerminoBusqueda" ng-value="Proceso.Indice">
+                                        {{ Proceso.Nombre }}
+                                    </md-option>
+                                </md-optgroup>
+                            </md-select>
+                        </md-input-container>
+                    </div>
+                </div>
+                <div flex flex-gt-xs="50" style="padding-left: 2rem !important;">
+                    <div layout="column" layout-gt-xs="row" flex-gt-sm flex-gt-xs>
+                        <div layout="row" flex-gt-sm>
+                            <md-input-container class="md-block" flex="70" style="height: 34px !important;">
+                                <label>Orden</label>
+                                <input ng-model="DatosGenerales.Orden" solo-digitos valor-valido-mayor-cero required md-no-asterisk>
+                            </md-input-container>
+                            <div flex="30" layout="column" layout-align="center center">
+                                <md-button id="btnValidar" ng-click="ValidarOrden($event)">
+                                    <md-icon md-svg-src="~/Content/Icons/search.svg"
+                                             aria-label="Insert Drive Icon">
+                                    </md-icon>
+                                    VALIDAR
+                                </md-button>
+                            </div>
+                        </div>
+                    </div>
+                    <div layout="column" layout-gt-xs="row" flex-gt-sm flex-gt-xs>
+                        <md-input-container class="md-block" flex-gt-sm style="height: 34px!important;">
+                            <label>Lote</label>
+                            <input ng-model="DatosGenerales.Lote" required md-no-asterisk readonly>
+                        </md-input-container>
+                    </div>
+                    <div layout="column" layout-gt-xs="row" flex-gt-sm flex-gt-xs>
+                        <md-input-container class="md-block" flex-gt-sm style="height: 34px !important;">
+                            <label>Material</label>
+                            <input ng-model="DatosGenerales.Material" required md-no-asterisk readonly>
+                        </md-input-container>
+                    </div>
+                    <div layout="column" layout-gt-xs="row" flex-gt-sm flex-gt-xs>
+                        <md-input-container class="md-block" flex-gt-sm style="height: 34px !important;">
+                            <label>Descripción</label>
+                            <input ng-model="DatosGenerales.DescripcionMaterial" required md-no-asterisk readonly>
+                        </md-input-container>
+                    </div>
+                    <div layout="column" layout-gt-xs="row" flex-gt-sm flex-gt-xs>
+                        <md-input-container class="md-block" flex-gt-sm style="height: 34px !important;">
+                            <label>Velocidad</label>
+                            <input ng-model="DatosGenerales.Velocidad" solo-digitos formato-numerico required md-no-asterisk readonly>
+                        </md-input-container>
+                    </div>
+                </div>
+            </div>
+        </md-card-content>
+    </md-card>
+
+
+    <md-card md-theme="default" ng-cloak style="min-width: 60rem !important; max-width: 60rem !important; margin-top: 1rem !important; padding-bottom: rem !important;">
+        <md-card-title>
+            <md-card-title-text>
+                <span class="md-title text-muted" style="padding-left: 2rem;">Datos del indicador</span>
+                <span class="md-subhead"></span>
+            </md-card-title-text>
+        </md-card-title>
+
+        <md-card-content style="padding-left: 3rem !important; padding-right: 3rem !important; margin-top: 1rem;">
+            <div layout="column" layout-gt-xs="row">
+
+                <div flex flex-gt-xs="55" style="padding-right: 2rem !important;">
+                    <form name="datosIndicadorForm">
+
+                        <div layout="column" layout-gt-xs="row" flex-gt-sm>
+                            <md-input-container class="md-block md-subhead md-input-has-value" flex-gt-sm>
+                                <label>Turno</label>
+                                <md-radio-group ng-model="DatosIndicador.Turno" layout="row">
+                                    <md-radio-button class="md-primary" ng-repeat="turno in Turnos" ng-value="turno" aria-label="{{ turno }}" flex>{{ turno }}</md-radio-button>
+                                </md-radio-group>
+                            </md-input-container>
+                        </div>
+                        <div layout="column" layout-gt-xs="row" flex-gt-sm style="margin-top: 1rem !important;">
+                            <div layout-gt-sm="row" flex-gt-sm>
+                                <div layout-gt-sm="column" flex-gt-sm>
+                                    <md-input-container class="md-block" ng-disabled="DatosGenerales.IndiceIndicador === null">
+                                        <label>Ciclo</label>
+                                        <input name="ciclo" ng-model="DatosIndicador.Ciclo" solo-digitos formato-numerico limite-cantidad="60" valor-valido-mayor-cero required md-no-asterisk>
+                                        <div ng-messages="datosIndicadorForm.ciclo.$error" md-auto-hide="true">
+                                            <div ng-message="required" ng-if="datosIndicadorForm.ciclo.$dirty">
+                                                El ciclo debe tener un valor
+                                            </div>
+                                            <div ng-message="valorValidoMayorCero">
+                                                El ciclo debe ser mayor a 0
+                                            </div>
+                                            <div ng-message="limiteCantidad">
+                                                El ciclo debe ser menor a 60
+                                            </div>
+                                        </div>
+                                    </md-input-container>
+                                </div>
+                                <div flex="5" hide-xs hide-sm>
+                                    <!-- Spacer //-->
+                                </div>
+
+                                <div layout-gt-sm="column" flex-gt-sm>
+                                    <md-input-container class="md-block" ng-disabled="DatosGenerales.IndiceIndicador === null">
+                                        <label>Piezas</label>
+                                        <input name="piezas" ng-model="DatosIndicador.Piezas" solo-digitos formato-numerico valor-valido-mayor-cero>
+                                        <div ng-messages="datosIndicadorForm.piezas.$error" md-auto-hide="true">
+                                            <div ng-message="required" ng-if="datosIndicadorForm.piezas.$dirty">
+                                                Las piezas deben tener un valor
+                                            </div>
+                                            <div ng-message="valorValidoMayorCero">
+                                                Las piezas deben ser mayor a 0
+                                            </div>
+                                        </div>
+                                    </md-input-container>
+                                </div>
+
+                            </div>
+                        </div>
+                        <div layout="column" layout-gt-xs="row" flex-gt-sm flex-gt-xs>
+
+                            <div layout-gt-sm="row" flex-gt-sm style="margin-top: 0 !important;">
+
+                                <div layout-gt-sm="column" flex-gt-sm="45">
+                                    <md-datepicker class=""
+                                                   name="fecha"
+                                                   ng-model="DatosIndicador.Fecha"
+                                                   md-max-date="Util.FechaLimite"
+                                                   ng-disabled="DatosGenerales.IndiceIndicador === null"
+                                                   md-placeholder="Fecha">
+                                    </md-datepicker>
+                                </div>
+                                <div layout-gt-sm="column" flex-gt-sm="55">
+                                    <div layout-gt-sm="row">
+                                        <md-icon title="Hora" md-svg-src="../Content/Icons/time.svg" aria-label="Hora" style="margin-left: 2.5rem !important; margin-right: 1.99rem !important;margin-top: 0.4rem !important;padding: 0 !important;"></md-icon>
+                                        <div style="margin-top: -1rem !important;">
+                                            <md-input-container class="">
+                                                <md-select ng-model="DatosIndicador.Hora"
+                                                           aria-label="hora"
+                                                           ng-disabled="DatosGenerales.IndiceIndicador === null">
+                                                    <md-optgroup label="hora">
+                                                        <md-option ng-repeat="hora in [].constructor(24) track by $index"
+                                                                   ng-value="$index"
+                                                                   ng-disabled="ValidarHora($index)">
+                                                            {{ $index < 10 ? '0' + $index : $index }}
+                                                        </md-option>
+                                                    </md-optgroup>
+                                                </md-select>
+                                            </md-input-container>
+                                            <md-input-container class="">
+                                                <md-select ng-model="DatosIndicador.Minuto"
+                                                           aria-label="minutos"
+                                                           ng-disabled="DatosIndicador.Hora === null">
+                                                    <md-optgroup label="minuto">
+                                                        <md-option ng-repeat="minuto in [].constructor(60) track by $index"
+                                                                   ng-value="$index"
+                                                                   nng-disabled="ValidarMinuto($index)">
+                                                            {{ $index < 10 ? '0' + $index : $index }}
+                                                        </md-option>
+                                                    </md-optgroup>
+                                                </md-select>
+                                            </md-input-container>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div flex flex-gt-xs="45" style="padding-left: 2rem !important;" layout="column" layout-align="center center">
+                    <div layout-gt-sm="row" layout-align="start center" flex-gt-sm>
+                        <blockquote class="blockquote bq-primary" ng-class="{'bq-warning': Util.Estado === Util.Estados.CON_PAROS, 'bq-success': Util.Estado === Util.Estados.SIN_PAROS, 'bq-danger':  Util.Estado === Util.Estados.ERROR }" ng-hide="Util.Estado === Util.Estados.SIN_ESTADO">
+
+                            <p class="bq-title" style="font-size: 0.9em;"><strong>{{ 'Minutos de paro' }}</strong></p>
+
+                            <div class="mdb-text-danger" ng-show="Util.Estado === Util.Estados.ERROR" style="font-size: 0.9em;">
+                                <strong>Corrige las piezas producidas</strong>
+                            </div>
+
+                            <div class="mdb-text-warning" ng-show="Util.Estado === Util.Estados.CON_PAROS" style="font-size: 0.9em;">
+                                <strong>Debes capturar </strong> <div class="step-marker step-marker--centered-pulled background-color--primary">{{ Util.CalculoHorasParo }}</div> <strong>minutos</strong>
+                            </div>
+
+                            <div class="mdb-text-success" ng-show="Util.Estado === Util.Estados.SIN_PAROS" style="font-size: 0.9em;">
+                                <strong>No hay minutos de paros para agregar</strong>
+                            </div>
+                        </blockquote>
+                    </div>
+                </div>
+            </div>
+        </md-card-content>
+        <md-dialog-actions style="background-color: #FFF !important; padding-left: 2rem; padding-right: 2rem; margin-top: 1rem; padding-bottom: 1rem;">
+            <div layout="column" layout-gt-xs="row" layout-align="start center" flex flex-gt-xs>
+                <strong style="padding-left: 2.5rem;" class="text-danger" ng-show="Util.ExistenIndicadoresPeriodo"><md-icon class="text-danger" md-svg-src="../../Content/Icons/report_problem.svg"></md-icon>&nbsp;&nbsp;&nbsp;Existen indicadores en este período </strong>
+            </div>
+        </md-dialog-actions>
+    </md-card>
+
+    <md-card md-theme="default" ng-cloak style="min-width: 60rem !important; max-width: 60rem !important;">
+        <md-card-title>
+            <md-card-title-text>
+                <span class="md-title text-muted" style="padding-left: 2rem;">Rechazos</span>
+                <span class="md-subhead"></span>
+            </md-card-title-text>
+        </md-card-title>
+        <md-card-content style="padding-left: 3rem;">
+            <div layout="row" style=" margin-bottom: 2rem;" flex>
+                <div layout="row" flex>
+                    <label class="c01971 c01973 c01969">{{ 'Piezas totales' | uppercase }} <strong class="text-muted" style="padding-left: 0.7rem;">{{ (DatosIndicador.Piezas - Util.SumaPiezasRechazadas) < 0 ? 0 : DatosIndicador.Piezas - Util.SumaPiezasRechazadas | number }}</strong></label>
+                </div>
+                <div layout="row" flex>
+                    <label class="c01971 c01973 c01969" ng-class="{'mdb-text-danger': Util.SumaPiezasRechazadas > DatosIndicador.Piezas }">{{ 'Piezas rechazadas' | uppercase }} <strong style="padding-left: 0.7rem;" ng-class="{'mdb-text-danger': Util.SumaPiezasRechazadas > DatosIndicador.Piezas, 'text-muted': Util.SumaPiezasRechazadas <= DatosIndicador.Piezas }">{{ Util.SumaPiezasRechazadas | number }}</strong></label>
+                </div>
+                <div layout="row" flex>
+                    <label class="c01971 c01973 c01969">{{ 'Piezas aceptadas' | uppercase }} <strong class="text-muted" style="padding-left: 0.7rem;">{{ (DatosIndicador.Piezas - Util.SumaPiezasRechazadas) < 0 ? 0 : DatosIndicador.Piezas - Util.SumaPiezasRechazadas | number }}</strong></label>
+                </div>
+            </div>
+            <md-content class="" layout="column" style="margin-top: 1rem;">
+                <md-chips ng-model="ListaRechazosElegidos"
+                          class="custom-chips"
+                          readonly="true"
+                          md-removable="true"
+                          md-transform-chip="TransformarChipRechazo($chip)">
+                    <md-chip-template>
+                        <span>
+                            <strong>{{$chip.Nombre | uppercase }}</strong>
+                            <em>({{ $chip.Cantidad }})</em>
+                        </span>
+                    </md-chip-template>
+                    <button md-chip-remove
+                            class="vegetablechip md-primary"
+                            ng-click="QuitarRechazo($chip)">
+                        <md-icon md-svg-icon="md-close"></md-icon>
+                    </button>
+                </md-chips>
+            </md-content>
+            <small class="text-muted" ng-show="ListaRechazosElegidos.length > 0" style="margin-left: 0.5rem; margin-top: 2rem;" ng-cloak>
+                {{ ListaRechazosElegidos.length }} {{ ListaRechazosElegidos.length === 1 ? 'rechazo seleccionado' : 'rechazos seleccionados' }}
+            </small>
+            <span class="text-muted" ng-show="ListaRechazosElegidos.length === 0" style="padding-bottom: 2rem;">No has seleccionado rechazos aún</span>
+        </md-card-content>
+        <md-card-actions>
+            <div layout="column" layout-gt-xs="row" layout-align="start center">
+                <div flex flex-gt-xs="50" layout-align="start center">
+                    <small>
+                        <strong style="padding-left: 2.5rem;" ng-class="{'mdb-text-danger': DatosIndicador.Piezas < Util.SumaPiezasRechazadas }" ng-show="DatosIndicador.Piezas < Util.SumaPiezasRechazadas"><md-icon class="text-danger" md-svg-src="../../Content/Icons/report_problem.svg"></md-icon>&nbsp;&nbsp;&nbsp;El límite de piezas rechazadas es de {{ DatosIndicador.Piezas | number }} </strong>
+                    </small>
+                </div>
+                <div flex flex-gt-xs="50" layout-gt-xs="row" layout-align="end center">
+                    <md-button layout-align="end center" id="btnAddRechazo" md-no-ink class="md-primary" ng-click="agregarRechazo($event)"
+                               ng-show="DatosGenerales.IndiceProceso !== null && DatosIndicador.Piezas >= Util.SumaPiezasRechazadas && DatosIndicador.Piezas > 0">
+                        <md-icon md-svg-icon="md-add"></md-icon>
+                        AGREGAR
+                    </md-button>
+                </div>
+            </div>
+        </md-card-actions>
+    </md-card>
+
+    <md-card md-theme="default" ng-cloak style="min-width: 60rem !important; max-width: 60rem !important;">
+        <md-card-title>
+            <md-card-title-text>
+                <span class="md-title text-muted" style="padding-left: 2rem;">Paros</span>
+                <span class="md-subhead"></span>
+            </md-card-title-text>
+        </md-card-title>
+        <md-card-content style="padding-left: 3rem;">
+            <div layout="row" flex style=" margin-bottom: 2rem;">
+                <div layout="row" flex>
+                    <label class="c01971 c01973 c01969">{{ 'Paros disponibles' | uppercase }} <strong class="text-muted" style="padding-left: 0.7rem;">{{ Util.CalculoHorasParo | number }}</strong></label>
+                </div>
+                <div layout="row" flex>
+                    <label class="c01971 c01973 c01969" ng-class="{'mdb-text-danger': Util.SumaParos > Util.CalculoHorasParo }">{{ 'Paros asignados' | uppercase }} <strong style="padding-left: 0.7rem;" ng-class="{'mdb-text-danger': Util.SumaParos > Util.CalculoHorasParo, 'text-muted': Util.SumaParos <= Util.CalculoHorasParo }">{{ Util.SumaParos | number }}</strong></label>
+                </div>
+                <div layout="row" flex>
+                    <label class="c01971 c01973 c01969">{{ 'Sin causa asignada' | uppercase }} <strong class="text-muted" style="padding-left: 0.7rem;">{{ Util.ParoSinCausaAsignada | number }}</strong></label>
+                </div>
+            </div>
+            <md-content class="" layout="column" style="margin-top: 1rem;">
+                <md-chips ng-model="ListaParosElegidos"
+                          class="custom-chips"
+                          readonly="true"
+                          md-removable="true"
+                          md-transform-chip="TransformarChipParo($chip)">
+                    <md-chip-template>
+                        <span>
+                            <strong>{{$chip.Nombre | uppercase }}</strong>
+                            <em>({{ $chip.Cantidad }})</em>
+                            <span ng-if="$chip.Folio">[Folio: {{ $chip.Folio }}]</span>
+                        </span>
+                    </md-chip-template>
+                    <button md-chip-remove
+                            class="vegetablechip md-primary"
+                            ng-click="QuitarParo($chip)">
+                        <md-icon md-svg-icon="md-close"></md-icon>
+                    </button>
+                </md-chips>
+            </md-content>
+            <small class="text-muted" ng-show="ListaParosElegidos.length > 0" style="margin-left: 0.5rem; margin-top: 2rem;" ng-cloak>
+                {{ ListaParosElegidos.length }} {{ ListaParosElegidos.length === 1 ? 'paro seleccionado' : 'paros seleccionados' }}
+            </small>
+            <span class="text-muted" ng-show="Util.Estado === Util.Estados.CON_PAROS && ListaParosElegidos.length === 0" style="padding-bottom: 2rem;">No has seleccionado paros aún</span>
+        </md-card-content>
+        <md-card-actions>
+            <div layout="column" layout-gt-xs="row" layout-align="start center">
+                <div flex flex-gt-xs="50" layout-align="start center">
+                    <small>
+                        <strong style="padding-left: 2.5rem;" ng-class="{'mdb-text-danger': Util.CalculoHorasParo < Util.SumaParos }" ng-show="Util.Estado > 0 && Util.CalculoHorasParo < Util.SumaParos">
+                            <md-icon class="text-danger" md-svg-src="../../Content/Icons/report_problem.svg"></md-icon>
+                            &nbsp;&nbsp;&nbsp;El límite de paros es de {{ Util.CalculoHorasParo }}
+                        </strong>
+                    </small>
+                </div>
+                <div flex flex-gt-xs="50" layout-gt-xs="row" layout-align="end center">
+                    <md-button id="btnAddParo" md-no-ink class="md-primary" ng-click="agregarParo($event)" ng-show="DatosGenerales.IndiceProceso !== null && (Util.CalculoHorasParo >= Util.SumaParos) && Util.EstadoHorasParo">
+                        <md-icon md-svg-icon="md-add"></md-icon>
+                        AGREGAR
+                    </md-button>
+                </div>
+            </div>
+        </md-card-actions>
+    </md-card>
+    <div layout="column" layout-gt-xs="row" layout-align="center center" flex flex-gt-xs style="margin-top: 1rem;">
+
+        <div flex flex-gt-xs="50" layout-gt-xs="row" layout-align="center center">
+            <md-button id="btnGuardar"
+                       ng-click="Guardar($event)"
+                       ng-disabled="ValidacionBotonGuardar()"
+                       class="md-primary">
+                <md-icon md-svg-icon="md-save" style="margin-right: 0.5rem;"></md-icon>
+                Guardar indicador
+            </md-button>
+        </div>
+    </div>
+</div>

@@ -233,6 +233,7 @@
     <Content Include="Content\Icons\search.svg" />
     <Content Include="Content\Icons\time.svg" />
     <Content Include="Content\Images\indicadoresoee-logo.jpg" />
+    <Content Include="Content\Numbers\numero01.png" />
     <Content Include="favicon.ico" />
     <Content Include="fonts\glyphicons-halflings-regular.svg" />
     <Content Include="Global.asax" />
@@ -254,6 +255,7 @@
     <Content Include="Scripts\angular.min.js" />
     <Content Include="Scripts\app\app.js" />
     <Content Include="Scripts\app\constants\AplicacionConstant.js" />
+    <Content Include="Scripts\app\controllers\CapturaMasivaIndicadorController.js" />
     <Content Include="Scripts\app\controllers\ReporteIndicadorController.js" />
     <Content Include="Scripts\app\controllers\CapturaIndicadorController.js" />
     <Content Include="Scripts\app\controllers\CuentaController.js" />
