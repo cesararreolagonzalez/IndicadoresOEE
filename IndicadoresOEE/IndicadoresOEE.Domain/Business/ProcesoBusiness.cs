@@ -39,17 +39,20 @@
         /// <returns></returns>
         public List<ProcesoModel> ObtenerProcesosPorLinea(long IndiceUsuario, long IndiceLinea)
         {
-            List<ProcesoModel> ListaProcesos = new List<ProcesoModel>();
-
-            ListaProcesos = db
-                            .vw_usuarios_procesos
-                            .Where(columna => columna.id_usuario == IndiceUsuario && columna.id_linea == IndiceLinea)
-                            .Select(columna => new { Indice = columna.id_proceso, Nombre = columna.nombre_proceso })
-                            .Distinct()
-                            .ToList()
-                            .Select(columna => new ProcesoModel() { Indice = columna.Indice, Nombre = columna.Nombre, IndiceLinea = IndiceLinea })
-                            .OrderBy(columna => columna.Nombre)
-                            .ToList();
+            List<ProcesoModel> ListaProcesos =
+                   db.Proceso.Where(c => c.Usuario.Any(d => d.id_usuario == IndiceUsuario))
+                   .Select(c => new
+                   {
+                       IndiceLinea = c.id_linea ?? 0,
+                       IndiceProceso = c.id_proceso,
+                       Nombre = c.nombre
+                   })
+                   .Where(c => c.IndiceLinea == IndiceLinea)
+                   .GroupBy(c => c.IndiceProceso)
+                   .ToList()
+                   .Select(c => new ProcesoModel { Indice = c.Key, Nombre = c.Max(d => d.Nombre) })
+                   .OrderBy(c => c.Nombre)
+                   .ToList();
 
             return ListaProcesos;
         }

@@ -21,17 +21,24 @@
         /// <returns></returns>
         public List<LineaModel> ObtenerLineasPorDepartamento(long IndiceUsuario, long IndiceDepartamento)
         {
-            List<LineaModel> ListaLineas = new List<LineaModel>();
-
-            ListaLineas = db
-                            .vw_usuarios_procesos
-                            .Where(columna => columna.id_usuario == IndiceUsuario && columna.id_departamento == IndiceDepartamento)
-                            .Select(columna => new { Indice = columna.id_linea, Nombre = columna.nombre_linea })
-                            .Distinct()
-                            .ToList()
-                            .Select(columna => new LineaModel() { Indice = columna.Indice, Nombre = columna.Nombre, IndiceDepartamento = IndiceDepartamento })
-                            .OrderBy(columna => columna.Nombre)
-                            .ToList();
+            List<LineaModel> ListaLineas =
+                   db.Proceso.Where(c => c.Usuario.Any(d => d.id_usuario == IndiceUsuario))
+                   .Select(c => new
+                   {
+                       IndiceProceso = c.id_proceso,
+                       IndiceLinea = c.id_linea ?? 0
+                   })
+                   .Join(db.Linea, p => p.IndiceLinea, l => l.id_linea, (p, l) => new {
+                       IndiceLinea = l.id_linea,
+                       IndiceDepartamento = l.id_departamento ?? 0,
+                       Nombre = l.nombre
+                   })
+                   .Where(c => c.IndiceDepartamento == IndiceDepartamento)
+                   .GroupBy(c => c.IndiceLinea)
+                   .ToList()
+                   .Select(c => new LineaModel { Indice = c.Key, Nombre = c.Max(d => d.Nombre) })
+                   .OrderBy(c => c.Nombre)
+                   .ToList();
 
             return ListaLineas;
         }
