@@ -122,36 +122,104 @@ $scope.getNumber = function(num) {
     </h4>
     <md-content style="overflow: hidden !important;">
         <div class="row">
-            <div class="col" style="padding-right: 5rem;">
+            <div class="col">
                 <md-list>
-                    <md-list-item class="md-3-line" ng-repeat="Indicador in ObtenerListaCapturasIndicadoresPorIndice(0, 6)">
-                        @*<img ng-src="{{ Indicador.Icono }}" class="md-avatar" alt="{{ Indicador }}" />*@
+                    <md-list-item class="md-3-line" ng-repeat="Indicador in ObtenerListaCapturasIndicadoresPorIndice(0, 4)">
+                        <img ng-src="{{ Indicador.Icono }}" class="md-avatar" alt="{{ Indicador }}" />
                         <div class="md-list-item-text">
                             <h3>Indicador #{{ $index + 1 }}</h3>
                             <p>{{ Indicador.NombreCentro }} – {{ Indicador.NombreDepartamento }} – {{ Indicador.NombreLinea }} – {{ Indicador.NombreProceso }}</p>
                             <p>{{ Indicador.NumeroPiezas | number }} piezas / {{ Indicador.Ciclo }} minutos / {{ Indicador.NumeroParos }} paros / {{ Indicador.NumeroRechazos }} rechazos</p>
                         </div>
-                        <md-button class="md-secondary" ng-click="Editar($event, $index)">Detalles</md-button>
+                        <md-button class="md-secondary">Detalles</md-button>
                         <md-divider ng-if="!$last"></md-divider>
                     </md-list-item>
                 </md-list>
             </div>
-            <div class="col" style="padding-left: 5rem;">
+            <div class="col">
                 <md-list>
-                    <md-list-item class="md-3-line" ng-repeat="Indicador in ObtenerListaCapturasIndicadoresPorIndice(6, 6)">
-                        @*<img ng-src="{{ Indicador.Icono }}" class="md-avatar" alt="{{ Indicador }}" />*@
+                    <md-list-item class="md-3-line" ng-repeat="Indicador in ObtenerListaCapturasIndicadoresPorIndice(4, 4)">
+                        <img ng-src="{{ Indicador.Icono }}" class="md-avatar" alt="{{ Indicador }}" />
                         <div class="md-list-item-text">
-                            <h3>Indicador #{{ $index + 7 }}</h3>
+                            <h3>Indicador #{{ $index + 5 }}</h3>
                             <p>{{ Indicador.NombreCentro }} – {{ Indicador.NombreDepartamento }} – {{ Indicador.NombreLinea }} – {{ Indicador.NombreProceso }}</p>
                             <p>{{ Indicador.NumeroPiezas | number }} piezas / {{ Indicador.Ciclo }} minutos / {{ Indicador.NumeroParos }} paros / {{ Indicador.NumeroRechazos }} rechazos</p>
                         </div>
-                        <md-button class="md-secondary" ng-click="Editar($event, $index)">Detalles</md-button>
+                        <md-button class="md-secondary">Detalles</md-button>
+                        <md-divider ng-if="!$last"></md-divider>
+                    </md-list-item>
+                </md-list>
+            </div>
+            <div class="col">
+                <md-list>
+                    <md-list-item class="md-3-line" ng-repeat="Indicador in ObtenerListaCapturasIndicadoresPorIndice(8, 4)">
+                        <img ng-src="{{ Indicador.Icono }}" class="md-avatar" alt="{{ Indicador }}" />
+                        <div class="md-list-item-text">
+                            <h3>Indicador #{{ $index + 9 }}</h3>
+                            <p>{{ Indicador.NombreCentro }} – {{ Indicador.NombreDepartamento }} – {{ Indicador.NombreLinea }} – {{ Indicador.NombreProceso }}</p>
+                            <p>{{ Indicador.NumeroPiezas | number }} piezas / {{ Indicador.Ciclo }} minutos / {{ Indicador.NumeroParos }} paros / {{ Indicador.NumeroRechazos }} rechazos</p>
+                        </div>
+                        <md-button class="md-secondary">Detalles</md-button>
                         <md-divider ng-if="!$last"></md-divider>
                     </md-list-item>
                 </md-list>
             </div>
         </div>
     </md-content>
+    <br />
+    <br />
+    <md-content style="overflow: hidden !important;">
+        <div class="row">
+            <div class="col">
+                <md-list>
+                    <md-list-item class="md-3-line" ng-repeat="Indicador in ObtenerListaCapturasIndicadoresPorIndice(0, 6)">
+                        <img ng-src="{{ Indicador.Icono }}" class="md-avatar" alt="{{ Indicador }}" />
+                        <div class="md-list-item-text">
+                            <h3>Indicador #{{ $index + 1 }}</h3>
+                            <p>{{ Indicador.NombreCentro }} – {{ Indicador.NombreDepartamento }} – {{ Indicador.NombreLinea }} – {{ Indicador.NombreProceso }}</p>
+                            <p>{{ Indicador.NumeroPiezas | number }} piezas / {{ Indicador.Ciclo }} minutos / {{ Indicador.NumeroParos }} paros / {{ Indicador.NumeroRechazos }} rechazos</p>
+                        </div>
+                        <md-button class="md-secondary">Detalles</md-button>
+                        <md-divider ng-if="!$last"></md-divider>
+                    </md-list-item>
+                </md-list>
+            </div>
+            <div class="col">
+                <md-list>
+                    <md-list-item class="md-3-line" ng-repeat="Indicador in ObtenerListaCapturasIndicadoresPorIndice(6, 6)">
+                        <img ng-src="{{ Indicador.Icono }}" class="md-avatar" alt="{{ Indicador }}" />
+                        <div class="md-list-item-text">
+                            <h3>Indicador #{{ $index + 5 }}</h3>
+                            <p>{{ Indicador.NombreCentro }} – {{ Indicador.NombreDepartamento }} – {{ Indicador.NombreLinea }} – {{ Indicador.NombreProceso }}</p>
+                            <p>{{ Indicador.NumeroPiezas | number }} piezas / {{ Indicador.Ciclo }} minutos / {{ Indicador.NumeroParos }} paros / {{ Indicador.NumeroRechazos }} rechazos</p>
+                        </div>
+                        <md-button class="md-secondary">Detalles</md-button>
+                        <md-divider ng-if="!$last"></md-divider>
+                    </md-list-item>
+                </md-list>
+            </div>
+        </div>
+    </md-content>
+    <md-list class="fixedRows">
+        <md-subheader class="md-no-sticky">Contacts</md-subheader>
+        <md-list-item class="md-2-line contact-item" ng-repeat="(index, contact) in allContacts"
+                      ng-if="contacts.indexOf(contact) < 0">
+            <img ng-src="{{contact.image}}" class="md-avatar" alt="{{contact.name}}" />
+            <div class="md-list-item-text compact">
+                <h3>{{contact.name}}</h3>
+                <p>{{contact.email}}</p>
+            </div>
+        </md-list-item>
+        <md-list-item class="md-2-line contact-item selected"
+                      ng-repeat="(index, contact) in ctrl.contacts">
+            <img ng-src="{{contact.image}}" class="md-avatar" alt="{{contact.name}}" />
+            <div class="md-list-item-text compact">
+                <h3>{{contact.name}}</h3>
+                <p>{{contact.email}}</p>
+            </div>
+        </md-list-item>
+    </md-list>
+
     <md-card md-theme="default" ng-cloak style="min-width: 60rem !important; max-width: 60rem !important;">
         <md-card-title>
             <md-card-title-text>
@@ -159,6 +227,7 @@ $scope.getNumber = function(num) {
                 <span class="md-subhead"></span>
             </md-card-title-text>
         </md-card-title>
+
         <md-card-content style="padding-left: 3rem !important; padding-right: 3rem !important; margin-top: 1rem; padding-bottom: 3rem !important;">
             <div layout="column" layout-gt-xs="row">
                 <div flex flex-gt-xs="50" style="padding-right: 2rem !important;">
@@ -171,6 +240,7 @@ $scope.getNumber = function(num) {
                                        md-on-close="ResetearTerminoBusqueda()"
                                        ng-model="DatosGenerales.IndiceCentro"
                                        md-container-class="selectdemoSelectHeader"
+                                       required
                                        md-no-asterisk
                                        ng-cloak>
                                 <md-select-header class="demo-select-header">
@@ -197,6 +267,7 @@ $scope.getNumber = function(num) {
                                        md-on-close="ResetearTerminoBusqueda()"
                                        ng-model="DatosGenerales.IndiceDepartamento"
                                        md-container-class="selectdemoSelectHeader"
+                                       required
                                        md-no-asterisk
                                        ng-cloak>
                                 <md-select-header class="demo-select-header">
@@ -223,6 +294,7 @@ $scope.getNumber = function(num) {
                                        md-on-close="ResetearTerminoBusqueda()"
                                        ng-model="DatosGenerales.IndiceLinea"
                                        md-container-class="selectdemoSelectHeader"
+                                       required
                                        md-no-asterisk
                                        ng-cloak>
                                 <md-select-header class="demo-select-header">
@@ -249,6 +321,8 @@ $scope.getNumber = function(num) {
                                        md-on-close="ResetearTerminoBusqueda()"
                                        ng-model="DatosGenerales.IndiceProceso"
                                        md-container-class="selectdemoSelectHeader"
+                                       required
+                                       md-no-asterisk
                                        ng-cloak>
                                 <md-select-header class="demo-select-header">
                                     <input ng-model="TerminoBusqueda"
@@ -285,25 +359,25 @@ $scope.getNumber = function(num) {
                     <div layout="column" layout-gt-xs="row" flex-gt-sm flex-gt-xs>
                         <md-input-container class="md-block" flex-gt-sm style="height: 34px!important;">
                             <label>Lote</label>
-                            <input ng-model="DatosGenerales.Lote" md-no-asterisk readonly>
+                            <input ng-model="DatosGenerales.Lote" required md-no-asterisk readonly>
                         </md-input-container>
                     </div>
                     <div layout="column" layout-gt-xs="row" flex-gt-sm flex-gt-xs>
                         <md-input-container class="md-block" flex-gt-sm style="height: 34px !important;">
                             <label>Material</label>
-                            <input ng-model="DatosGenerales.Material" md-no-asterisk readonly>
+                            <input ng-model="DatosGenerales.Material" required md-no-asterisk readonly>
                         </md-input-container>
                     </div>
                     <div layout="column" layout-gt-xs="row" flex-gt-sm flex-gt-xs>
                         <md-input-container class="md-block" flex-gt-sm style="height: 34px !important;">
                             <label>Descripción</label>
-                            <input ng-model="DatosGenerales.DescripcionMaterial" md-no-asterisk readonly>
+                            <input ng-model="DatosGenerales.DescripcionMaterial" required md-no-asterisk readonly>
                         </md-input-container>
                     </div>
                     <div layout="column" layout-gt-xs="row" flex-gt-sm flex-gt-xs>
                         <md-input-container class="md-block" flex-gt-sm style="height: 34px !important;">
                             <label>Velocidad</label>
-                            <input ng-model="DatosGenerales.Velocidad" solo-digitos formato-numerico md-no-asterisk readonly>
+                            <input ng-model="DatosGenerales.Velocidad" solo-digitos formato-numerico required md-no-asterisk readonly>
                         </md-input-container>
                     </div>
                 </div>
@@ -375,6 +449,7 @@ $scope.getNumber = function(num) {
                             </div>
                         </div>
                         <div layout="column" layout-gt-xs="row" flex-gt-sm flex-gt-xs>
+
                             <div layout-gt-sm="row" flex-gt-sm style="margin-top: 0 !important;">
 
                                 <div layout-gt-sm="column" flex-gt-sm="45">

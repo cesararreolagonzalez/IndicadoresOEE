@@ -15,6 +15,8 @@
         CentroService, DepartamentoService, LineaService,
         ProcesoService, VelocidadService, IndicadorService, SAPService, UtilFactory)
     {
+        $scope.EsEdicion = false;
+
         //var imagePath = '//www.gravatar.com/avatar/4788047fc93a88beed76f388e0613a2a?s=50&d=retro';
         var imagePath = '../../Content/Numbers/Numero01.png';
 
@@ -27,129 +29,20 @@
             'NombreProceso': '', 'NumeroPiezas': '', 'Ciclo': '', 'NumeroParos': '', 'NumeroRechazos': ''
         };
 
-        $scope.ListaCapturasIndicadores = [
-            
+        $scope.ListaInformativaCapturasIndicadores = [
+            { "Icono": "../../Content/Numbers/Numero01.png", "NombreCentro": "PI01", "NombreDepartamento": "101", "NombreLinea": "Linea SOV", "NombreProceso": "Acondicionado", "NumeroPiezas": 1222, "Ciclo": 60, "NumeroParos": 0, "NumeroRechazos": 0 }
+            ,{ "Icono": "../../Content/Numbers/Numero01.png", "NombreCentro": "PI01", "NombreDepartamento": "101", "NombreLinea": "Linea SOV", "NombreProceso": "Acondicionado", "NumeroPiezas": 1200, "Ciclo": 60, "NumeroParos": 2, "NumeroRechazos": 2 }
         ];
 
-        $scope.ListaCapturasIndicadoresTEST = [
-            {
-                'Icono': imagePath, 'NombreCentro': 'PI0I', 'NombreDepartamento': '101', 'NombreLinea': 'Linea 1',
-                'NombreProceso': 'Acondicionado', 'NumeroPiezas': '1000', 'Ciclo': '60', 'NumeroParos': '3', 'NumeroRechazos': '1'
-            },
-            {
-                'Icono': imagePath, 'NombreCentro': 'PI0I', 'NombreDepartamento': '101', 'NombreLinea': 'Linea 1',
-                'NombreProceso': 'Acondicionado', 'NumeroPiezas': '1000', 'Ciclo': '60', 'NumeroParos': '3', 'NumeroRechazos': '1'
-            },
-            {
-                'Icono': imagePath, 'NombreCentro': 'PI0I', 'NombreDepartamento': '101', 'NombreLinea': 'Linea 1',
-                'NombreProceso': 'Acondicionado', 'NumeroPiezas': '1000', 'Ciclo': '60', 'NumeroParos': '3', 'NumeroRechazos': '1'
-            },
-            {
-                'Icono': imagePath, 'NombreCentro': 'PI0I', 'NombreDepartamento': '101', 'NombreLinea': 'Linea 1',
-                'NombreProceso': 'Acondicionado', 'NumeroPiezas': '1000', 'Ciclo': '60', 'NumeroParos': '3', 'NumeroRechazos': '1'
-            },
-            {
-                'Icono': imagePath, 'NombreCentro': 'PI0I', 'NombreDepartamento': '101', 'NombreLinea': 'Linea 1',
-                'NombreProceso': 'Acondicionado', 'NumeroPiezas': '1000', 'Ciclo': '60', 'NumeroParos': '3', 'NumeroRechazos': '1'
-            },
-            {
-                'Icono': imagePath, 'NombreCentro': 'PI0I', 'NombreDepartamento': '101', 'NombreLinea': 'Linea 1',
-                'NombreProceso': 'Acondicionado', 'NumeroPiezas': '1000', 'Ciclo': '60', 'NumeroParos': '3', 'NumeroRechazos': '1'
-            },
-            {
-                'Icono': imagePath, 'NombreCentro': 'PI0I', 'NombreDepartamento': '101', 'NombreLinea': 'Linea 1',
-                'NombreProceso': 'Acondicionado', 'NumeroPiezas': '1000', 'Ciclo': '60', 'NumeroParos': '3', 'NumeroRechazos': '1'
-            },
-            {
-                'Icono': imagePath, 'NombreCentro': 'PI0I', 'NombreDepartamento': '101', 'NombreLinea': 'Linea 1',
-                'NombreProceso': 'Acondicionado', 'NumeroPiezas': '1000', 'Ciclo': '60', 'NumeroParos': '3', 'NumeroRechazos': '1'
-            },
-            {
-                'Icono': imagePath, 'NombreCentro': 'PI0I', 'NombreDepartamento': '101', 'NombreLinea': 'Linea 1',
-                'NombreProceso': 'Acondicionado', 'NumeroPiezas': '1000', 'Ciclo': '60', 'NumeroParos': '3', 'NumeroRechazos': '1'
-            },
-            {
-                'Icono': imagePath, 'NombreCentro': 'PI0I', 'NombreDepartamento': '101', 'NombreLinea': 'Linea 1',
-                'NombreProceso': 'Acondicionado', 'NumeroPiezas': '1000', 'Ciclo': '60', 'NumeroParos': '3', 'NumeroRechazos': '1'
-            },
-            {
-                'Icono': imagePath, 'NombreCentro': 'PI0I', 'NombreDepartamento': '101', 'NombreLinea': 'Linea 1',
-                'NombreProceso': 'Acondicionado', 'NumeroPiezas': '1000', 'Ciclo': '60', 'NumeroParos': '3', 'NumeroRechazos': '1'
-            },
-            {
-                'Icono': imagePath, 'NombreCentro': 'PI0I', 'NombreDepartamento': '101', 'NombreLinea': 'Linea 1',
-                'NombreProceso': 'Acondicionado', 'NumeroPiezas': '1000', 'Ciclo': '60', 'NumeroParos': '3', 'NumeroRechazos': '1'
-            }
+        $scope.ListaIndicadoresCompletados = [
+            { "IndiceCentro": 6, "IndiceDepartamento": 22, "IndiceLinea": 75, "IndiceProceso": 99, "IndiceVelocidad": 12478, "Velocidad": 1620, "Orden": "1818862", "Lote": "A18D691", "Material": "4046420", "DescripcionMaterial": "AM TRAMADOL 100 MG GOTAS 10 ML NVA IMAG", "Piezas": 1222, "Reales": 0, "Ciclo": 60, "Turno": "B", "Fecha": "2018-12-18T11:00:00.388Z", "ListaParos": [{ "Indice": 0, "Nombre": "Sin causa asignada", "Cantidad": 14, "Folio": null }], "ListaRechazos": [] }
+            ,{ "IndiceCentro": 6, "IndiceDepartamento": 22, "IndiceLinea": 75, "IndiceProceso": 99, "IndiceVelocidad": 12478, "Velocidad": 1620, "Orden": "1818862", "Lote": "A18D691", "Material": "4046420", "DescripcionMaterial": "AM TRAMADOL 100 MG GOTAS 10 ML NVA IMAG", "Piezas": 1200, "Reales": 0, "Ciclo": 60, "Turno": "B", "Fecha": "2018-12-18T11:00:00.151Z", "ListaParos": [{ "Indice": 70378, "Nombre": "Ajuste - AJ-LE-Codificadora PT", "Cantidad": 12, "Folio": null }, { "Indice": 70337, "Nombre": "Averías - AV-LE-Codificadora PT", "Cantidad": 1, "Folio": "00011" }, { "Indice": 0, "Nombre": "Sin causa asignada", "Cantidad": 2, "Folio": null }], "ListaRechazos": [{ "Indice": 39, "Nombre": "Caja de empaque  descuadrada", "Cantidad": 12 }, { "Indice": 40, "Nombre": "Caja plegadiza maltratada", "Cantidad": 222 }] }
         ];
-
-
+        
         $scope.ObtenerListaCapturasIndicadoresPorIndice = function (IndiceInicio, Total) {
-            return $filter('limitTo')($scope.ListaCapturasIndicadoresTEST, Total, IndiceInicio);
+            return $filter('limitTo')($scope.ListaInformativaCapturasIndicadores, Total, IndiceInicio);
         };
         
-        $scope.messages = [{
-            face: imagePath,
-            what: 'Indicador #1',
-            who: 'Min Li Chan',
-            when: '3:08PM',
-            notes: " I'll be in your neighborhood doing errands"
-        }, {
-            face: imagePath,
-            what: 'Indicador #2',
-            who: 'Min Li Chan',
-            when: '3:08PM',
-            notes: " I'll be in your neighborhood doing errands"
-        }, {
-            face: imagePath,
-            what: 'Indicador #3',
-            who: 'Min Li Chan',
-            when: '3:08PM',
-            notes: " I'll be in your neighborhood doing errands"
-        }, {
-            face: imagePath,
-            what: 'Indicador #4',
-            who: 'Min Li Chan',
-            when: '3:08PM',
-            notes: " I'll be in your neighborhood doing errands"
-        }, {
-            face: imagePath,
-            what: 'Indicador #5',
-            who: 'Min Li Chan',
-            when: '3:08PM',
-            notes: " I'll be in your neighborhood doing errands"
-            }];
-
-        $scope.allContacts = loadContacts();
-        $scope.contacts = [$scope.allContacts[0]];
-
-        function loadContacts() {
-            var contacts = [
-                'Marina Augustine',
-                'Oddr Sarno',
-                'Nick Giannopoulos',
-                'Narayana Garner',
-                'Anita Gros',
-                'Megan Smith',
-                'Tsvetko Metzger',
-                'Hector Simek',
-                'Some-guy withalongalastaname'
-            ];
-
-            return contacts.map(function (c, index) {
-                var cParts = c.split(' ');
-                var email = cParts[0][0].toLowerCase() + '.' + cParts[1].toLowerCase() + '@example.com';
-                var hash = CryptoJS.MD5(email);
-
-                var contact = {
-                    name: c,
-                    email: email,
-                    image: '//www.gravatar.com/avatar/' + hash + '?s=50&d=retro'
-                };
-                contact._lowername = contact.name.toLowerCase();
-                return contact;
-            });
-        }
-
         var FechaHoy = new Date();
 
         $scope.DatosGenerales = {
@@ -551,13 +444,13 @@
                 .then(function (response)
                 {
                     var Estado = response.data.Estado;
+
                     if (!Estado) {
                         var Mensaje = response.data.Mensaje;
                         $log.info('Se produjo el siguiente error en el método ObtenerCentros = ' + Mensaje);
                     }
                     else {
                         $scope.ListaCentros = response.data.ListaCentros;
-                        $scope.DatosGenerales.IndiceCentro = $scope.ListaCentros.length === 1 ? $scope.ListaCentros[0].Indice : null;
                     }
                 })
                 .catch(function (response) {
@@ -583,7 +476,6 @@
                     }
                     else {
                         $scope.ListaDepartamentos = response.data.ListaDepartamentos;
-                        $scope.DatosGenerales.IndiceDepartamento = $scope.ListaDepartamentos.length === 1 ? $scope.ListaDepartamentos[0].Indice : null;
                     }
                 })
                 .catch(function (response) {
@@ -608,7 +500,6 @@
                     }
                     else {
                         $scope.ListaLineas = response.data.ListaLineas;
-                        $scope.DatosGenerales.IndiceLinea = $scope.ListaLineas.length === 1 ? $scope.ListaLineas[0].Indice : null;
                     }
                 },
                 function (response) {
@@ -637,7 +528,6 @@
                     }
                     else {
                         $scope.ListaProcesos = response.data.ListaProcesos;
-                        $scope.DatosGenerales.IndiceProceso = $scope.ListaProcesos.length === 1 ? $scope.ListaProcesos[0].Indice : null;
                     }
                 },
                 function (response) {
@@ -703,105 +593,157 @@
                 });
         };
 
+        $scope.Editar = function (ev, indice)
+        {
+            $scope.EsEdicion = true;
+
+            var Indicador = $scope.ListaIndicadoresCompletados[indice];
+
+            $log.info(JSON.stringify(Indicador));
+
+            $scope.ObtenerCentros();
+            $scope.DatosGenerales.IndiceCentro = Indicador.IndiceCentro;
+
+            $scope.ObtenerDepartamentos();
+            $scope.DatosGenerales.IndiceDepartamento = Indicador.IndiceDepartamento;
+
+            $scope.ObtenerLineas();
+            $scope.DatosGenerales.IndiceLinea = Indicador.IndiceLinea;
+
+            $scope.ObtenerProcesos();
+            $scope.DatosGenerales.IndiceProceso = Indicador.IndiceProceso;
+
+            $timeout(function () {
+                $scope.DatosGenerales.IndiceCentro = Indicador.IndiceCentro;
+                $scope.DatosGenerales.IndiceDepartamento = Indicador.IndiceDepartamento;
+                $scope.DatosGenerales.IndiceLinea = Indicador.IndiceLinea;
+                $scope.DatosGenerales.IndiceProceso = Indicador.IndiceProceso;
+
+            }, 500);
+
+            //$timeout(function () {
+            //    $scope.DatosGenerales.IndiceDepartamento = Indicador.IndiceDepartamento;
+            //    $scope.DatosGenerales.IndiceLinea = Indicador.IndiceLinea;
+            //    $scope.DatosGenerales.IndiceProceso = Indicador.IndiceProceso;
+            //    $scope.DatosGenerales.IndiceVelocidad = Indicador.IndiceVelocidad;
+            //    $scope.DatosGenerales.Velocidad = Indicador.Velocidad;
+            //    $scope.DatosGenerales.Orden = Indicador.Orden;
+            //    $scope.DatosGenerales.Lote = Indicador.Lote;
+            //    $scope.DatosGenerales.Material = Indicador.Material;
+            //    $scope.DatosGenerales.DescripcionMaterial = Indicador.DescripcionMaterial;
+
+            //    $scope.DatosIndicador.Turno = Indicador.Turno;
+            //    $scope.DatosIndicador.Ciclo = Indicador.Ciclo;
+            //    $scope.DatosIndicador.Fecha = Indicador.Fecha;
+            //    $scope.DatosIndicador.Hora = Indicador.Hora;
+            //    $scope.DatosIndicador.Minuto = Indicador.Minuto;
+
+            //    $scope.DatosIndicador.Piezas = Indicador.Piezas;
+            //    $log.info($scope.DatosIndicador.Piezas);
+            //}, 600);
+
+            //$scope.ListaRechazosElegidos = Indicador.ListaRechazos;
+            //$scope.ListaParosElegidos = Indicador.ListaParos;
+
+            //var ListaIndicesParos = Enumerable.From(Indicador.ListaRechazos)
+            //    .Select(function (col) { return col.Nombre; });
+
+            //var ListaIndicesRechazos = Enumerable.From(Indicador.ListaParos)
+            //    .Select(function (col) { return col.Nombre; });
+
+            //$log.info(ListaIndicesParos);
+            //$log.info(ListaIndicesRechazos);
+
+            //$scope.ListaIndicesRechazosEnUso = ListaIndicesRechazos;
+            //$scope.ListaIndicesParosEnUso = ListaIndicesParos;
+
+            //$timeout(function () {
+            //}, 1000);
+        };
+
         $scope.Guardar = function (ev)
         {
             var ListaParos = angular.copy($scope.ListaParosElegidos);
+            var ListaRechazos = angular.copy($scope.ListaRechazosElegidos);
 
             if ($scope.Util.ParoSinCausaAsignada > 0) {
                 ListaParos.push({ Indice: 0, Nombre: 'Sin causa asignada', Cantidad: $scope.Util.ParoSinCausaAsignada, Folio: null });
             }
-
+            
             $scope.Indicador =
             {
+                IndiceCentro: angular.copy($scope.DatosGenerales.IndiceCentro),
+                IndiceDepartamento: angular.copy($scope.DatosGenerales.IndiceDepartamento),
+                IndiceLinea: angular.copy($scope.DatosGenerales.IndiceLinea),
                 IndiceProceso: angular.copy($scope.DatosGenerales.IndiceProceso),
                 IndiceVelocidad: angular.copy($scope.DatosGenerales.IndiceVelocidad),
+                Velocidad: angular.copy($scope.DatosGenerales.Velocidad),
                 Orden: angular.copy($scope.DatosGenerales.Orden),
                 Lote: angular.copy($scope.DatosGenerales.Lote),
                 Material: angular.copy($scope.DatosGenerales.Material),
                 DescripcionMaterial: angular.copy($scope.DatosGenerales.DescripcionMaterial),
-                Piezas: angular.copy($scope.DatosGenerales.Piezas),
+                Piezas: angular.copy($scope.DatosIndicador.Piezas),
                 Reales: 0,
                 Ciclo: angular.copy($scope.DatosIndicador.Ciclo),
                 Turno: angular.copy($scope.DatosIndicador.Turno),
                 Fecha: angular.copy($scope.DatosIndicador.Fecha),
                 ListaParos: ListaParos,
-                ListaRechazos: $scope.ListaRechazosElegidos
+                ListaRechazos: ListaRechazos
+            };
+            
+            $scope.ListaIndicadoresCompletados.push(angular.copy($scope.Indicador));
+
+            // Extraer la información de las listas existentes
+
+            var NombreCentro = Enumerable.From($scope.ListaCentros)
+                .Where(function (col) { return col.Indice === $scope.DatosGenerales.IndiceCentro; })
+                .OrderBy(function (col) { return col.Indice; })
+                .Select(function (col) { return col.Nombre; })
+                .FirstOrDefault();
+
+            var NombreDepartamento = Enumerable.From($scope.ListaDepartamentos)
+                .Where(function (col) { return col.Indice === $scope.DatosGenerales.IndiceDepartamento; })
+                .OrderBy(function (col) { return col.Indice; })
+                .Select(function (col) { return col.Nombre; })
+                .FirstOrDefault();
+
+            var NombreLinea = Enumerable.From($scope.ListaLineas)
+                .Where(function (col) { return col.Indice === $scope.DatosGenerales.IndiceLinea; })
+                .OrderBy(function (col) { return col.Indice; })
+                .Select(function (col) { return col.Nombre; })
+                .FirstOrDefault();
+
+            var NombreProceso = Enumerable.From($scope.ListaProcesos)
+                .Where(function (col) { return col.Indice === $scope.DatosGenerales.IndiceProceso; })
+                .OrderBy(function (col) { return col.Indice; })
+                .Select(function (col) { return col.Nombre; })
+                .FirstOrDefault();
+
+            var IndicadorInformacion = {
+                'Icono': imagePath,
+                'NombreCentro': NombreCentro,
+                'NombreDepartamento': NombreDepartamento,
+                'NombreLinea': NombreLinea,
+                'NombreProceso': NombreProceso,
+                'NumeroPiezas': $scope.DatosIndicador.Piezas,
+                'Ciclo': $scope.DatosIndicador.Ciclo,
+                'NumeroParos': $scope.ListaParosElegidos.length,
+                'NumeroRechazos': $scope.ListaRechazosElegidos.length
             };
 
-            $log.info($scope.Indicador);
+            $log.info(JSON.stringify(IndicadorInformacion));
 
-            return IndicadorService.CrearIndicador($scope.Indicador)
-                .then(function (response) {
-                    var Estado = response.data.Estado;
-                    if (!Estado) {
-                        var Mensaje = response.data.Mensaje;
-                        $log.info('Se produjo el siguiente error en el método CrearIndicador() = ' + Mensaje);
-                    }
-                    else {
-                        var IndiceIndicador = response.data.IndiceIndicador;
-                        
-                        if (IndiceIndicador > 0) {
-                            $mdDialog.show({
-                                locals: { IndiceIndicador: IndiceIndicador },
-                                controller: ['$scope', 'IndiceIndicador', function ($scope, IndiceIndicador) {
-                                    $scope.IndiceIndicador = IndiceIndicador;
-                                    $scope.IndiceAccion = 0;
+            $scope.ListaInformativaCapturasIndicadores.push(IndicadorInformacion);
+            
+            $scope.ResetearDatosIndicador();
+            $scope.LimpiarFormulario();
 
-                                    $scope.EstablecerAccion = function (IndiceAccion) {
-                                        $scope.IndiceAccion = IndiceAccion;
-                                        $mdDialog.hide($scope.IndiceAccion);
-                                    };
-                                }],
-                                templateUrl: '../Scripts/app/templates/OpcionesGuardar.html',
-                                parent: angular.element(document.body),
-                                targetEvent: ev,
-                                clickOutsideToClose: false,
-                                onShowing: function () {
-                                },
-                                onComplete: function () {
-                                },
-                                onRemoving: function (event, removePromise) {
-                                },
-                                fullscreen: true,
-                                closeTo: angular.element(document.querySelector('#btnGuardar'))
-                            })
-                                .then(function (IndiceAccion) {
-                                    switch (IndiceAccion) {
-                                        case 1:
-                                            $window.location.href = '/Principal';
-                                            break;
+            //$log.info($scope.datosIndicadorForm.piezas);
+            //$scope.datosIndicadorForm.piezas.$setDirty(false);
+            //$scope.datosIndicadorForm.piezas.$setPristine();
+            //$scope.datosIndicadorForm.piezas.$setUntouched();
 
-                                        case 2:
-                                            break;
-
-                                        case 3:
-                                            break;
-                                    }
-                                },
-                                function () { })
-                                .finally(function () { });
-                        }
-                        else {
-                            $mdDialog.show(
-                                $mdDialog.alert()
-                                    .clickOutsideToClose(false)
-                                    .title('Creación de indicadores')
-                                    .textContent('Hubo un error al intentar crear el indicador')
-                                    .ariaLabel('creacion indicadores')
-                                    .ok('Entendido'));
-                        }
-                    }
-                },
-                    function (response) {
-                        $log.info('Hubo un error: Estatus = ' + response.status + ', Error = ' + response.data);
-                    })
-                .catch(function (response) {
-                    $log.info('Excepcion: ', response);
-                    throw response;
-                })
-                .finally(function () {
-                    $log.info('Método BusquedaIndicadoresPeriodo() finalizado');
-                });
+            //$log.info($scope.datosIndicadorForm.piezas);
         };
 
         $scope.BusquedaIndicadoresPeriodo = function (IndiceProceso, FechaInicial, FechaFinal)
@@ -938,8 +880,7 @@
 
             if (!Velocidad || !Piezas || !Ciclo)
                 return;
-
-            $log.info(Piezas);
+            
             Velocidad = parseInt(Velocidad);
             Piezas = parseInt(Piezas);
             Ciclo = parseInt(Ciclo);
@@ -982,7 +923,38 @@
 
             $log.info('Método ObtenerMinutosParos() finalizado');
         }
+
+        // ==============================================================================================================
         
+        $scope.$watch('ListaCentros', function (newValue, oldValue) {
+            if (newValue && newValue.length > 0)
+            {
+                if ( !$scope.EsEdicion )
+                    $scope.DatosGenerales.IndiceCentro = $scope.ListaCentros.length === 1 ? $scope.ListaCentros[0].Indice : null;
+            }
+        });
+
+        $scope.$watch('ListaDepartamentos', function (newValue, oldValue) {
+            if (newValue && newValue.length > 0) {
+                if (!$scope.EsEdicion)
+                    $scope.DatosGenerales.IndiceDepartamento = $scope.ListaDepartamentos.length === 1 ? $scope.ListaDepartamentos[0].Indice : null;
+            }
+        });
+
+        $scope.$watch('ListaLineas', function (newValue, oldValue) {
+            if (newValue && newValue.length > 0) {
+                if (!$scope.EsEdicion)
+                    $scope.DatosGenerales.IndiceLinea = $scope.ListaLineas.length === 1 ? $scope.ListaLineas[0].Indice : null;
+            }
+        });
+
+        $scope.$watch('ListaProcesos', function (newValue, oldValue) {
+            if (newValue && newValue.length > 0) {
+                if (!$scope.EsEdicion)
+                    $scope.DatosGenerales.IndiceProceso = $scope.ListaProcesos.length === 1 ? $scope.ListaProcesos[0].Indice : null;
+            }
+        });
+
         $scope.$watch('DatosGenerales.IndiceCentro', function (newValue, oldValue)
         {
             if (newValue)
@@ -1093,19 +1065,9 @@
 
                 $scope.Util.CalculoHoras = 0;
                 $scope.Util.CalculoHorasParo = 0;
-
-                //$scope.SumaParos = 0;
-                //$scope.SumaPiezasRechazadas = 0;
-                //$scope.ParoSinCausaAsignada = 0;
+                
                 $scope.MensajeCalculoHoras = null;
                 $scope.MensajeCalculoHorasParo = null;
-
-                //$scope.ListaRechazosElegidos = [];
-                //$scope.ListaParosElegidos = [];
-                
-                //$scope.ListaIndicesRechazosEnUso = [];
-                //$scope.ListaIndicesParosEnUso = [];
-
             }
         });
 
@@ -1148,16 +1110,7 @@
 
                 var FechaInicialFormateada = $filter('date')(FechaInicial, "yyyy-MM-dd HH:mm");
                 var FechaFinalFormateada = $filter('date')(FechaFinal, "yyyy-MM-dd HH:mm");
-
-                $log.info('$watchGroup');
-                $log.info('IndiceProceso = ' + IndiceProceso);
-                $log.info('Ciclo = ' + Ciclo);
-                $log.info('FechaInicial = ' + FechaInicial);
-                $log.info('FechaFinal = ' + FechaFinal);
-                $log.info('FechaInicio = ' + FechaInicialFormateada);
-                $log.info('FechaFin = ' + FechaFinalFormateada);
-                $log.info('Hora = ' + Hora);
-
+                
                 $scope.BusquedaIndicadoresPeriodo(IndiceProceso, FechaInicialFormateada, FechaFinalFormateada);
             }
         );
@@ -1166,12 +1119,25 @@
         $scope.ResetearTerminoBusqueda = function () {
             $scope.TerminoBusqueda = '';
         };
+        
+        $scope.LimpiarFormulario = function () {
+            $scope.DatosGenerales.IndiceCentro = '';
+            $scope.DatosGenerales.IndiceDepartamento = '';
+            $scope.DatosGenerales.IndiceLinea = '';
+            $scope.DatosGenerales.IndiceProceso = '';
 
+            $scope.DatosGenerales.Orden = null;
+            $scope.DatosGenerales.Lote = null;
+            $scope.DatosGenerales.Material = null;
+            $scope.DatosGenerales.DescripcionMaterial = null;
+            $scope.DatosGenerales.Velocidad = null;
+            $scope.DatosGenerales.IndiceVelocidad = null;
+        };
 
         $scope.ResetearDatosIndicador = function () {
             $scope.DatosIndicador.Turno = null;
             $scope.DatosIndicador.Ciclo = 0;
-            $scope.DatosIndicador.Piezas = 0;
+            $scope.DatosIndicador.Piezas = '';
             $scope.DatosIndicador.Fecha = null;
             $scope.DatosIndicador.Hora = null;
             $scope.DatosIndicador.Minuto = null;
