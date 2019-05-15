@@ -448,12 +448,14 @@
                     if (!Estado) {
                         var Mensaje = response.data.Mensaje;
                         $log.info('Se produjo el siguiente error en el método ObtenerCentros = ' + Mensaje);
+                        $scope.MostrarDialogoError('Se produjo un error al intentar obtener la lista de Centros');
                     }
                     else {
                         $scope.ListaCentros = response.data.ListaCentros;
                     }
                 })
                 .catch(function (response) {
+                    $scope.MostrarDialogoError('Se produjo una excepción al intentar obtener la lista de Centros');
                     $log.error('Excepcion: ', response.data);
                 })
                 .finally(function () {
@@ -461,42 +463,49 @@
                 });
         };
 
-        $scope.ObtenerDepartamentos = function ()
+        $scope.ObtenerDepartamentos = function (IndiceCentro)
         {
-            if ($scope.ListaDepartamentos)
-                return;
+            IndiceCentro = IndiceCentro ? IndiceCentro : $scope.DatosGenerales.IndiceCentro;
+            $log.info('IndiceCentro = ' + IndiceCentro);
 
-            return DepartamentoService.ObtenerDepartamentosPorCentro($scope.DatosGenerales.IndiceCentro)
+            return DepartamentoService.ObtenerDepartamentosPorCentro(IndiceCentro)
                 .then(function (response)
                 {
+                    var status = response.status;
+                    var statusText = response.statusText;
+
                     var Estado = response.data.Estado;
+
                     if (!Estado) {
                         var Mensaje = response.data.Mensaje;
                         $log.info('Se produjo el siguiente error en el método ObtenerDepartamentos = ' + Mensaje);
+                        $scope.MostrarDialogoError('Se produjo un error al intentar obtener la lista de Departamentos');
                     }
                     else {
                         $scope.ListaDepartamentos = response.data.ListaDepartamentos;
                     }
                 })
                 .catch(function (response) {
-                    $log.error('Excepcion: ', response.data);
+                    $log.error(response);
+                    $scope.MostrarDialogoError('Se produjo una excepción al intentar obtener la lista de Departamentos');
                 })
                 .finally(function () {
                     $log.info('Método ObtenerDepartamentos() finalizado');
                 });
         };
 
-        $scope.ObtenerLineas = function ()
+        $scope.ObtenerLineas = function (IndiceDepartamento)
         {
-            if ($scope.ListaLineas)
-                return;
+            IndiceDepartamento = IndiceDepartamento ? IndiceDepartamento : $scope.DatosGenerales.IndiceDepartamento;
+            $log.info('IndiceDepartamento = ' + IndiceDepartamento);
 
-            return LineaService.ObtenerLineasPorDepartamento($scope.DatosGenerales.IndiceDepartamento)
+            return LineaService.ObtenerLineasPorDepartamento(IndiceDepartamento)
                 .then(function (response) {
                     var Estado = response.data.Estado;
                     if (!Estado) {
                         var Mensaje = response.data.Mensaje;
                         $log.info('Se produjo el siguiente error en el método ObtenerLineas = ' + Mensaje);
+                        $scope.MostrarDialogoError('Se produjo un error al intentar obtener la lista de Lineas');
                     }
                     else {
                         $scope.ListaLineas = response.data.ListaLineas;
@@ -506,7 +515,8 @@
                     $log.info('Hubo un error: Estatus = ' + response.status + ', Error = ' + response.data);
                 })
                 .catch(function (response) {
-                    $log.info('Excepcion: ', response);
+                    $log.info(response);
+                    $scope.MostrarDialogoError('Se produjo una excepción al intentar obtener la lista de Lineas');
                     throw response;
                 })
                 .finally(function () {
@@ -514,17 +524,18 @@
                 });
         };
 
-        $scope.ObtenerProcesos = function ()
+        $scope.ObtenerProcesos = function (IndiceLinea)
         {
-            if ($scope.ListaProcesos)
-                return;
+            IndiceLinea = IndiceLinea ? IndiceLinea : $scope.DatosGenerales.IndiceLinea;
+            $log.info('IndiceLinea = ' + IndiceLinea);
 
-            return ProcesoService.ObtenerProcesosPorLinea($scope.DatosGenerales.IndiceLinea)
+            return ProcesoService.ObtenerProcesosPorLinea(IndiceLinea)
                 .then(function (response) {
                     var Estado = response.data.Estado;
                     if (!Estado) {
                         var Mensaje = response.data.Mensaje;
                         $log.info('Se produjo el siguiente error en el método ObtenerProcesos = ' + Mensaje);
+                        $scope.MostrarDialogoError('Se produjo un error al intentar obtener la lista de Procesos');
                     }
                     else {
                         $scope.ListaProcesos = response.data.ListaProcesos;
@@ -534,7 +545,8 @@
                     $log.info('Hubo un error: Estatus = ' + response.status + ', Error = ' + response.data);
                 })
                 .catch(function (response) {
-                    $log.info('Excepcion: ', response);
+                    $scope.MostrarDialogoError('Se produjo una excepción al intentar obtener la lista de Procesos');
+                    $log.info(response);
                     throw response;
                 })
                 .finally(function () {
@@ -585,7 +597,8 @@
                     $log.info('Hubo un error: Estatus = ' + response.status + ', Error = ' + response.data);
                 })
                 .catch(function (response) {
-                    $log.info('Excepcion: ', response);
+                    $log.info(response);
+                    $scope.MostrarDialogoError('Se produjo una excepción al intentar validar la Orden en SAP');
                     throw response;
                 })
                 .finally(function () {
@@ -601,64 +614,72 @@
 
             $log.info(JSON.stringify(Indicador));
 
-            $scope.ObtenerCentros();
             $scope.DatosGenerales.IndiceCentro = Indicador.IndiceCentro;
-
-            $scope.ObtenerDepartamentos();
             $scope.DatosGenerales.IndiceDepartamento = Indicador.IndiceDepartamento;
-
-            $scope.ObtenerLineas();
             $scope.DatosGenerales.IndiceLinea = Indicador.IndiceLinea;
-
-            $scope.ObtenerProcesos();
             $scope.DatosGenerales.IndiceProceso = Indicador.IndiceProceso;
 
+            $scope.ObtenerCentros();
+
             $timeout(function () {
-                $scope.DatosGenerales.IndiceCentro = Indicador.IndiceCentro;
-                $scope.DatosGenerales.IndiceDepartamento = Indicador.IndiceDepartamento;
-                $scope.DatosGenerales.IndiceLinea = Indicador.IndiceLinea;
-                $scope.DatosGenerales.IndiceProceso = Indicador.IndiceProceso;
+                $scope.ObtenerDepartamentos(Indicador.IndiceCentro);
+            }, 100);
 
-            }, 500);
+            $timeout(function () {
+                $scope.ObtenerLineas(Indicador.IndiceDepartamento);
+            }, 200);
 
-            //$timeout(function () {
-            //    $scope.DatosGenerales.IndiceDepartamento = Indicador.IndiceDepartamento;
-            //    $scope.DatosGenerales.IndiceLinea = Indicador.IndiceLinea;
-            //    $scope.DatosGenerales.IndiceProceso = Indicador.IndiceProceso;
-            //    $scope.DatosGenerales.IndiceVelocidad = Indicador.IndiceVelocidad;
-            //    $scope.DatosGenerales.Velocidad = Indicador.Velocidad;
-            //    $scope.DatosGenerales.Orden = Indicador.Orden;
-            //    $scope.DatosGenerales.Lote = Indicador.Lote;
-            //    $scope.DatosGenerales.Material = Indicador.Material;
-            //    $scope.DatosGenerales.DescripcionMaterial = Indicador.DescripcionMaterial;
+            $timeout(function () {
+                $scope.ObtenerProcesos(Indicador.IndiceLinea);
+            }, 300);
 
-            //    $scope.DatosIndicador.Turno = Indicador.Turno;
-            //    $scope.DatosIndicador.Ciclo = Indicador.Ciclo;
-            //    $scope.DatosIndicador.Fecha = Indicador.Fecha;
-            //    $scope.DatosIndicador.Hora = Indicador.Hora;
-            //    $scope.DatosIndicador.Minuto = Indicador.Minuto;
+            $timeout(function () {
+                $scope.DatosGenerales.IndiceVelocidad = Indicador.IndiceVelocidad;
+                $scope.DatosGenerales.Velocidad = Indicador.Velocidad;
+                $scope.DatosGenerales.Orden = Indicador.Orden;
+                $scope.DatosGenerales.Lote = Indicador.Lote;
+                $scope.DatosGenerales.Material = Indicador.Material;
+                $scope.DatosGenerales.DescripcionMaterial = Indicador.DescripcionMaterial;
 
-            //    $scope.DatosIndicador.Piezas = Indicador.Piezas;
-            //    $log.info($scope.DatosIndicador.Piezas);
-            //}, 600);
+                $scope.DatosIndicador.Turno = Indicador.Turno;
+                $scope.DatosIndicador.Piezas = Indicador.Piezas;
+                $scope.DatosIndicador.Ciclo = Indicador.Ciclo;
 
-            //$scope.ListaRechazosElegidos = Indicador.ListaRechazos;
-            //$scope.ListaParosElegidos = Indicador.ListaParos;
+                var fechaJS = new Date(Indicador.Fecha);
+                var fechaJS1 = moment(Indicador.Fecha).format();
+                //var fechaMoment = moment(Indicador.Fecha).format('DD-MM-YYYY');
+                //var fechaMoment1 = moment(Indicador.Fecha).format('YYYY/MM/DD HH:MM:SS');
+                //var fechaMoment2 = moment(Indicador.Fecha);
+                //$log.info(fechaJS);
+                //$log.info(fechaMoment);
+                //$log.info(fechaMoment1);
+                //$log.info(fechaMoment2);
 
-            //var ListaIndicesParos = Enumerable.From(Indicador.ListaRechazos)
-            //    .Select(function (col) { return col.Nombre; });
+                $scope.DatosIndicador.Fecha = fechaJS1;
+                $scope.DatosIndicador.Hora = angular.copy(Fecha);
+                $scope.DatosIndicador.Minuto = angular.copy(Fecha);
+                $scope.Util.FechaLimite = angular.copy(Fecha);
+            }, 1000);
+            
+            $scope.ListaRechazosElegidos = Indicador.ListaRechazos;
+            $scope.ListaParosElegidos = Indicador.ListaParos;
 
-            //var ListaIndicesRechazos = Enumerable.From(Indicador.ListaParos)
-            //    .Select(function (col) { return col.Nombre; });
+            var ListaIndicesParos = Enumerable.From(Indicador.ListaRechazos)
+                .Select(function (col) { return col.Indice; })
+                .ToArray();
 
-            //$log.info(ListaIndicesParos);
-            //$log.info(ListaIndicesRechazos);
+            var ListaIndicesRechazos = Enumerable.From(Indicador.ListaParos)
+                .Select(function (col) { return col.Indice; })
+                .ToArray();
 
-            //$scope.ListaIndicesRechazosEnUso = ListaIndicesRechazos;
-            //$scope.ListaIndicesParosEnUso = ListaIndicesParos;
+            $log.info(ListaIndicesParos);
+            $log.info(ListaIndicesRechazos);
 
-            //$timeout(function () {
-            //}, 1000);
+            $scope.ListaIndicesRechazosEnUso = ListaIndicesRechazos;
+            $scope.ListaIndicesParosEnUso = ListaIndicesParos;
+
+            $timeout(function () {
+            }, 1000);
         };
 
         $scope.Guardar = function (ev)
@@ -776,7 +797,7 @@
                         $log.info('Hubo un error: Estatus = ' + response.status + ', Error = ' + response.data);
                     })
                 .catch(function (response) {
-                    $log.info('Excepcion: ', response);
+                    $log.info(response);
                     throw response;
                 })
                 .finally(function () {
@@ -835,7 +856,7 @@
                         $log.info('Hubo un error: Estatus = ' + response.status + ', Error = ' + response.data);
                     })
                 .catch(function (response) {
-                    $log.info('Excepcion: ', response);
+                    $log.info(response);
                     throw response;
                 })
                 .finally(function () {
@@ -864,7 +885,7 @@
                     $log.info('Hubo un error: Estatus = ' + response.status + ', Error = ' + response.data);
                 })
                 .catch(function (response) {
-                    $log.info('Excepcion: ', response);
+                    $log.info(response);
                     throw response;
                 })
                 .finally(function () {
@@ -957,24 +978,25 @@
 
         $scope.$watch('DatosGenerales.IndiceCentro', function (newValue, oldValue)
         {
-            if (newValue)
-            {
-                $scope.DatosGenerales.IndiceDepartamento = null;
-                $scope.DatosGenerales.IndiceLinea = null;
-                $scope.DatosGenerales.IndiceProceso = null;
-                $scope.DatosGenerales.Orden = null;
-                $scope.DatosGenerales.Lote = null;
-                $scope.DatosGenerales.IndiceVelocidad = null;
-                $scope.DatosGenerales.Velocidad = null;
-                $scope.DatosGenerales.Material = null;
-                $scope.DatosGenerales.DescripcionMaterial = null;
-                $scope.ResetearDatosIndicador();
+            if (newValue) {
+                if (!$scope.EsEdicion) {
+                    $scope.DatosGenerales.IndiceDepartamento = null;
+                    $scope.DatosGenerales.IndiceLinea = null;
+                    $scope.DatosGenerales.IndiceProceso = null;
+                    $scope.DatosGenerales.Orden = null;
+                    $scope.DatosGenerales.Lote = null;
+                    $scope.DatosGenerales.IndiceVelocidad = null;
+                    $scope.DatosGenerales.Velocidad = null;
+                    $scope.DatosGenerales.Material = null;
+                    $scope.DatosGenerales.DescripcionMaterial = null;
+                    $scope.ResetearDatosIndicador();
 
-                $scope.ListaDepartamentos = null;
-                $scope.ListaLineas = null;
-                $scope.ListaProcesos = null;
+                    $scope.ListaDepartamentos = null;
+                    $scope.ListaLineas = null;
+                    $scope.ListaProcesos = null;
 
-                $scope.ObtenerDepartamentos();
+                    $scope.ObtenerDepartamentos();
+                }
             }
         });
 
@@ -982,20 +1004,22 @@
         {
             if (newValue)
             {
-                $scope.DatosGenerales.IndiceLinea = null;
-                $scope.DatosGenerales.IndiceProceso = null;
-                $scope.DatosGenerales.Orden = null;
-                $scope.DatosGenerales.Lote = null;
-                $scope.DatosGenerales.IndiceVelocidad = null;
-                $scope.DatosGenerales.Velocidad = null;
-                $scope.DatosGenerales.Material = null;
-                $scope.DatosGenerales.DescripcionMaterial = null;
-                $scope.ResetearDatosIndicador();
-                
-                $scope.ListaLineas = null;
-                $scope.ListaProcesos = null;
+                if (!$scope.EsEdicion) {
+                    $scope.DatosGenerales.IndiceLinea = null;
+                    $scope.DatosGenerales.IndiceProceso = null;
+                    $scope.DatosGenerales.Orden = null;
+                    $scope.DatosGenerales.Lote = null;
+                    $scope.DatosGenerales.IndiceVelocidad = null;
+                    $scope.DatosGenerales.Velocidad = null;
+                    $scope.DatosGenerales.Material = null;
+                    $scope.DatosGenerales.DescripcionMaterial = null;
+                    $scope.ResetearDatosIndicador();
 
-                $scope.ObtenerLineas();
+                    $scope.ListaLineas = null;
+                    $scope.ListaProcesos = null;
+
+                    $scope.ObtenerLineas();
+                }
             }
         });
 
@@ -1003,18 +1027,20 @@
         {
             if (newValue)
             {
-                $scope.DatosGenerales.IndiceProceso = null;
-                $scope.DatosGenerales.Orden = null;
-                $scope.DatosGenerales.Lote = null;
-                $scope.DatosGenerales.IndiceVelocidad = null;
-                $scope.DatosGenerales.Velocidad = null;
-                $scope.DatosGenerales.Material = null;
-                $scope.DatosGenerales.DescripcionMaterial = null;
-                $scope.ResetearDatosIndicador();
+                if (!$scope.EsEdicion) {
+                    $scope.DatosGenerales.IndiceProceso = null;
+                    $scope.DatosGenerales.Orden = null;
+                    $scope.DatosGenerales.Lote = null;
+                    $scope.DatosGenerales.IndiceVelocidad = null;
+                    $scope.DatosGenerales.Velocidad = null;
+                    $scope.DatosGenerales.Material = null;
+                    $scope.DatosGenerales.DescripcionMaterial = null;
+                    $scope.ResetearDatosIndicador();
 
-                $scope.ListaProcesos = null;
+                    $scope.ListaProcesos = null;
 
-                $scope.ObtenerProcesos();
+                    $scope.ObtenerProcesos();
+                }
             }
         });
 
@@ -1022,15 +1048,17 @@
         {
             if (newValue)
             {
-                $scope.DatosGenerales.Orden = null;
-                $scope.DatosGenerales.Lote = null;
-                $scope.DatosGenerales.IndiceVelocidad = null;
-                $scope.DatosGenerales.Velocidad = null;
-                $scope.DatosGenerales.Material = null;
-                $scope.DatosGenerales.DescripcionMaterial = null;
-                $scope.ResetearDatosIndicador();
-                
-                ObtenerIndicadorPorProceso();
+                if (!$scope.EsEdicion) {
+                    $scope.DatosGenerales.Orden = null;
+                    $scope.DatosGenerales.Lote = null;
+                    $scope.DatosGenerales.IndiceVelocidad = null;
+                    $scope.DatosGenerales.Velocidad = null;
+                    $scope.DatosGenerales.Material = null;
+                    $scope.DatosGenerales.DescripcionMaterial = null;
+                    $scope.ResetearDatosIndicador();
+
+                    ObtenerIndicadorPorProceso();
+                }
             }
         });
 
@@ -1040,8 +1068,8 @@
             {
                 $scope.DatosGenerales.IndiceVelocidad = null;
                 $scope.DatosGenerales.Velocidad = null;
-
-                ObtenerVelocidad($scope.DatosGenerales.IndiceProceso, $scope.DatosGenerales.Material);
+                
+                ObtenerVelocidad($scope.DatosGenerales.IndiceProceso, newValue);
             }
         });
 
@@ -1234,5 +1262,18 @@
                 $scope.Util.ParoSinCausaAsignada = CantidadParoSinCausaAsignada > $scope.Util.CalculoHorasParo ? $scope.Util.CalculoHorasParo : CantidadParoSinCausaAsignada; 
             }
         };
+
+        $scope.MostrarDialogoError = function (Mensaje) {
+            $mdDialog.show(
+                $mdDialog.alert()
+                    .parent(angular.element(document.querySelector('#CapturaMasivaEncapsulador')))
+                    .clickOutsideToClose(false)
+                    .title('Ha ocurrido un problema')
+                    .textContent(Mensaje)
+                    .ariaLabel('Error')
+                    .ok('Aceptar')
+            );
+        };
+
     }
 }) ();

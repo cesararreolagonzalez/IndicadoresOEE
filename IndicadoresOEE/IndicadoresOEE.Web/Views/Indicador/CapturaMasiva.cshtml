@@ -116,7 +116,7 @@ $scope.getNumber = function(num) {
 }*@
 
 
-<div ng-controller="CapturaMasivaIndicadorController" ng-cloak>
+<div ng-controller="CapturaMasivaIndicadorController" id="CapturaMasivaEncapsulador" ng-cloak>
     <h4 style="color: rgb(63, 81, 181); font-weight: 700; letter-spacing: .7px; text-align: left; margin-bottom: 1rem; padding: 0.5rem !important; margin-bottom: 1rem; margin-top: 1rem;">
         Captura masiva de indicadores
     </h4>
@@ -192,7 +192,7 @@ $scope.getNumber = function(num) {
                             <label>Departamento</label>
                             <md-select id="departamentoSeleccionable"
                                        name="departamentoSeleccionable"
-                                       ng-disabled="DatosGenerales.IndiceCentro === null"
+                                       ng-disabled="!DatosGenerales.IndiceCentro"
                                        md-on-open="ObtenerDepartamentos()"
                                        md-on-close="ResetearTerminoBusqueda()"
                                        ng-model="DatosGenerales.IndiceDepartamento"
@@ -218,12 +218,11 @@ $scope.getNumber = function(num) {
                             <label>Línea</label>
                             <md-select id="lineaSeleccionable"
                                        name="lineaSeleccionable"
-                                       ng-disabled="DatosGenerales.IndiceDepartamento === null"
+                                       ng-disabled="!DatosGenerales.IndiceDepartamento"
                                        md-on-open="ObtenerLineas()"
                                        md-on-close="ResetearTerminoBusqueda()"
                                        ng-model="DatosGenerales.IndiceLinea"
                                        md-container-class="selectdemoSelectHeader"
-                                       md-no-asterisk
                                        ng-cloak>
                                 <md-select-header class="demo-select-header">
                                     <input ng-model="TerminoBusqueda"
@@ -244,7 +243,7 @@ $scope.getNumber = function(num) {
                             <label>Proceso</label>
                             <md-select id="procesoSeleccionable"
                                        name="procesoSeleccionable"
-                                       ng-disabled="DatosGenerales.IndiceLinea === null"
+                                       ng-disabled="!DatosGenerales.IndiceLinea"
                                        md-on-open="ObtenerProcesos()"
                                        md-on-close="ResetearTerminoBusqueda()"
                                        ng-model="DatosGenerales.IndiceProceso"
