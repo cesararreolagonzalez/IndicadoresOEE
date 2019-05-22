@@ -522,13 +522,19 @@ $scope.getNumber = function(num) {
         <md-card-content style="padding-left: 3rem;">
             <div layout="row" flex style=" margin-bottom: 2rem;">
                 <div layout="row" flex>
-                    <label class="c01971 c01973 c01969">{{ 'Paros disponibles' | uppercase }} <strong class="text-muted" style="padding-left: 0.7rem;">{{ Util.CalculoHorasParo | number }}</strong></label>
+                    <label class="c01971 c01973 c01969">{{ 'Paros disponibles' | uppercase }} 
+                        <strong class="text-muted" style="padding-left: 0.7rem;">{{ Util.CalculoHorasParo | number }}</strong>
+                    </label>
                 </div>
                 <div layout="row" flex>
-                    <label class="c01971 c01973 c01969" ng-class="{'mdb-text-danger': Util.SumaParos > Util.CalculoHorasParo }">{{ 'Paros asignados' | uppercase }} <strong style="padding-left: 0.7rem;" ng-class="{'mdb-text-danger': Util.SumaParos > Util.CalculoHorasParo, 'text-muted': Util.SumaParos <= Util.CalculoHorasParo }">{{ Util.SumaParos | number }}</strong></label>
+                    <label class="c01971 c01973 c01969" ng-class="{'mdb-text-danger': Util.SumaParos > Util.CalculoHorasParo }">{{ 'Paros asignados' | uppercase }} 
+                        <strong style="padding-left: 0.7rem;" ng-class="{'mdb-text-danger': Util.SumaParos > Util.CalculoHorasParo, 'text-muted': Util.SumaParos <= Util.CalculoHorasParo }">{{ Util.SumaParos | number }}</strong>
+                    </label>
                 </div>
                 <div layout="row" flex>
-                    <label class="c01971 c01973 c01969">{{ 'Sin causa asignada' | uppercase }} <strong class="text-muted" style="padding-left: 0.7rem;">{{ Util.ParoSinCausaAsignada | number }}</strong></label>
+                    <label class="c01971 c01973 c01969">{{ 'Sin causa asignada' | uppercase }} 
+                        <strong class="text-muted" style="padding-left: 0.7rem;">{{ Util.ParoSinCausaAsignada | number }}</strong>
+                    </label>
                 </div>
             </div>
             <md-content class="" layout="column" style="margin-top: 1rem;">
@@ -562,7 +568,7 @@ $scope.getNumber = function(num) {
                     <small>
                         <strong style="padding-left: 2.5rem;" ng-class="{'mdb-text-danger': Util.CalculoHorasParo < Util.SumaParos }" ng-show="Util.Estado > 0 && Util.CalculoHorasParo < Util.SumaParos">
                             <md-icon class="text-danger" md-svg-src="../../Content/Icons/report_problem.svg"></md-icon>
-                            &nbsp;&nbsp;&nbsp;El límite de paros es de {{ Util.CalculoHorasParo }}
+                            &nbsp;&nbsp;&nbsp;El límite de paros es de {{ Util.CalculoHorasParo }} - {{Util.CalculoHorasParo < Util.SumaParos}} -{{Util.CalculoHorasParo }} - {{ Util.SumaParos}}
                         </strong>
                     </small>
                 </div>
