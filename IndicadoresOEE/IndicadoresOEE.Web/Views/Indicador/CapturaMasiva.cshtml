@@ -263,22 +263,43 @@ $scope.getNumber = function(num) {
                             </md-select>
                         </md-input-container>
                     </div>
+                    <div layout="column" layout-gt-xs="row" flex-gt-sm flex-gt-xs>
+                        <md-input-container class="md-block" flex-gt-sm style="height: 34px !important;">
+                            <label>Velocidad</label>
+                            <input ng-model="DatosGenerales.Velocidad" solo-digitos formato-numerico md-no-asterisk readonly>
+                        </md-input-container>
+                    </div>
                 </div>
                 <div flex flex-gt-xs="50" style="padding-left: 2rem !important;">
                     <div layout="column" layout-gt-xs="row" flex-gt-sm flex-gt-xs>
                         <div layout="row" flex-gt-sm>
-                            <md-input-container class="md-block" flex="70" style="height: 34px !important;">
+                            <md-input-container class="md-block" flex="60" style="height: 34px !important;">
                                 <label>Orden</label>
                                 <input ng-model="DatosGenerales.Orden" solo-digitos valor-valido-mayor-cero required md-no-asterisk>
                             </md-input-container>
-                            <div flex="30" layout="column" layout-align="center center">
+                            <div flex="40" layout="row" layout-align="center center">
+                                <div layout="column" layout-align="left" flex="20">
+                                    <md-icon md-svg-src="{{ Util.IconoEstadoValidacionOrden }}" aria-label="Icono Orden" ng-style="Util.EstiloEstadoValidacionOrden">
+                                        <md-tooltip md-direction="left">{{ Util.TextoEstadoValidacionOrden }}</md-tooltip>
+                                    </md-icon>
+                                </div>
+                                <div layout="column" layout-align="right" flex="80">
+                                    <md-button id="btnValidar" ng-click="ValidarOrden($event)">
+                                        <md-icon md-svg-src="~/Content/Icons/search.svg"
+                                                 aria-label="Insert Drive Icon">
+                                        </md-icon>
+                                        VALIDAR
+                                    </md-button>
+                                </div>
+                            </div>
+                            @*<div flex="30" layout="column" layout-align="center center">
                                 <md-button id="btnValidar" ng-click="ValidarOrden($event)">
                                     <md-icon md-svg-src="~/Content/Icons/search.svg"
                                              aria-label="Insert Drive Icon">
                                     </md-icon>
                                     VALIDAR
                                 </md-button>
-                            </div>
+                            </div>*@
                         </div>
                     </div>
                     <div layout="column" layout-gt-xs="row" flex-gt-sm flex-gt-xs>
@@ -297,12 +318,6 @@ $scope.getNumber = function(num) {
                         <md-input-container class="md-block" flex-gt-sm style="height: 34px !important;">
                             <label>Descripción</label>
                             <input ng-model="DatosGenerales.DescripcionMaterial" md-no-asterisk readonly>
-                        </md-input-container>
-                    </div>
-                    <div layout="column" layout-gt-xs="row" flex-gt-sm flex-gt-xs>
-                        <md-input-container class="md-block" flex-gt-sm style="height: 34px !important;">
-                            <label>Velocidad</label>
-                            <input ng-model="DatosGenerales.Velocidad" solo-digitos formato-numerico md-no-asterisk readonly>
                         </md-input-container>
                     </div>
                 </div>
@@ -477,7 +492,7 @@ $scope.getNumber = function(num) {
                           md-removable="true"
                           md-transform-chip="TransformarChipRechazo($chip)">
                     <md-chip-template>
-                        <span>
+                        <span style="font-size: 13px !important;">
                             <strong>{{$chip.Nombre | uppercase }}</strong>
                             <em>({{ $chip.Cantidad }})</em>
                         </span>
@@ -544,7 +559,7 @@ $scope.getNumber = function(num) {
                           md-removable="true"
                           md-transform-chip="TransformarChipParo($chip)">
                     <md-chip-template>
-                        <span>
+                        <span style="font-size: 13px !important;">
                             <strong>{{$chip.Nombre | uppercase }}</strong>
                             <em>({{ $chip.Cantidad }})</em>
                             <span ng-if="$chip.Folio">[Folio: {{ $chip.Folio }}]</span>
@@ -568,12 +583,14 @@ $scope.getNumber = function(num) {
                     <small>
                         <strong style="padding-left: 2.5rem;" ng-class="{'mdb-text-danger': Util.CalculoHorasParo < Util.SumaParos }" ng-show="Util.Estado > 0 && Util.CalculoHorasParo < Util.SumaParos">
                             <md-icon class="text-danger" md-svg-src="../../Content/Icons/report_problem.svg"></md-icon>
-                            &nbsp;&nbsp;&nbsp;El límite de paros es de {{ Util.CalculoHorasParo }} - {{Util.CalculoHorasParo < Util.SumaParos}} -{{Util.CalculoHorasParo }} - {{ Util.SumaParos}}
+                            &nbsp;&nbsp;&nbsp;El límite de paros es de {{ Util.CalculoHorasParo }}
                         </strong>
                     </small>
                 </div>
                 <div flex flex-gt-xs="50" layout-gt-xs="row" layout-align="end center">
-                    <md-button id="btnAddParo" md-no-ink class="md-primary" ng-click="agregarParo($event)" ng-show="DatosGenerales.IndiceProceso !== null && (Util.CalculoHorasParo >= Util.SumaParos) && Util.EstadoHorasParo">
+                    <md-button id="btnAddParo" md-no-ink class="md-primary" 
+                               ng-click="agregarParo($event)" 
+                               ng-show="DatosGenerales.IndiceProceso !== null && (Util.CalculoHorasParo >= Util.SumaParos) && Util.EstadoHorasParo">
                         <md-icon md-svg-icon="md-add"></md-icon>
                         AGREGAR
                     </md-button>

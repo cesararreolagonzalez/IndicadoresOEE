@@ -6,12 +6,12 @@
         .controller('CapturaMasivaIndicadorController', CapturaMasivaIndicadorController);
     
     CapturaMasivaIndicadorController.$inject = ['$element', '$scope', '$sce', '$timeout', '$filter',
-        '$anchorScroll', '$log', '$window', '$mdDialog', 'moment', 'ESTADO_PAROS',
+        '$anchorScroll', '$log', '$window', '$mdDialog', 'moment', 'ESTADO_PAROS', 'ESTADO_VALIDACION_ORDEN',
         'CentroService', 'DepartamentoService', 'LineaService', 'ProcesoService', 'VelocidadService',
         'IndicadorService', 'SAPService', 'UtilFactory'];
 
     function CapturaMasivaIndicadorController($element, $scope, $sce, $timeout, $filter, $anchorScroll,
-        $log, $window, $mdDialog, moment, ESTADO_PAROS,
+        $log, $window, $mdDialog, moment, ESTADO_PAROS, ESTADO_VALIDACION_ORDEN,
         CentroService, DepartamentoService, LineaService,
         ProcesoService, VelocidadService, IndicadorService, SAPService, UtilFactory)
     {
@@ -80,7 +80,10 @@
             EstadoValidacionOrden: 0,
             ExistenIndicadoresPeriodo: false,
             Estado: ESTADO_PAROS.SIN_ESTADO,
-            Estados: ESTADO_PAROS
+            Estados: ESTADO_PAROS,
+            EstadoValidacion: ESTADO_VALIDACION_ORDEN.NO_VALIDADA,
+            IconoEstadoValidacionOrden: '../Content/Icons/estado_sin_busqueda.svg',
+            TextoEstadoValidacionOrden: ''
         };
 
         $scope.Turnos = ['A', 'B', 'C', 'D'];
@@ -558,39 +561,62 @@
         {
             if (!$scope.DatosGenerales.Orden)
                 return;
-            
-            return IndicadorService.ValidarOrden($scope.DatosGenerales.Orden)
-                .then(function (response) {
-                    var Estado = response.data.Estado;
-                    if (!Estado) {
-                        var Mensaje = response.data.Mensaje;
-                        $log.info('Se produjo el siguiente error en el método ObtenerProcesos = ' + Mensaje);
-                    }
-                    else {
-                        var Indicador = response.data.Indicador;
-                        if (Indicador !== null) {
-                            $scope.DatosGenerales.Lote = Indicador.Lote;
-                            $scope.DatosGenerales.Material = Indicador.Material;
-                            $scope.DatosGenerales.DescripcionMaterial = Indicador.Descripcion;
-                            $scope.Util.EstadoValidacionOrden = 1;
-                        }
-                        else {
+
+            return SAPService.ValidacionOrden($scope.DatosGenerales.Orden)
+                .then(function (response)
+                {
+                    var Modelo = response.data.Modelo;
+
+                    switch (Modelo.EstatusValidacionOrden)
+                    {
+                        case ESTADO_VALIDACION_ORDEN.ERROR:
+                            $scope.Util.EstiloEstadoValidacionOrden = {};
+                            $scope.Util.EstadoValidacion = ESTADO_VALIDACION_ORDEN.NO_VALIDADA;
+                            $scope.Util.TextoEstadoValidacionOrden = 'No pudo ser validado en SAP';
+                            $scope.Util.IconoEstadoValidacionOrden = '../Content/Icons/estado_sin_busqueda.svg';
+
                             $mdDialog.show(
                                 $mdDialog.alert()
                                     .clickOutsideToClose(false)
-                                    .title('Orden no válida')
-                                    .textContent('La orden no fue encontrada en SAP')
-                                    .ariaLabel('Validando orden')
+                                    .title('No se pudo validar la orden')
+                                    .textContent('Hubo un problema al intentar establecer comunicación con SAP.')
+                                    .ariaLabel('Excepcion')
                                     .ok('Entendido')
-                                    .targetEvent(ev)
-                            );
+                                    .targetEvent(ev));
+                            break;
 
-                            $scope.DatosGenerales.Lote = null;
-                            $scope.DatosGenerales.Material = null;
-                            $scope.DatosGenerales.DescripcionMaterial = null;
+                        case ESTADO_VALIDACION_ORDEN.VALIDA:
+                            $scope.Util.EstiloEstadoValidacionOrden = { "color": "#087f23" };
+                            $scope.Util.EstadoValidacion = Modelo.EstatusValidacionOrden;
+                            $scope.Util.TextoEstadoValidacionOrden = 'Órden válida';
+                            $scope.Util.IconoEstadoValidacionOrden = '../Content/Icons/estado_encontrado.svg';
 
-                            $scope.Util.EstadoValidacionOrden = -1;
-                        }
+                            $scope.DatosGenerales.Lote = Modelo.Lote;
+                            $scope.DatosGenerales.Material = Modelo.Material;
+                            $scope.DatosGenerales.DescripcionMaterial = Modelo.DescripcionMaterial;
+                            break;
+
+                        case ESTADO_VALIDACION_ORDEN.NO_ENCONTRADA:
+                            $scope.Util.EstiloEstadoValidacionOrden = { "color": "#ba000d" };
+                            $scope.Util.EstadoValidacion = Modelo.EstatusValidacionOrden;
+                            $scope.Util.TextoEstadoValidacionOrden = 'Órden inválida';
+                            $scope.Util.IconoEstadoValidacionOrden = '../Content/Icons/estado_no_encontrado.svg';
+
+                            $mdDialog.show(
+                                $mdDialog.alert()
+                                    .clickOutsideToClose(false)
+                                    .title('Orden no encontrada')
+                                    .textContent('No se encontró la orden en SAP.')
+                                    .ariaLabel('Excepcion')
+                                    .ok('Entendido')
+                                    .targetEvent(ev));
+
+                            $scope.DatosGenerales.Lote = '';
+                            $scope.DatosGenerales.Material = '';
+                            $scope.DatosGenerales.DescripcionMaterial = '';
+                            break;
+
+                        default: break;
                     }
                 },
                 function (response) {
@@ -615,7 +641,6 @@
             return parseInt(Sumatoria);
         };
         
-
         $scope.ObtenerSumatoriaParosSinCausaAsignada = function ()
         {
             var Sumatoria = Enumerable.From($scope.ListaParosElegidos)
@@ -928,20 +953,21 @@
             var CalculoHoras = parseFloat(Piezas / VelocidadReal);
             var CalculoHorasParo = parseInt((1 - CalculoHoras) * Ciclo);
 
+            $scope.Util.CalculoHoras = CalculoHoras > 0 ? CalculoHoras : 0;
             $scope.Util.CalculoHorasParo = CalculoHorasParo > 0 ? parseInt(CalculoHorasParo) : 0;
-            $scope.Util.CalculoHoras = CalculoHoras > 0 ? parseInt(CalculoHoras) : 0;
 
             if (!$scope.EsEdicion) 
                 $scope.Util.ParoSinCausaAsignada = 0;
 
-            if ($scope.Util.CalculoHoras < 1 && $scope.Util.CalculoHorasParo > 0) {
+            if ($scope.Util.CalculoHoras < 1 && $scope.Util.CalculoHorasParo > 0)
+            {
                 $scope.Util.Estado = $scope.Util.Estados.CON_PAROS;
 
                 var Mensaje = $sce.trustAsHtml('Debes capturar <b>' + CalculoHorasParo + '</b> minutos');
                 $scope.Util.MensajeCalculoHoras = 'Minutos de paro';
                 $scope.Util.MensajeCalculoHorasParo = Mensaje;
 
-                $scope.SumaParos = parseInt($scope.ObtenerSumatoriaParos());
+                $scope.SumaParos = $scope.ObtenerSumatoriaParos();
                 var x = $scope.Util.SumaParos > $scope.Util.CalculoHorasParo;
                 //var SumatoriaExistenteSinCausaAsignada = $scope.ObtenerSumatoriaParosSinCausaAsignada();
                 //$scope.Util.ParoSinCausaAsignada = SumatoriaExistenteSinCausaAsignada > 0 ? SumatoriaExistenteSinCausaAsignada : CalculoHorasParo;
@@ -1069,6 +1095,21 @@
             }
         });
 
+        $scope.$watch('DatosGenerales.Orden', function (newValue, oldValue)
+        {
+            // TIP: Añadir una validacion negativa al front para que la caja de texto se vea roja
+
+            if (!!newValue && newValue.length > 0 && $scope.Util.EstadoValidacion === ESTADO_VALIDACION_ORDEN.NO_VALIDADA) {
+                $scope.Util.TextoEstadoValidacionOrden = 'Aún no ha sido validado en SAP';
+            }
+            else {
+                $scope.Util.TextoEstadoValidacionOrden = '';
+                $scope.Util.EstiloEstadoValidacionOrden = {};
+                $scope.Util.EstadoValidacion = ESTADO_VALIDACION_ORDEN.NO_VALIDADA;
+            }
+
+        });
+
         $scope.$watch('DatosGenerales.IndiceProceso', function (newValue, oldValue)
         {
             if (newValue)
@@ -1110,8 +1151,13 @@
             }
         });
         
-        $scope.$watch('Util.Estado', function (newValue, oldValue) {
-            if (!!newValue || newValue === 0 && newValue !== '') {
+        $scope.$watch('Util.Estado', function (newValue, oldValue)
+        {
+            if ((!!newValue || newValue === 0) && newValue !== '')
+            {
+                if ($scope.EsEdicion)
+                    return;
+                
                 $scope.Util.MensajeCalculoHoras = null;
                 $scope.Util.MensajeCalculoHorasParo = null;
                 $scope.Util.EstadoHorasParo = false;
