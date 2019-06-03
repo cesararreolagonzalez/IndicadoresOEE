@@ -277,6 +277,7 @@
     <Content Include="Scripts\app\factories\LineaService.js" />
     <Content Include="Scripts\app\factories\DepartamentoService.js" />
     <Content Include="Scripts\app\factories\CentroService.js" />
+    <Content Include="Scripts\app\services\ModalService.js" />
     <Content Include="Scripts\app\templates\OpcionesGuardar.html" />
     <Content Include="Scripts\app\templates\AgregarParos.html" />
     <Content Include="Scripts\app\templates\AgregarRechazos.html" />
@@ -364,7 +365,6 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
-    <Folder Include="Scripts\app\services\" />
     <Folder Include="Views\Inicio\" />
     <Folder Include="Views\Paro\" />
     <Folder Include="Views\Rechazo\" />

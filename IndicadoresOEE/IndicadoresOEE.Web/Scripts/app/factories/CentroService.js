@@ -19,38 +19,42 @@
 
         return service;
 
-        function ObtenerCentros() {
-            return $http.get('/Centro/ObtenerCentros').then(handleSuccess, handleError);
+        function ObtenerCentros()
+        {
+            return $http.get('/Centro/ObtenerCentros').then(ManejoExito, ManejoError);
         }
 
-        function ObtenerCentro(id) {
-            return $http.get('/Centro/ObtenerCentro' + id).then(handleSuccess, handleError);
+        function ObtenerCentro(id)
+        {
+            return $http.get('/Centro/ObtenerCentro' + id).then(ManejoExito, ManejoError);
         }
 
-        function CrearCentro(centro) {
-            return $http.post('/Centro/CrearCentro', centro).then(handleSuccess, handleError);
+        function CrearCentro(centro)
+        {
+            return $http.post('/Centro/CrearCentro', centro).then(ManejoExito, ManejoError);
         }
 
-        function ActualizarCentro(centro) {
-            return $http.put('/Centro/ActualizarCentro' + centro.id, centro).then(handleSuccess, handleError);
+        function ActualizarCentro(centro)
+        {
+            return $http.put('/Centro/ActualizarCentro' + centro.id, centro).then(ManejoExito, ManejoError);
         }
 
-        function EliminarCentro(id) {
-            return $http.delete('/Centro/EliminarCentro' + id).then(handleSuccess, handleError);
+        function EliminarCentro(id)
+        {
+            return $http.delete('/Centro/EliminarCentro' + id).then(ManejoExito, ManejoError);
         }
-
-        // private functions
-
-        function handleSuccess(response) {
+        
+        function ManejoExito(response) {
             return response;
         }
-
-        function handleError(error) {
+        
+        function ManejoError(error) {
             return error;
             //return function () {
             //    return { success: false, message: error };
             //};
         }
+
     }
 
 })();

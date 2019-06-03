@@ -8,17 +8,255 @@
     CapturaMasivaIndicadorController.$inject = ['$element', '$scope', '$sce', '$timeout', '$filter',
         '$anchorScroll', '$log', '$window', '$mdDialog', 'moment', 'ESTADO_PAROS', 'ESTADO_VALIDACION_ORDEN',
         'CentroService', 'DepartamentoService', 'LineaService', 'ProcesoService', 'VelocidadService',
-        'IndicadorService', 'SAPService', 'UtilFactory'];
+        'IndicadorService', 'SAPService', 'UtilFactory', 'ModalService'];
 
     function CapturaMasivaIndicadorController($element, $scope, $sce, $timeout, $filter, $anchorScroll,
         $log, $window, $mdDialog, moment, ESTADO_PAROS, ESTADO_VALIDACION_ORDEN,
         CentroService, DepartamentoService, LineaService,
-        ProcesoService, VelocidadService, IndicadorService, SAPService, UtilFactory)
+        ProcesoService, VelocidadService, IndicadorService, SAPService, UtilFactory, ModalService)
     {
+        // #region Properties
         $scope.EsEdicion = false;
+        $scope.ListaTurnoss = ['A', 'B', 'C', 'D'];
+        $scope.Turnos = ['A', 'B', 'C', 'D'];
+        var FechaHoy = new Date();
 
-        //var imagePath = '//www.gravatar.com/avatar/4788047fc93a88beed76f388e0613a2a?s=50&d=retro';
-        var imagePath = '../../Content/Numbers/Numero01.png';
+        $scope.DatosGenerales = {
+            IndiceCentro: null,
+            IndiceDepartamento: null,
+            IndiceLinea: null,
+            IndiceProceso: null,
+            IndiceVelocidad: null,
+            Orden: null,
+            Lote: null,
+            Material: null,
+            DescripcionMaterial: null,
+            Velocidad: null
+        };
+        $scope.DatosIndicador = {
+            Turno: null,
+            Ciclo: 0,
+            Piezas: 0,
+            Fecha: new Date(FechaHoy.getFullYear(), FechaHoy.getMonth(), FechaHoy.getDate(), 0, 0, 0),
+            Hora: 0,
+            Minuto: 0
+        };
+        $scope.Util = {
+            FechaLimite: new Date(FechaHoy.getFullYear(), FechaHoy.getMonth(), FechaHoy.getDate(), 0, 0, 0),
+            CalculoHoras: null,
+            CalculoHorasParo: null,
+            MensajeCalculoHoras: null,
+            MensajeCalculoHorasParo: null,
+            SumaParos: 0,
+            SumaPiezasRechazadas: 0,
+            ParoSinCausaAsignada: 0,
+            EstadoHorasParo: false,
+            EstadoValidacionOrden: 0,
+            ExistenIndicadoresPeriodo: false,
+            Estado: ESTADO_PAROS.SIN_ESTADO,
+            Estados: ESTADO_PAROS,
+            EstadoValidacion: ESTADO_VALIDACION_ORDEN.NO_VALIDADA,
+            IconoEstadoValidacionOrden: '../Content/Icons/estado_sin_busqueda.svg',
+            TextoEstadoValidacionOrden: '',
+            EnProcesoValidacion: false
+        };
+        $scope.TerminoBusqueda = '';
+        $scope.ListaCentros = null;
+        $scope.ListaDepartamentos = null;
+        $scope.ListaLineas = null;
+        $scope.ListaProcesos = null;
+        $scope.ListaRechazosElegidos = [];
+        $scope.ListaParosElegidos = [];
+        // #endregion
+        // #region Asynchronous Methods
+        // #endregion
+        // #region Methods
+        async function ObtenerListas() {
+            $scope.ListaCentros = await CentroService.ObtenerCentros();
+            $scope.$apply();
+            $scope.ListaDepartamentos = await DepartamentoService.ObtenerDepartamentosPorCentro($scope.DatosGenerales.IndiceCentro);
+            $scope.$apply();
+            $scope.ListaLineas = await LineaService.ObtenerLineasPorDepartamento($scope.DatosGenerales.IndiceDepartamento);
+            $scope.$apply();
+            $scope.ListaProcesos = await ProcesoService.ObtenerProcesosPorLinea($scope.DatosGenerales.IndiceLinea);
+            $scope.$apply();
+        }
+
+        $scope.Editar = function (ev, indice) {
+            ModalService.showWait();
+
+            $scope.EsEdicion = true;
+
+            var Indicador = $scope.ListaIndicadoresCompletados[indice];
+
+            $log.info(JSON.stringify(Indicador));
+
+            $scope.DatosGenerales.IndiceCentro = Indicador.IndiceCentro;
+            $scope.DatosGenerales.IndiceDepartamento = Indicador.IndiceDepartamento;
+            $scope.DatosGenerales.IndiceLinea = Indicador.IndiceLinea;
+            $scope.DatosGenerales.IndiceProceso = Indicador.IndiceProceso;
+
+            ObtenerListas();
+            //$scope.ObtenerCentros();
+
+            //$timeout(function () {
+            //    $scope.ObtenerDepartamentos(Indicador.IndiceCentro);
+            //}, 100);
+
+            //$timeout(function () {
+            //    $scope.ObtenerLineas(Indicador.IndiceDepartamento);
+            //}, 200);
+
+            //$timeout(function () {
+            //    $scope.ObtenerProcesos(Indicador.IndiceLinea);
+            //}, 300);
+
+            $timeout(function () {
+
+                $scope.DatosGenerales.Orden = Indicador.Orden;
+                $scope.DatosGenerales.Lote = Indicador.Lote;
+                $scope.DatosGenerales.Material = Indicador.Material;
+                $scope.DatosGenerales.DescripcionMaterial = Indicador.DescripcionMaterial;
+
+                $scope.DatosIndicador.Turno = Indicador.Turno;
+                $scope.DatosIndicador.Piezas = Indicador.Piezas;
+                $scope.DatosIndicador.Ciclo = Indicador.Ciclo;
+
+                //var fechaJS1 = moment(Indicador.Fecha);
+                var Fecha = new Date(Indicador.Fecha);
+
+                $scope.DatosIndicador.Fecha = Fecha;
+                $scope.Util.FechaLimite = Fecha;
+
+                $scope.DatosIndicador.Hora = Fecha.getHours();
+                $scope.DatosIndicador.Minuto = Fecha.getMinutes();
+
+                $scope.ListaRechazosElegidos = Indicador.ListaRechazos;
+                $scope.ListaParosElegidos = Indicador.ListaParos;
+
+                var ListaIndicesParos = Enumerable.From(Indicador.ListaParos)
+                    .Select(function (col) { return col.Indice; })
+                    .ToArray();
+
+                var ListaIndicesRechazos = Enumerable.From(Indicador.ListaRechazos)
+                    .Select(function (col) { return col.Indice; })
+                    .ToArray();
+
+                $scope.ListaIndicesRechazosEnUso = ListaIndicesRechazos;
+                $scope.ListaIndicesParosEnUso = ListaIndicesParos;
+
+                // Sumas de paros y rechazos
+
+                var SumaParos = Enumerable.From(Indicador.ListaParos)
+                    .Select(function (col) { return col.Cantidad; })
+                    .Sum();
+
+                var SumaParoSinCausaAsignada = Enumerable.From(Indicador.ListaParos)
+                    .Where(function (col) { return col.Nombre === 'Sin causa asignada'; })
+                    .Select(function (col) { return col.Cantidad; })
+                    .Sum();
+
+                var SumaRechazos = Enumerable.From(Indicador.ListaRechazos)
+                    .Select(function (col) { return col.Cantidad; })
+                    .Sum();
+
+                $scope.Util.SumaPiezasRechazadas = parseInt(SumaRechazos);
+                $scope.Util.SumaParos = parseInt(SumaParos);
+
+                $scope.Util.ParoSinCausaAsignada = SumaParoSinCausaAsignada;
+            }, 500);
+
+            $timeout(function () {
+                ModalService.hideWait();
+            }, 1000);
+        };
+        $scope.Guardar = function (ev) {
+            var ListaParos = angular.copy($scope.ListaParosElegidos);
+            var ListaRechazos = angular.copy($scope.ListaRechazosElegidos);
+
+            if ($scope.Util.ParoSinCausaAsignada > 0) {
+                ListaParos.push({ Indice: 0, Nombre: 'Sin causa asignada', Cantidad: $scope.Util.ParoSinCausaAsignada, Folio: null });
+            }
+
+            $scope.Indicador =
+                {
+                    IndiceCentro: angular.copy($scope.DatosGenerales.IndiceCentro),
+                    IndiceDepartamento: angular.copy($scope.DatosGenerales.IndiceDepartamento),
+                    IndiceLinea: angular.copy($scope.DatosGenerales.IndiceLinea),
+                    IndiceProceso: angular.copy($scope.DatosGenerales.IndiceProceso),
+                    IndiceVelocidad: angular.copy($scope.DatosGenerales.IndiceVelocidad),
+                    Velocidad: angular.copy($scope.DatosGenerales.Velocidad),
+                    Orden: angular.copy($scope.DatosGenerales.Orden),
+                    Lote: angular.copy($scope.DatosGenerales.Lote),
+                    Material: angular.copy($scope.DatosGenerales.Material),
+                    DescripcionMaterial: angular.copy($scope.DatosGenerales.DescripcionMaterial),
+                    Piezas: angular.copy($scope.DatosIndicador.Piezas),
+                    Reales: 0,
+                    Ciclo: angular.copy($scope.DatosIndicador.Ciclo),
+                    Turno: angular.copy($scope.DatosIndicador.Turno),
+                    Fecha: angular.copy($scope.DatosIndicador.Fecha),
+                    ListaParos: ListaParos,
+                    ListaRechazos: ListaRechazos
+                };
+
+            $scope.ListaIndicadoresCompletados.push(angular.copy($scope.Indicador));
+
+            // Extraer la información de las listas existentes
+
+            var NombreCentro = Enumerable.From($scope.ListaCentros)
+                .Where(function (col) { return col.Indice === $scope.DatosGenerales.IndiceCentro; })
+                .OrderBy(function (col) { return col.Indice; })
+                .Select(function (col) { return col.Nombre; })
+                .FirstOrDefault();
+
+            var NombreDepartamento = Enumerable.From($scope.ListaDepartamentos)
+                .Where(function (col) { return col.Indice === $scope.DatosGenerales.IndiceDepartamento; })
+                .OrderBy(function (col) { return col.Indice; })
+                .Select(function (col) { return col.Nombre; })
+                .FirstOrDefault();
+
+            var NombreLinea = Enumerable.From($scope.ListaLineas)
+                .Where(function (col) { return col.Indice === $scope.DatosGenerales.IndiceLinea; })
+                .OrderBy(function (col) { return col.Indice; })
+                .Select(function (col) { return col.Nombre; })
+                .FirstOrDefault();
+
+            var NombreProceso = Enumerable.From($scope.ListaProcesos)
+                .Where(function (col) { return col.Indice === $scope.DatosGenerales.IndiceProceso; })
+                .OrderBy(function (col) { return col.Indice; })
+                .Select(function (col) { return col.Nombre; })
+                .FirstOrDefault();
+
+            var IndicadorInformacion = {
+                'Icono': imagePath,
+                'NombreCentro': NombreCentro,
+                'NombreDepartamento': NombreDepartamento,
+                'NombreLinea': NombreLinea,
+                'NombreProceso': NombreProceso,
+                'NumeroPiezas': $scope.DatosIndicador.Piezas,
+                'Ciclo': $scope.DatosIndicador.Ciclo,
+                'NumeroParos': $scope.ListaParosElegidos.length,
+                'NumeroRechazos': $scope.ListaRechazosElegidos.length
+            };
+
+            $log.info(JSON.stringify(IndicadorInformacion));
+
+            $scope.ListaInformativaCapturasIndicadores.push(IndicadorInformacion);
+
+            $scope.ResetearDatosIndicador();
+            $scope.LimpiarFormulario();
+
+            //$log.info($scope.datosIndicadorForm.piezas);
+            //$scope.datosIndicadorForm.piezas.$setDirty(false);
+            //$scope.datosIndicadorForm.piezas.$setPristine();
+            //$scope.datosIndicadorForm.piezas.$setUntouched();
+
+            //$log.info($scope.datosIndicadorForm.piezas);
+        };
+        // #endregion
+        // #region Watchs
+        // #endregion
+
 
         $element.find('input').on('keydown', function (ev) {
             ev.stopPropagation();
@@ -43,60 +281,6 @@
             return $filter('limitTo')($scope.ListaInformativaCapturasIndicadores, Total, IndiceInicio);
         };
         
-        var FechaHoy = new Date();
-
-        $scope.DatosGenerales = {
-            IndiceCentro: null,
-            IndiceDepartamento: null,
-            IndiceLinea: null,
-            IndiceProceso: null,
-            IndiceVelocidad: null,
-            Orden: null,
-            Lote: null,
-            Material: null,
-            DescripcionMaterial: null,
-            Velocidad: null
-        };
-
-        $scope.DatosIndicador = {
-            Turno: null,
-            Ciclo: 0,
-            Piezas: 0,
-            Fecha: new Date(FechaHoy.getFullYear(), FechaHoy.getMonth(), FechaHoy.getDate(), 0, 0, 0),
-            Hora: 0,
-            Minuto: 0
-        };
-
-        $scope.Util = {
-            FechaLimite: new Date(FechaHoy.getFullYear(), FechaHoy.getMonth(), FechaHoy.getDate(), 0, 0, 0),
-            CalculoHoras: null,
-            CalculoHorasParo: null,
-            MensajeCalculoHoras: null,
-            MensajeCalculoHorasParo: null,
-            SumaParos: 0,
-            SumaPiezasRechazadas: 0,
-            ParoSinCausaAsignada: 0,
-            EstadoHorasParo: false,
-            EstadoValidacionOrden: 0,
-            ExistenIndicadoresPeriodo: false,
-            Estado: ESTADO_PAROS.SIN_ESTADO,
-            Estados: ESTADO_PAROS,
-            EstadoValidacion: ESTADO_VALIDACION_ORDEN.NO_VALIDADA,
-            IconoEstadoValidacionOrden: '../Content/Icons/estado_sin_busqueda.svg',
-            TextoEstadoValidacionOrden: ''
-        };
-
-        $scope.Turnos = ['A', 'B', 'C', 'D'];
-
-        $scope.TerminoBusqueda = '';
-
-        $scope.ListaCentros = null;
-        $scope.ListaDepartamentos = null;
-        $scope.ListaLineas = null;
-        $scope.ListaProcesos = null;
-
-        $scope.ListaRechazosElegidos = [];
-        $scope.ListaParosElegidos = [];
 
         // Sirven para desactivar de la lista los paros escogidos
         $scope.ListaIndicesRechazosEnUso = [];
@@ -562,9 +746,16 @@
             if (!$scope.DatosGenerales.Orden)
                 return;
 
+            $scope.Util.EnProcesoValidacion = true;
+            $scope.Util.EstiloEstadoValidacionOrden = {};
+            $scope.Util.EstadoValidacion = ESTADO_VALIDACION_ORDEN.NO_VALIDADA;
+            $scope.Util.TextoEstadoValidacionOrden = 'En proceso de validación';
+            $scope.Util.IconoEstadoValidacionOrden = '../Content/Icons/estado_sin_busqueda.svg';
+            
             return SAPService.ValidacionOrden($scope.DatosGenerales.Orden)
                 .then(function (response)
                 {
+                    $scope.Util.EnProcesoValidacion = false;
                     var Modelo = response.data.Modelo;
 
                     switch (Modelo.EstatusValidacionOrden)
@@ -593,7 +784,7 @@
 
                             $scope.DatosGenerales.Lote = Modelo.Lote;
                             $scope.DatosGenerales.Material = Modelo.Material;
-                            $scope.DatosGenerales.DescripcionMaterial = Modelo.DescripcionMaterial;
+                            $scope.DatosGenerales.DescripcionMaterial = Modelo.Descripcion;
                             break;
 
                         case ESTADO_VALIDACION_ORDEN.NO_ENCONTRADA:
@@ -649,177 +840,6 @@
                 .Sum();
             
             return parseInt(Sumatoria);
-        };
-
-        $scope.Editar = function (ev, indice)
-        {
-            $scope.EsEdicion = true;
-
-            var Indicador = $scope.ListaIndicadoresCompletados[indice];
-
-            $log.info(JSON.stringify(Indicador));
-
-            $scope.DatosGenerales.IndiceCentro = Indicador.IndiceCentro;
-            $scope.DatosGenerales.IndiceDepartamento = Indicador.IndiceDepartamento;
-            $scope.DatosGenerales.IndiceLinea = Indicador.IndiceLinea;
-            $scope.DatosGenerales.IndiceProceso = Indicador.IndiceProceso;
-
-            $scope.ObtenerCentros();
-
-            $timeout(function () {
-                $scope.ObtenerDepartamentos(Indicador.IndiceCentro);
-            }, 100);
-
-            $timeout(function () {
-                $scope.ObtenerLineas(Indicador.IndiceDepartamento);
-            }, 200);
-
-            $timeout(function () {
-                $scope.ObtenerProcesos(Indicador.IndiceLinea);
-            }, 300);
-            
-            $timeout(function () {
-
-                $scope.DatosGenerales.Orden = Indicador.Orden;
-                $scope.DatosGenerales.Lote = Indicador.Lote;
-                $scope.DatosGenerales.Material = Indicador.Material;
-                $scope.DatosGenerales.DescripcionMaterial = Indicador.DescripcionMaterial;
-
-                $scope.DatosIndicador.Turno = Indicador.Turno;
-                $scope.DatosIndicador.Piezas = Indicador.Piezas;
-                $scope.DatosIndicador.Ciclo = Indicador.Ciclo;
-
-                //var fechaJS1 = moment(Indicador.Fecha);
-                var Fecha = new Date(Indicador.Fecha);
-
-                $scope.DatosIndicador.Fecha = Fecha;
-                $scope.Util.FechaLimite = Fecha;
-
-                $scope.DatosIndicador.Hora = Fecha.getHours();
-                $scope.DatosIndicador.Minuto = Fecha.getMinutes();
-
-                $scope.ListaRechazosElegidos = Indicador.ListaRechazos;
-                $scope.ListaParosElegidos = Indicador.ListaParos;
-
-                var ListaIndicesParos = Enumerable.From(Indicador.ListaParos)
-                    .Select(function (col) { return col.Indice; })
-                    .ToArray();
-
-                var ListaIndicesRechazos = Enumerable.From(Indicador.ListaRechazos)
-                    .Select(function (col) { return col.Indice; })
-                    .ToArray();
-
-                $scope.ListaIndicesRechazosEnUso = ListaIndicesRechazos;
-                $scope.ListaIndicesParosEnUso = ListaIndicesParos;
-
-                // Sumas de paros y rechazos
-                
-                var SumaParos = Enumerable.From(Indicador.ListaParos)
-                    .Select(function (col) { return col.Cantidad; })
-                    .Sum();
-                
-                var SumaParoSinCausaAsignada = Enumerable.From(Indicador.ListaParos)
-                    .Where(function (col) { return col.Nombre === 'Sin causa asignada'; })
-                    .Select(function (col) { return col.Cantidad; })
-                    .Sum();
-
-                var SumaRechazos = Enumerable.From(Indicador.ListaRechazos)
-                    .Select(function (col) { return col.Cantidad; })
-                    .Sum();
-
-                $scope.Util.SumaPiezasRechazadas = parseInt(SumaRechazos);
-                $scope.Util.SumaParos = parseInt(SumaParos);
-
-                $scope.Util.ParoSinCausaAsignada = SumaParoSinCausaAsignada;
-            }, 500);
-
-            $timeout(function () {
-            }, 1000);
-        };
-
-        $scope.Guardar = function (ev)
-        {
-            var ListaParos = angular.copy($scope.ListaParosElegidos);
-            var ListaRechazos = angular.copy($scope.ListaRechazosElegidos);
-
-            if ($scope.Util.ParoSinCausaAsignada > 0) {
-                ListaParos.push({ Indice: 0, Nombre: 'Sin causa asignada', Cantidad: $scope.Util.ParoSinCausaAsignada, Folio: null });
-            }
-            
-            $scope.Indicador =
-            {
-                IndiceCentro: angular.copy($scope.DatosGenerales.IndiceCentro),
-                IndiceDepartamento: angular.copy($scope.DatosGenerales.IndiceDepartamento),
-                IndiceLinea: angular.copy($scope.DatosGenerales.IndiceLinea),
-                IndiceProceso: angular.copy($scope.DatosGenerales.IndiceProceso),
-                IndiceVelocidad: angular.copy($scope.DatosGenerales.IndiceVelocidad),
-                Velocidad: angular.copy($scope.DatosGenerales.Velocidad),
-                Orden: angular.copy($scope.DatosGenerales.Orden),
-                Lote: angular.copy($scope.DatosGenerales.Lote),
-                Material: angular.copy($scope.DatosGenerales.Material),
-                DescripcionMaterial: angular.copy($scope.DatosGenerales.DescripcionMaterial),
-                Piezas: angular.copy($scope.DatosIndicador.Piezas),
-                Reales: 0,
-                Ciclo: angular.copy($scope.DatosIndicador.Ciclo),
-                Turno: angular.copy($scope.DatosIndicador.Turno),
-                Fecha: angular.copy($scope.DatosIndicador.Fecha),
-                ListaParos: ListaParos,
-                ListaRechazos: ListaRechazos
-            };
-            
-            $scope.ListaIndicadoresCompletados.push(angular.copy($scope.Indicador));
-
-            // Extraer la información de las listas existentes
-
-            var NombreCentro = Enumerable.From($scope.ListaCentros)
-                .Where(function (col) { return col.Indice === $scope.DatosGenerales.IndiceCentro; })
-                .OrderBy(function (col) { return col.Indice; })
-                .Select(function (col) { return col.Nombre; })
-                .FirstOrDefault();
-
-            var NombreDepartamento = Enumerable.From($scope.ListaDepartamentos)
-                .Where(function (col) { return col.Indice === $scope.DatosGenerales.IndiceDepartamento; })
-                .OrderBy(function (col) { return col.Indice; })
-                .Select(function (col) { return col.Nombre; })
-                .FirstOrDefault();
-
-            var NombreLinea = Enumerable.From($scope.ListaLineas)
-                .Where(function (col) { return col.Indice === $scope.DatosGenerales.IndiceLinea; })
-                .OrderBy(function (col) { return col.Indice; })
-                .Select(function (col) { return col.Nombre; })
-                .FirstOrDefault();
-
-            var NombreProceso = Enumerable.From($scope.ListaProcesos)
-                .Where(function (col) { return col.Indice === $scope.DatosGenerales.IndiceProceso; })
-                .OrderBy(function (col) { return col.Indice; })
-                .Select(function (col) { return col.Nombre; })
-                .FirstOrDefault();
-
-            var IndicadorInformacion = {
-                'Icono': imagePath,
-                'NombreCentro': NombreCentro,
-                'NombreDepartamento': NombreDepartamento,
-                'NombreLinea': NombreLinea,
-                'NombreProceso': NombreProceso,
-                'NumeroPiezas': $scope.DatosIndicador.Piezas,
-                'Ciclo': $scope.DatosIndicador.Ciclo,
-                'NumeroParos': $scope.ListaParosElegidos.length,
-                'NumeroRechazos': $scope.ListaRechazosElegidos.length
-            };
-
-            $log.info(JSON.stringify(IndicadorInformacion));
-
-            $scope.ListaInformativaCapturasIndicadores.push(IndicadorInformacion);
-            
-            $scope.ResetearDatosIndicador();
-            $scope.LimpiarFormulario();
-
-            //$log.info($scope.datosIndicadorForm.piezas);
-            //$scope.datosIndicadorForm.piezas.$setDirty(false);
-            //$scope.datosIndicadorForm.piezas.$setPristine();
-            //$scope.datosIndicadorForm.piezas.$setUntouched();
-
-            //$log.info($scope.datosIndicadorForm.piezas);
         };
 
         $scope.BusquedaIndicadoresPeriodo = function (IndiceProceso, FechaInicial, FechaFinal)
@@ -1346,5 +1366,24 @@
             );
         };
 
+        $scope.MostrarMensajeMinutosParos = function ()
+        {
+            var Mensaje = '';
+
+            switch ($scope.Util.Estado) {
+                case $scope.Util.Estados.CON_PAROS:
+                    Mensaje = 'Existen ' + $scope.Util.CalculoHorasParo + ' minutos de paros disponibles para capturar';
+                    break;
+                case $scope.Util.Estados.SIN_PAROS:
+                    Mensaje = 'No hay minutos de paros para agregar';
+                    break;
+                case $scope.Util.Estados.ERROR:
+                    Mensaje = 'Corrige las piezas producidas';
+                    break;
+                default: break;
+            }
+
+            return Mensaje;
+        };
     }
 }) ();

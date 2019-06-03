@@ -283,13 +283,14 @@ $scope.getNumber = function(num) {
                                         <md-tooltip md-direction="left">{{ Util.TextoEstadoValidacionOrden }}</md-tooltip>
                                     </md-icon>
                                 </div>
-                                <div layout="column" layout-align="right" flex="80">
-                                    <md-button id="btnValidar" ng-click="ValidarOrden($event)">
+                                <div layout="column" layout-align="center center" flex="80">
+                                    <md-button id="btnValidar" ng-click="ValidarOrden($event)" ng-hide="Util.EnProcesoValidacion">
                                         <md-icon md-svg-src="~/Content/Icons/search.svg"
                                                  aria-label="Insert Drive Icon">
                                         </md-icon>
                                         VALIDAR
                                     </md-button>
+                                    <md-progress-circular class="md-hue-2" md-diameter="20px" ng-show="Util.EnProcesoValidacion"></md-progress-circular>
                                 </div>
                             </div>
                             @*<div flex="30" layout="column" layout-align="center center">
@@ -333,129 +334,133 @@ $scope.getNumber = function(num) {
                 <span class="md-subhead"></span>
             </md-card-title-text>
         </md-card-title>
+        <md-card-content style="padding-left: 3rem;">
+            <form name="datosIndicadorForm">
+                <div layout="row" layout-gt-xs="row" flex flex-gt-xs>
+                    <div layout="row" flex flex-gt-xs>
 
-        <md-card-content style="padding-left: 3rem !important; padding-right: 3rem !important; margin-top: 1rem;">
-            <div layout="column" layout-gt-xs="row">
+                        <md-input-container>
+                            <label>Turno</label>
+                            <md-select ng-model="TurnoElegidoss">
+                                <md-option><em></em></md-option>
+                                <md-option ng-repeat="Turno in ListaTurnoss" ng-value="Turno">
+                                    {{ Turno }}
+                                </md-option>
+                            </md-select>
+                        </md-input-container>
 
-                <div flex flex-gt-xs="55" style="padding-right: 2rem !important;">
-                    <form name="datosIndicadorForm">
-
-                        <div layout="column" layout-gt-xs="row" flex-gt-sm>
-                            <md-input-container class="md-block md-subhead md-input-has-value" flex-gt-sm>
-                                <label>Turno</label>
-                                <md-radio-group ng-model="DatosIndicador.Turno" layout="row">
-                                    <md-radio-button class="md-primary" ng-repeat="turno in Turnos" ng-value="turno" aria-label="{{ turno }}" flex>{{ turno }}</md-radio-button>
-                                </md-radio-group>
-                            </md-input-container>
+                        <div flex="5" hide-xs hide-sm>
+                            <!-- Spacer //-->
                         </div>
-                        <div layout="column" layout-gt-xs="row" flex-gt-sm style="margin-top: 1rem !important;">
-                            <div layout-gt-sm="row" flex-gt-sm>
-                                <div layout-gt-sm="column" flex-gt-sm>
-                                    <md-input-container class="md-block" ng-disabled="DatosGenerales.IndiceIndicador === null">
-                                        <label>Ciclo</label>
-                                        <input name="ciclo" ng-model="DatosIndicador.Ciclo" solo-digitos formato-numerico limite-cantidad="60" valor-valido-mayor-cero required md-no-asterisk>
-                                        <div ng-messages="datosIndicadorForm.ciclo.$error" md-auto-hide="true">
-                                            <div ng-message="required" ng-if="datosIndicadorForm.ciclo.$dirty">
-                                                El ciclo debe tener un valor
-                                            </div>
-                                            <div ng-message="valorValidoMayorCero">
-                                                El ciclo debe ser mayor a 0
-                                            </div>
-                                            <div ng-message="limiteCantidad">
-                                                El ciclo debe ser menor a 60
-                                            </div>
-                                        </div>
-                                    </md-input-container>
-                                </div>
-                                <div flex="5" hide-xs hide-sm>
-                                    <!-- Spacer //-->
-                                </div>
 
-                                <div layout-gt-sm="column" flex-gt-sm>
-                                    <md-input-container class="md-block" ng-disabled="DatosGenerales.IndiceIndicador === null">
-                                        <label>Piezas</label>
-                                        <input name="piezas" ng-model="DatosIndicador.Piezas" solo-digitos formato-numerico valor-valido-mayor-cero>
-                                        <div ng-messages="datosIndicadorForm.piezas.$error" md-auto-hide="true">
-                                            <div ng-message="required" ng-if="datosIndicadorForm.piezas.$dirty">
-                                                Las piezas deben tener un valor
-                                            </div>
-                                            <div ng-message="valorValidoMayorCero">
-                                                Las piezas deben ser mayor a 0
-                                            </div>
-                                        </div>
-                                    </md-input-container>
+                        <md-input-container class="md-block" ng-disabled="DatosGenerales.IndiceIndicador === null">
+                            <label>Ciclo</label>
+                            <input name="ciclo" ng-model="DatosIndicador.Ciclo" solo-digitos formato-numerico limite-cantidad="60" valor-valido-mayor-cero required md-no-asterisk>
+                            <div ng-messages="datosIndicadorForm.ciclo.$error" md-auto-hide="true">
+                                <div ng-message="required" ng-if="datosIndicadorForm.ciclo.$dirty">
+                                    El ciclo debe tener un valor
                                 </div>
-
+                                <div ng-message="valorValidoMayorCero">
+                                    El ciclo debe ser mayor a 0
+                                </div>
+                                <div ng-message="limiteCantidad">
+                                    El ciclo debe ser menor a 60
+                                </div>
                             </div>
-                        </div>
-                        <div layout="column" layout-gt-xs="row" flex-gt-sm flex-gt-xs>
-                            <div layout-gt-sm="row" flex-gt-sm style="margin-top: 0 !important;">
+                        </md-input-container>
 
-                                <div layout-gt-sm="column" flex-gt-sm="45">
-                                    <md-datepicker class=""
-                                                   name="fecha"
-                                                   ng-model="DatosIndicador.Fecha"
-                                                   md-max-date="Util.FechaLimite"
-                                                   ng-disabled="DatosGenerales.IndiceIndicador === null"
-                                                   md-placeholder="Fecha">
-                                    </md-datepicker>
+                        <div flex="5" hide-xs hide-sm>
+                            <!-- Spacer //-->
+                        </div>
+
+                        <md-input-container class="md-block" ng-disabled="DatosGenerales.IndiceIndicador === null">
+                            <label>Piezas</label>
+                            <input name="piezas" ng-model="DatosIndicador.Piezas" solo-digitos formato-numerico valor-valido-mayor-cero>
+                            <div ng-messages="datosIndicadorForm.piezas.$error" md-auto-hide="true">
+                                <div ng-message="required" ng-if="datosIndicadorForm.piezas.$dirty">
+                                    Las piezas deben tener un valor
                                 </div>
-                                <div layout-gt-sm="column" flex-gt-sm="55">
-                                    <div layout-gt-sm="row">
-                                        <md-icon title="Hora" md-svg-src="../Content/Icons/time.svg" aria-label="Hora" style="margin-left: 2.5rem !important; margin-right: 1.99rem !important;margin-top: 0.4rem !important;padding: 0 !important;"></md-icon>
-                                        <div style="margin-top: -1rem !important;">
-                                            <md-input-container class="">
-                                                <md-select ng-model="DatosIndicador.Hora"
-                                                           aria-label="hora"
-                                                           ng-disabled="DatosGenerales.IndiceIndicador === null">
-                                                    <md-optgroup label="hora">
-                                                        <md-option ng-repeat="hora in [].constructor(24) track by $index"
-                                                                   ng-value="$index"
-                                                                   ng-disabled="ValidarHora($index)">
-                                                            {{ $index < 10 ? '0' + $index : $index }}
-                                                        </md-option>
-                                                    </md-optgroup>
-                                                </md-select>
-                                            </md-input-container>
-                                            <md-input-container class="">
-                                                <md-select ng-model="DatosIndicador.Minuto"
-                                                           aria-label="minutos"
-                                                           ng-disabled="DatosIndicador.Hora === null">
-                                                    <md-optgroup label="minuto">
-                                                        <md-option ng-repeat="minuto in [].constructor(60) track by $index"
-                                                                   ng-value="$index"
-                                                                   nng-disabled="ValidarMinuto($index)">
-                                                            {{ $index < 10 ? '0' + $index : $index }}
-                                                        </md-option>
-                                                    </md-optgroup>
-                                                </md-select>
-                                            </md-input-container>
-                                        </div>
+                                <div ng-message="valorValidoMayorCero">
+                                    Las piezas deben ser mayor a 0
+                                </div>
+                            </div>
+                        </md-input-container>
+                    </div>
+                    <div layout="column" flex flex-gt-xs>
+                        <div layout="row" layout-gt-xs="row" flex flex-gt-xs>
+                            <div layout="column" flex flex-gt-xs>
+                                <md-datepicker class=""
+                                               name="fecha"
+                                               ng-model="DatosIndicador.Fecha"
+                                               md-max-date="Util.FechaLimite"
+                                               ng-disabled="DatosGenerales.IndiceIndicador === null"
+                                               md-placeholder="Fecha">
+                                </md-datepicker>
+                            </div>
+                            <div layout="column" flex flex-gt-xs>
+                                <div style="display: inline-flex;">
+                                    <md-icon title="Hora"
+                                             md-svg-src="../Content/Icons/time.svg"
+                                             aria-label="Hora"
+                                             style="margin-top: 0.4rem !important; padding: 0 !important;">
+                                    </md-icon>
+                                    <div style="margin-top: -1rem !important;">
+                                        <md-input-container class="">
+                                            <md-select ng-model="DatosIndicador.Hora"
+                                                       aria-label="hora"
+                                                       ng-disabled="DatosGenerales.IndiceIndicador === null">
+                                                <md-optgroup label="hora">
+                                                    <md-option ng-repeat="hora in [].constructor(24) track by $index"
+                                                               ng-value="$index"
+                                                               ng-disabled="ValidarHora($index)">
+                                                        {{ $index < 10 ? '0' + $index : $index }}
+                                                    </md-option>
+                                                </md-optgroup>
+                                            </md-select>
+                                        </md-input-container>
+                                        <md-input-container class="">
+                                            <md-select ng-model="DatosIndicador.Minuto"
+                                                       aria-label="minutos"
+                                                       ng-disabled="DatosIndicador.Hora === null">
+                                                <md-optgroup label="minuto">
+                                                    <md-option ng-repeat="minuto in [].constructor(60) track by $index"
+                                                               ng-value="$index"
+                                                               nng-disabled="ValidarMinuto($index)">
+                                                        {{ $index < 10 ? '0' + $index : $index }}
+                                                    </md-option>
+                                                </md-optgroup>
+                                            </md-select>
+                                        </md-input-container>
                                     </div>
                                 </div>
                             </div>
                         </div>
-                    </form>
-                </div>
-                <div flex flex-gt-xs="45" style="padding-left: 2rem !important;" layout="column" layout-align="center center">
-                    <div layout-gt-sm="row" layout-align="start center" flex-gt-sm>
-                        <blockquote class="blockquote bq-primary" ng-class="{'bq-warning': Util.Estado === Util.Estados.CON_PAROS, 'bq-success': Util.Estado === Util.Estados.SIN_PAROS, 'bq-danger':  Util.Estado === Util.Estados.ERROR }" ng-hide="Util.Estado === Util.Estados.SIN_ESTADO">
-
-                            <p class="bq-title" style="font-size: 0.9em;"><strong>{{ 'Minutos de paro' }}</strong></p>
-
-                            <div class="mdb-text-danger" ng-show="Util.Estado === Util.Estados.ERROR" style="font-size: 0.9em;">
-                                <strong>Corrige las piezas producidas</strong>
-                            </div>
-
-                            <div class="mdb-text-warning" ng-show="Util.Estado === Util.Estados.CON_PAROS" style="font-size: 0.9em;">
-                                <strong>Debes capturar </strong> <div class="step-marker step-marker--centered-pulled background-color--primary">{{ Util.CalculoHorasParo }}</div> <strong>minutos</strong>
-                            </div>
-
-                            <div class="mdb-text-success" ng-show="Util.Estado === Util.Estados.SIN_PAROS" style="font-size: 0.9em;">
-                                <strong>No hay minutos de paros para agregar</strong>
-                            </div>
-                        </blockquote>
                     </div>
+                </div>
+            </form>
+            <div layout="row" layout-gt-xs="row" flex flex-gt-xs>
+                
+                <div style="display: inline-flex;">
+
+                    <md-icon class="mdb-text-danger"
+                             md-svg-src="../../Content/Icons/report_problem.svg"
+                             ng-if="Util.Estado === Util.Estados.ERROR"></md-icon>
+                    <md-icon class="mdb-text-success"
+                             md-svg-src="../../Content/Icons/check.svg"
+                             ng-if="Util.Estado === Util.Estados.SIN_PAROS"></md-icon>
+                    <md-icon class=""
+                             md-svg-src="../../Content/Icons/time.svg"
+                             ng-if="Util.Estado === Util.Estados.CON_PAROS"></md-icon>
+
+                    <h6 class="md-subhead"
+                        ng-class="{
+                            'mdb-text-danger': Util.Estado === Util.Estados.ERROR,
+                            'mdb-text-success': Util.Estado === Util.Estados.SIN_PAROS,
+                            'text-muted': Util.Estado === Util.Estados.CON_PAROS
+                        }"
+                        style="margin-top: 0.5rem; margin-left: 1rem;">
+                        {{ MostrarMensajeMinutosParos() }}
+                    </h6>
                 </div>
             </div>
         </md-card-content>
