@@ -192,6 +192,7 @@
     <Compile Include="Controllers\DepartamentoController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\IndicadorController.cs" />
+    <Compile Include="Controllers\IndicadorTiempoController.cs" />
     <Compile Include="Controllers\LineaController.cs" />
     <Compile Include="Controllers\ManageController.cs" />
     <Compile Include="Controllers\ParoController.cs" />
@@ -260,6 +261,7 @@
     <Content Include="Scripts\app\app.js" />
     <Content Include="Scripts\app\constants\AplicacionConstant.js" />
     <Content Include="Scripts\app\controllers\CapturaMasivaIndicadorController.js" />
+    <Content Include="Scripts\app\controllers\IndicadorTiempoController.js" />
     <Content Include="Scripts\app\controllers\ReporteIndicadorController.js" />
     <Content Include="Scripts\app\controllers\CapturaIndicadorController.js" />
     <Content Include="Scripts\app\controllers\CuentaController.js" />
@@ -277,7 +279,9 @@
     <Content Include="Scripts\app\factories\LineaService.js" />
     <Content Include="Scripts\app\factories\DepartamentoService.js" />
     <Content Include="Scripts\app\factories\CentroService.js" />
+    <Content Include="Scripts\app\services\IndicadorTiempoService.js" />
     <Content Include="Scripts\app\services\ModalService.js" />
+    <Content Include="Scripts\app\services\ModalService1.js" />
     <Content Include="Scripts\app\templates\OpcionesGuardar.html" />
     <Content Include="Scripts\app\templates\AgregarParos.html" />
     <Content Include="Scripts\app\templates\AgregarRechazos.html" />
@@ -362,6 +366,7 @@
     <Content Include="Views\Indicador\Captura.cshtml" />
     <Content Include="Views\Indicador\Captura2.cshtml" />
     <Content Include="Views\Indicador\CapturaMasiva - Copia.cshtml" />
+    <Content Include="Views\IndicadorTiempo\Inicio.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

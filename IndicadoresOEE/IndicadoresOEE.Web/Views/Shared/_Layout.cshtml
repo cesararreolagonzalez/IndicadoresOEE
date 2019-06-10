@@ -65,7 +65,16 @@
                     <a class="nav-link dropdown-toggle" id="reporteMenu" data-toggle="dropdown" aria-haspopup="true"
                        aria-expanded="false">Gráficas</a>
                     <div class="dropdown-menu dropdown-primary" aria-labelledby="reporteMenu">
-                        @Html.ActionLink("Gráfoa de indicadores", "Reporte", "Indicador", null, new { @class = "dropdown-item" })
+                        @Html.ActionLink("Gráfica de indicadores", "Reporte", "Indicador", null, new { @class = "dropdown-item" })
+                    </div>
+                </li>
+
+                <!-- Dropdown -->
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" id="reporteMenu" data-toggle="dropdown" aria-haspopup="true"
+                       aria-expanded="false">Administración</a>
+                    <div class="dropdown-menu dropdown-primary" aria-labelledby="reporteMenu">
+                        @Html.ActionLink("Indicador de tiempo", "Inicio", "IndicadorTiempo", null, new { @class = "dropdown-item" })
                     </div>
                 </li>
             </ul>

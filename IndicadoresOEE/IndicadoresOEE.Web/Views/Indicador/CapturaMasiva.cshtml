@@ -120,6 +120,7 @@ $scope.getNumber = function(num) {
     <h4 style="color: rgb(63, 81, 181); font-weight: 700; letter-spacing: .7px; text-align: left; margin-bottom: 1rem; padding: 0.5rem !important; margin-bottom: 1rem; margin-top: 1rem;">
         Captura masiva de indicadores
     </h4>
+
     <md-content style="overflow: hidden !important;">
         <div class="row">
             <div class="col" style="padding-right: 5rem;">
@@ -152,6 +153,7 @@ $scope.getNumber = function(num) {
             </div>
         </div>
     </md-content>
+
     <md-card md-theme="default" ng-cloak style="min-width: 60rem !important; max-width: 60rem !important;">
         <md-card-title>
             <md-card-title-text>
@@ -294,13 +296,13 @@ $scope.getNumber = function(num) {
                                 </div>
                             </div>
                             @*<div flex="30" layout="column" layout-align="center center">
-                                <md-button id="btnValidar" ng-click="ValidarOrden($event)">
-                                    <md-icon md-svg-src="~/Content/Icons/search.svg"
-                                             aria-label="Insert Drive Icon">
-                                    </md-icon>
-                                    VALIDAR
-                                </md-button>
-                            </div>*@
+                                    <md-button id="btnValidar" ng-click="ValidarOrden($event)">
+                                        <md-icon md-svg-src="~/Content/Icons/search.svg"
+                                                 aria-label="Insert Drive Icon">
+                                        </md-icon>
+                                        VALIDAR
+                                    </md-button>
+                                </div>*@
                         </div>
                     </div>
                     <div layout="column" layout-gt-xs="row" flex-gt-sm flex-gt-xs>
@@ -338,12 +340,11 @@ $scope.getNumber = function(num) {
             <form name="datosIndicadorForm">
                 <div layout="row" layout-gt-xs="row" flex flex-gt-xs>
                     <div layout="row" flex flex-gt-xs>
-
                         <md-input-container>
                             <label>Turno</label>
-                            <md-select ng-model="TurnoElegidoss">
+                            <md-select ng-model="DatosIndicador.Turno">
                                 <md-option><em></em></md-option>
-                                <md-option ng-repeat="Turno in ListaTurnoss" ng-value="Turno">
+                                <md-option ng-repeat="Turno in Turnos" ng-value="Turno">
                                     {{ Turno }}
                                 </md-option>
                             </md-select>
@@ -425,7 +426,7 @@ $scope.getNumber = function(num) {
                                                 <md-optgroup label="minuto">
                                                     <md-option ng-repeat="minuto in [].constructor(60) track by $index"
                                                                ng-value="$index"
-                                                               nng-disabled="ValidarMinuto($index)">
+                                                               ng-disabled="ValidarMinuto($index)">
                                                         {{ $index < 10 ? '0' + $index : $index }}
                                                     </md-option>
                                                 </md-optgroup>
@@ -439,9 +440,7 @@ $scope.getNumber = function(num) {
                 </div>
             </form>
             <div layout="row" layout-gt-xs="row" flex flex-gt-xs>
-                
                 <div style="display: inline-flex;">
-
                     <md-icon class="mdb-text-danger"
                              md-svg-src="../../Content/Icons/report_problem.svg"
                              ng-if="Util.Estado === Util.Estados.ERROR"></md-icon>
@@ -451,7 +450,6 @@ $scope.getNumber = function(num) {
                     <md-icon class=""
                              md-svg-src="../../Content/Icons/time.svg"
                              ng-if="Util.Estado === Util.Estados.CON_PAROS"></md-icon>
-
                     <h6 class="md-subhead"
                         ng-class="{
                             'mdb-text-danger': Util.Estado === Util.Estados.ERROR,
@@ -542,17 +540,20 @@ $scope.getNumber = function(num) {
         <md-card-content style="padding-left: 3rem;">
             <div layout="row" flex style=" margin-bottom: 2rem;">
                 <div layout="row" flex>
-                    <label class="c01971 c01973 c01969">{{ 'Paros disponibles' | uppercase }} 
+                    <label class="c01971 c01973 c01969">
+                        {{ 'Paros disponibles' | uppercase }}
                         <strong class="text-muted" style="padding-left: 0.7rem;">{{ Util.CalculoHorasParo | number }}</strong>
                     </label>
                 </div>
                 <div layout="row" flex>
-                    <label class="c01971 c01973 c01969" ng-class="{'mdb-text-danger': Util.SumaParos > Util.CalculoHorasParo }">{{ 'Paros asignados' | uppercase }} 
+                    <label class="c01971 c01973 c01969" ng-class="{'mdb-text-danger': Util.SumaParos > Util.CalculoHorasParo }">
+                        {{ 'Paros asignados' | uppercase }}
                         <strong style="padding-left: 0.7rem;" ng-class="{'mdb-text-danger': Util.SumaParos > Util.CalculoHorasParo, 'text-muted': Util.SumaParos <= Util.CalculoHorasParo }">{{ Util.SumaParos | number }}</strong>
                     </label>
                 </div>
                 <div layout="row" flex>
-                    <label class="c01971 c01973 c01969">{{ 'Sin causa asignada' | uppercase }} 
+                    <label class="c01971 c01973 c01969">
+                        {{ 'Sin causa asignada' | uppercase }}
                         <strong class="text-muted" style="padding-left: 0.7rem;">{{ Util.ParoSinCausaAsignada | number }}</strong>
                     </label>
                 </div>
@@ -593,8 +594,8 @@ $scope.getNumber = function(num) {
                     </small>
                 </div>
                 <div flex flex-gt-xs="50" layout-gt-xs="row" layout-align="end center">
-                    <md-button id="btnAddParo" md-no-ink class="md-primary" 
-                               ng-click="agregarParo($event)" 
+                    <md-button id="btnAddParo" md-no-ink class="md-primary"
+                               ng-click="agregarParo($event)"
                                ng-show="DatosGenerales.IndiceProceso !== null && (Util.CalculoHorasParo >= Util.SumaParos) && Util.EstadoHorasParo">
                         <md-icon md-svg-icon="md-add"></md-icon>
                         AGREGAR

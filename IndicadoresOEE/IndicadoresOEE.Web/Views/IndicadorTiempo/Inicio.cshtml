@@ -1,0 +1,284 @@
+﻿@{
+    ViewBag.Title = "Indicador de tiempo";
+}
+
+<md-content ng-app="indicadoresoeeapp" ng-controller="IndicadorTiempoController" class="md-padding" style="padding:2rem;" ng-cloak>
+    <h2 style=" color: rgb(63, 81, 181); font-weight: 300; letter-spacing: .5px; text-align: center; margin-top: 2rem; margin-bottom: 3rem;">
+        Indicador de tiempo
+    </h2>
+
+    <div layout="row" layout-align="start" flex>
+        <div flex="100">
+            <md-card style="min-height: 15rem;">
+                <md-card-title>
+                    <md-card-title-text>
+                        <div layout="row" layout-align="end" flex>
+                        </div>
+                    </md-card-title-text>
+                </md-card-title>
+
+                <md-card-content layout-align="center center">
+                    <div layout="row" layout-gt-xs="row" flex flex-gt-xs>
+                        <div layout="column" flex flex-gt-xs style="padding-left: 5rem!important; padding-right: 5rem !important;">
+                            <div layout="row" layout-align="center center" flex>
+                                <div style="display: inline-flex;">
+                                    <md-icon title="First"
+                                             md-svg-src="../Content/icons/baseline-looks_one.svg"
+                                             aria-label="First"
+                                             ng-show="Parametros.IndiceProceso === null"
+                                             ng-class="{'text-success': Parametros.IndiceProceso !== null, 'text-muted': Parametros.IndiceProceso === null}">
+                                    </md-icon>
+                                    <md-icon title="Done"
+                                             md-svg-src="../Content/icons/baseline-check_circle.svg"
+                                             aria-label="Done"
+                                             ng-show="Parametros.IndiceProceso !== null"
+                                             ng-class="{'text-success': Parametros.IndiceProceso !== null, 'text-muted': Parametros.IndiceProceso === null}">
+                                    </md-icon>
+                                    @*<span class="text-muted" style="padding-left: 1rem!important; margin-top: 0.3rem !important;">Elige un proceso</span>*@
+                                </div>
+                            </div>
+                            <div layout="row" flex flex-gt-xs>
+                                <md-input-container class="md-block" flex-gt-sm>
+                                    <label>Centro</label>
+                                    <md-select ng-model="Parametros.IndiceCentro"
+                                               ng-change="ObtenerDepartamentos()"
+                                               md-on-open="ObtenerCentros()"
+                                               md-on-close="ResetearTerminoBusqueda()"
+                                               md-container-class="selectdemoSelectHeader"
+                                               ng-cloak>
+                                        <md-select-header class="demo-select-header">
+                                            <input ng-model="TerminoBusqueda"
+                                                   type="search"
+                                                   placeholder="Busca un centro"
+                                                   class="demo-header-searchbox md-text">
+                                        </md-select-header>
+                                        <md-optgroup label="Centros disponibles">
+                                            <md-option ng-repeat="Centro in ListaCentros | filter:TerminoBusqueda" ng-value="Centro.Indice">
+                                                {{ Centro.Nombre }}
+                                            </md-option>
+                                        </md-optgroup>
+                                    </md-select>
+                                </md-input-container>
+                            </div>
+                            <div layout="row" flex flex-gt-xs>
+                                <md-input-container class="md-block" flex-gt-sm>
+                                    <label>Departamento</label>
+                                    <md-select ng-model="Parametros.IndiceDepartamento"
+                                               ng-disabled="!Parametros.IndiceCentro && !ListaDepartamentos"
+                                               ng-change="ObtenerLineas()"
+                                               md-on-open="ObtenerDepartamentos()"
+                                               md-on-close="ResetearTerminoBusqueda()"
+                                               md-container-class="selectdemoSelectHeader"
+                                               ng-cloak>
+                                        <md-select-header class="demo-select-header">
+                                            <input ng-model="TerminoBusqueda"
+                                                   type="search"
+                                                   placeholder="Busca un departamento"
+                                                   class="demo-header-searchbox md-text">
+                                        </md-select-header>
+                                        <md-optgroup label="Centros disponibles">
+                                            <md-option ng-repeat="Departamento in ListaDepartamentos | filter:TerminoBusqueda" ng-value="Departamento.Indice">
+                                                {{ Departamento.Nombre }}
+                                            </md-option>
+                                        </md-optgroup>
+                                    </md-select>
+                                </md-input-container>
+                            </div>
+                            <div layout="row" flex flex-gt-xs>
+                                <md-input-container class="md-block" flex-gt-sm>
+                                    <label>Línea</label>
+                                    <md-select ng-model="Parametros.IndiceLinea"
+                                               ng-disabled="!Parametros.IndiceDepartamento && !ListaLineas"
+                                               ng-change="ObtenerProcesos()"
+                                               md-on-open="ObtenerLineas()"
+                                               md-on-close="ResetearTerminoBusqueda()"
+                                               md-container-class="selectdemoSelectHeader"
+                                               ng-cloak>
+                                        <md-select-header class="demo-select-header">
+                                            <input ng-model="TerminoBusqueda"
+                                                   type="search"
+                                                   placeholder="Busca una línea"
+                                                   class="demo-header-searchbox md-text">
+                                        </md-select-header>
+                                        <md-optgroup label="Lineas disponibles">
+                                            <md-option ng-repeat="Linea in ListaLineas | filter:TerminoBusqueda" ng-value="Linea.Indice">
+                                                {{ Linea.Nombre }}
+                                            </md-option>
+                                        </md-optgroup>
+                                    </md-select>
+                                </md-input-container>
+                            </div>
+                            <div layout="row" flex flex-gt-xs>
+                                <md-input-container class="md-block" flex-gt-sm>
+                                    <label>Proceso</label>
+                                    <md-select ng-model="Parametros.IndiceProceso"
+                                               ng-change="ObtenerUltimoIndicadorTiempo()"
+                                               ng-disabled="!Parametros.IndiceLinea && !ListaProcesos"
+                                               md-on-open="ObtenerProcesos()"
+                                               md-on-close="ResetearTerminoBusqueda()"
+                                               md-container-class="selectdemoSelectHeader"
+                                               ng-cloak>
+                                        <md-select-header class="demo-select-header">
+                                            <input ng-model="TerminoBusqueda"
+                                                   type="search"
+                                                   placeholder="Busca un proceso"
+                                                   class="demo-header-searchbox md-text">
+                                        </md-select-header>
+                                        <md-optgroup label="Lineas disponibles">
+                                            <md-option ng-repeat="Proceso in ListaProcesos | filter:TerminoBusqueda" ng-value="Proceso.Indice">
+                                                {{ Proceso.Nombre }}
+                                            </md-option>
+                                        </md-optgroup>
+                                    </md-select>
+                                </md-input-container>
+                            </div>
+                        </div>
+                        <div layout="column" flex>
+                            <div id="motivoContenedor" layout="column" @*style="display: none;"*@ flex>
+                                <div layout="row" layout-align="center center" flex>
+                                    <div style="display: inline-flex;">
+                                        <md-icon title="Second"
+                                                 md-svg-src="../Content/icons/baseline-looks_two.svg"
+                                                 ng-show="Parametros.IndiceMotivo === null"
+                                                 aria-label="Second">
+                                        </md-icon>
+                                        <md-icon title="Done"
+                                                 md-svg-src="../Content/icons/baseline-check_circle.svg"
+                                                 aria-label="Done"
+                                                 ng-show="Parametros.IndiceMotivo !== null"
+                                                 ng-class="{'text-success': Parametros.IndiceMotivo !== null, 'text-muted': Parametros.IndiceMotivo === null}">
+                                        </md-icon>
+                                        @*<span class="text-muted" style="padding-left: 1rem!important; margin-top: 0.3rem !important;">Elige un motivo para adelantar el reloj</span>*@
+                                    </div>
+                                </div>
+                                <div layout="row" layout-align="center center" style="margin-bottom: 5rem !important;" flex>
+                                    <md-input-container class="md-block" flex-gt-sm>
+                                        <label>Motivo</label>
+                                        <md-select id="procesoSeleccionable"
+                                                   name="procesoSeleccionable"
+                                                   ng-disabled="!Parametros.IndiceProceso"
+                                                   md-on-close="ResetearTerminoBusqueda()"
+                                                   ng-model="Parametros.IndiceMotivo"
+                                                   md-container-class="selectdemoSelectHeader"
+                                                   ng-cloak>
+                                            <md-select-header class="demo-select-header">
+                                                <input ng-model="TerminoBusqueda"
+                                                       type="search"
+                                                       placeholder="Selecciona un motivo"
+                                                       class="demo-header-searchbox md-text">
+                                            </md-select-header>
+                                            <md-optgroup label="Lineas disponibles">
+                                                <md-option ng-repeat="Paro in ListaParosMotivo | filter:TerminoBusqueda"
+                                                           ng-value="Paro.Nombre"
+                                                           ng-disabled="Paro.EstaDeshabiltiado">
+                                                    {{ Paro.Nombre }}
+                                                </md-option>
+                                            </md-optgroup>
+                                        </md-select>
+                                    </md-input-container>
+                                </div>
+                            </div>
+                            <div id="tiempoContenedor" @*style="display: none;"*@>
+                                <div layout="row" layout-align="center center" flex style="margin-bottom: 3rem !important;">
+                                    <div style="display: inline-flex;">
+                                        <md-icon title="Third"
+                                                 md-svg-src="../Content/icons/baseline-looks_three.svg"
+                                                 ng-show="Tiempo.IndicadorTiempoActual <= Tiempo.IndicadorTiempoAnterior"
+                                                 aria-label="Third">
+                                        </md-icon>
+                                        <md-icon title="Done"
+                                                 md-svg-src="../Content/icons/baseline-check_circle.svg"
+                                                 aria-label="Done"
+                                                 ng-show="Tiempo.IndicadorTiempoActual > Tiempo.IndicadorTiempoAnterior"
+                                                 class="text-success">
+                                        </md-icon>
+                                        @*<span class="text-muted" style="padding-left: 1rem!important; margin-top: 0.3rem !important;">Elige una nueva fecha para el proceso</span>*@
+                                    </div>
+                                </div>
+                                <div layout="row" flex>
+                                    <div layout="column" flex>
+                                        <form name="fechaform">
+                                            <md-datepicker ng-disabled="Parametros.IndiceMotivo === null"
+                                                           ng-model="Tiempo.IndicadorTiempoActual"
+                                                           md-min-date="Tiempo.IndicadorTiempoAnterior"
+                                                           md-max-date="Tiempo.FechaLimite"
+                                                           ng-change="ActualizarTiempo()"
+                                                           md-placeholder="">
+                                            </md-datepicker>
+                                        </form>
+                                    </div>
+                                    <div layout="column" flex>
+                                        <div style="display: inline-flex;">
+
+                                            <div style="margin-top: -1rem !important;">
+                                                <md-icon title="Hora"
+                                                         md-svg-src="../Content/icons/time.svg"
+                                                         aria-label="Hora"
+                                                         style="margin-top: 0.5rem !important; margin-right: 1rem; padding: 0 !important;">
+                                                </md-icon>
+                                                <md-input-container class="">
+                                                    <md-select ng-model="Tiempo.Hora"
+                                                               aria-label="hora"
+                                                               ng-change="ActualizarMinutos(Tiempo.Hora)"
+                                                               ng-disabled="Tiempo.IndicadorTiempoActual === null || Parametros.IndiceMotivo === null">
+                                                        <md-optgroup label="hora">
+                                                            <md-option ng-repeat="hora in [].constructor(24) track by $index"
+                                                                       ng-value="$index"
+                                                                       ng-disabled="ValidarHora($index)">
+                                                                {{ $index < 10 ? '0' + $index : $index }}
+                                                            </md-option>
+                                                        </md-optgroup>
+                                                    </md-select>
+                                                </md-input-container>
+                                                <md-input-container class="">
+                                                    <md-select ng-model="Tiempo.Minuto"
+                                                               aria-label="minutos"
+                                                               ng-disabled="Tiempo.IndicadorTiempoActual === null || Parametros.IndiceMotivo === null">
+                                                        <md-optgroup label="minuto">
+                                                            <md-option ng-repeat="minuto in [].constructor(60) track by $index"
+                                                                       ng-value="$index"
+                                                                       ng-disabled="ValidarMinuto($index)">
+                                                                {{ $index < 10 ? '0' + $index : $index }}
+                                                            </md-option>
+                                                        </md-optgroup>
+                                                    </md-select>
+                                                </md-input-container>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div layout="row">
+                        @*<md-radio-group ng-model="data.group1">
+                                <md-radio-button value="Apple" class="md-primary">Apple</md-radio-button>
+                                <md-radio-button value="Banana"> Banana </md-radio-button>
+                                <md-radio-button value="Mango">Mango</md-radio-button>
+                            </md-radio-group>*@
+                    </div>
+                </md-card-content>
+
+                <md-card-actions layout="row" layout-align="start" style="margin-left: 7rem !important; margin-top: 3rem !important;">
+                    <md-button class="md-raised md-primary"
+                               ng-click="ActualizarIndicadorTiempo()"
+                               ng-disabled="Parametros.IndiceProceso === null || Parametros.IndiceMotivo === null || Tiempo.IndicadorTiempoActual <= Tiempo.IndicadorTiempoAnterior"
+                               style="font-family: Roboto !important; font-size: 1em; padding-right: 2rem !important; padding-left: 2rem !important;">
+                        <md-icon title="Search"
+                                 md-svg-src="../Content/Icons/save.svg"
+                                 aria-label="Search"
+                                 style="padding-right: 1rem!important;">
+                        </md-icon>
+                        Guardar
+                    </md-button>
+                    <md-button md-no-ink
+                               class="md-primary"
+                               ng-click="InicializarFormulario()"
+                               style="font-family: Roboto !important; font-size: 1em;">
+                        Limpiar
+                    </md-button>
+                </md-card-actions>
+            </md-card>
+        </div>
+    </div>
+</md-content>

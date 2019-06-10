@@ -17,7 +17,6 @@
     {
         // #region Properties
         $scope.EsEdicion = false;
-        $scope.ListaTurnoss = ['A', 'B', 'C', 'D'];
         $scope.Turnos = ['A', 'B', 'C', 'D'];
         var FechaHoy = new Date();
 
@@ -71,18 +70,13 @@
         // #region Asynchronous Methods
         // #endregion
         // #region Methods
-        async function ObtenerListas() {
-            $scope.ListaCentros = await CentroService.ObtenerCentros();
-            $scope.$apply();
-            $scope.ListaDepartamentos = await DepartamentoService.ObtenerDepartamentosPorCentro($scope.DatosGenerales.IndiceCentro);
-            $scope.$apply();
-            $scope.ListaLineas = await LineaService.ObtenerLineasPorDepartamento($scope.DatosGenerales.IndiceDepartamento);
-            $scope.$apply();
-            $scope.ListaProcesos = await ProcesoService.ObtenerProcesosPorLinea($scope.DatosGenerales.IndiceLinea);
-            $scope.$apply();
+        async function ObtenerListas(Indicador)
+        {
+
+            $log.info('ObtenerListas() finalizado');
         }
 
-        $scope.Editar = function (ev, indice) {
+        $scope.Editar = async function (ev, indice) {
             ModalService.showWait();
 
             $scope.EsEdicion = true;
@@ -96,7 +90,13 @@
             $scope.DatosGenerales.IndiceLinea = Indicador.IndiceLinea;
             $scope.DatosGenerales.IndiceProceso = Indicador.IndiceProceso;
 
-            ObtenerListas();
+
+            await $scope.ObtenerCentros();
+            await $scope.ObtenerDepartamentos();
+            await $scope.ObtenerLineas();
+            await $scope.ObtenerProcesos();
+
+            //ObtenerListas(Indicador);
             //$scope.ObtenerCentros();
 
             //$timeout(function () {
@@ -111,64 +111,62 @@
             //    $scope.ObtenerProcesos(Indicador.IndiceLinea);
             //}, 300);
 
-            $timeout(function () {
+            //$timeout(function () {
 
-                $scope.DatosGenerales.Orden = Indicador.Orden;
-                $scope.DatosGenerales.Lote = Indicador.Lote;
-                $scope.DatosGenerales.Material = Indicador.Material;
-                $scope.DatosGenerales.DescripcionMaterial = Indicador.DescripcionMaterial;
+            //}, 500);
 
-                $scope.DatosIndicador.Turno = Indicador.Turno;
-                $scope.DatosIndicador.Piezas = Indicador.Piezas;
-                $scope.DatosIndicador.Ciclo = Indicador.Ciclo;
+            $scope.DatosGenerales.Orden = Indicador.Orden;
+            $scope.DatosGenerales.Lote = Indicador.Lote;
+            $scope.DatosGenerales.Material = Indicador.Material;
+            $scope.DatosGenerales.DescripcionMaterial = Indicador.DescripcionMaterial;
 
-                //var fechaJS1 = moment(Indicador.Fecha);
-                var Fecha = new Date(Indicador.Fecha);
+            $scope.DatosIndicador.Turno = Indicador.Turno;
+            $scope.DatosIndicador.Piezas = Indicador.Piezas;
+            $scope.DatosIndicador.Ciclo = Indicador.Ciclo;
+            
+            var Fecha = new Date(Indicador.Fecha);
 
-                $scope.DatosIndicador.Fecha = Fecha;
-                $scope.Util.FechaLimite = Fecha;
+            $scope.DatosIndicador.Fecha = Fecha;
+            $scope.Util.FechaLimite = Fecha;
 
-                $scope.DatosIndicador.Hora = Fecha.getHours();
-                $scope.DatosIndicador.Minuto = Fecha.getMinutes();
+            $scope.DatosIndicador.Hora = Fecha.getHours();
+            $scope.DatosIndicador.Minuto = Fecha.getMinutes();
 
-                $scope.ListaRechazosElegidos = Indicador.ListaRechazos;
-                $scope.ListaParosElegidos = Indicador.ListaParos;
+            $scope.ListaRechazosElegidos = Indicador.ListaRechazos;
+            $scope.ListaParosElegidos = Indicador.ListaParos;
 
-                var ListaIndicesParos = Enumerable.From(Indicador.ListaParos)
-                    .Select(function (col) { return col.Indice; })
-                    .ToArray();
+            var ListaIndicesParos = Enumerable.From(Indicador.ListaParos)
+                .Select(function (col) { return col.Indice; })
+                .ToArray();
 
-                var ListaIndicesRechazos = Enumerable.From(Indicador.ListaRechazos)
-                    .Select(function (col) { return col.Indice; })
-                    .ToArray();
+            var ListaIndicesRechazos = Enumerable.From(Indicador.ListaRechazos)
+                .Select(function (col) { return col.Indice; })
+                .ToArray();
 
-                $scope.ListaIndicesRechazosEnUso = ListaIndicesRechazos;
-                $scope.ListaIndicesParosEnUso = ListaIndicesParos;
+            $scope.ListaIndicesRechazosEnUso = ListaIndicesRechazos;
+            $scope.ListaIndicesParosEnUso = ListaIndicesParos;
 
-                // Sumas de paros y rechazos
+            // Sumas de paros y rechazos
 
-                var SumaParos = Enumerable.From(Indicador.ListaParos)
-                    .Select(function (col) { return col.Cantidad; })
-                    .Sum();
+            var SumaParos = Enumerable.From(Indicador.ListaParos)
+                .Select(function (col) { return col.Cantidad; })
+                .Sum();
 
-                var SumaParoSinCausaAsignada = Enumerable.From(Indicador.ListaParos)
-                    .Where(function (col) { return col.Nombre === 'Sin causa asignada'; })
-                    .Select(function (col) { return col.Cantidad; })
-                    .Sum();
+            var SumaParoSinCausaAsignada = Enumerable.From(Indicador.ListaParos)
+                .Where(function (col) { return col.Nombre === 'Sin causa asignada'; })
+                .Select(function (col) { return col.Cantidad; })
+                .Sum();
 
-                var SumaRechazos = Enumerable.From(Indicador.ListaRechazos)
-                    .Select(function (col) { return col.Cantidad; })
-                    .Sum();
+            var SumaRechazos = Enumerable.From(Indicador.ListaRechazos)
+                .Select(function (col) { return col.Cantidad; })
+                .Sum();
 
-                $scope.Util.SumaPiezasRechazadas = parseInt(SumaRechazos);
-                $scope.Util.SumaParos = parseInt(SumaParos);
+            $scope.Util.SumaPiezasRechazadas = parseInt(SumaRechazos);
+            $scope.Util.SumaParos = parseInt(SumaParos);
 
-                $scope.Util.ParoSinCausaAsignada = SumaParoSinCausaAsignada;
-            }, 500);
+            $scope.Util.ParoSinCausaAsignada = SumaParoSinCausaAsignada;
 
-            $timeout(function () {
-                ModalService.hideWait();
-            }, 1000);
+            ModalService.hideWait();
         };
         $scope.Guardar = function (ev) {
             var ListaParos = angular.copy($scope.ListaParosElegidos);
@@ -334,7 +332,7 @@
                                     var Estado = response.data.Estado;
                                     if (!Estado) {
                                         var Mensaje = response.data.Mensaje;
-                                        $log.info('Se produjo el siguiente error en el método ObtenerCentros = ' + Mensaje);
+                                        $log.info('Se produjo el siguiente error en el método ObtenerParos = ' + Mensaje);
                                     }
                                     else {
                                         var ListaParos = response.data.ListaParos;
@@ -563,7 +561,7 @@
                                     if (!Estado)
                                     {
                                         var Mensaje = response.data.Mensaje;
-                                        $log.info('Se produjo el siguiente error en el método ObtenerCentros = ' + Mensaje);
+                                        $log.info('Se produjo el siguiente error en el método ObtenerRechazos = ' + Mensaje);
                                     }
                                     else
                                     {
@@ -577,7 +575,7 @@
                                 })
                                 .finally(function ()
                                 {
-                                    $log.info('Método ObtenerCentros() finalizado');
+                                    $log.info('Método ObtenerRechazos() finalizado');
                                 });
                         };
 
