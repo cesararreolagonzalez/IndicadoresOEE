@@ -46,6 +46,7 @@
     <Compile Include="Models\BitacoraAccesosModel.cs" />
     <Compile Include="Models\BitacoraErroresModel.cs" />
     <Compile Include="Models\CentroModel.cs" />
+    <Compile Include="Models\PerfilModel.cs" />
     <Compile Include="Models\RegistroModel.cs" />
     <Compile Include="Models\DepartamentoModel.cs" />
     <Compile Include="Models\IndicadorModel.cs" />
@@ -53,6 +54,7 @@
     <Compile Include="Models\ParoModel.cs" />
     <Compile Include="Models\ProcesoModel.cs" />
     <Compile Include="Models\RechazoModel.cs" />
+    <Compile Include="Models\Response.cs" />
     <Compile Include="Models\SesionModel.cs" />
     <Compile Include="Models\UsuarioModel.cs" />
     <Compile Include="Models\ValidacionOrdenSAPModel.cs" />
@@ -61,6 +63,8 @@
     <Compile Include="Util\Encriptador.cs" />
     <Compile Include="Util\Util.cs" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Folder Include="Resources\" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

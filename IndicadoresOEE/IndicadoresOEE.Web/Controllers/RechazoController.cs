@@ -16,7 +16,7 @@
         }
 
         // GET: Paro
-        public ActionResult Index()
+        public ActionResult Inicio()
         {
             return View();
         }

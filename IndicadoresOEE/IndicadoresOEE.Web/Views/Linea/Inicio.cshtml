@@ -1,7 +1,10 @@
-﻿
-@{
-    ViewBag.Title = "Inicio";
+﻿@{
+    ViewBag.Title = "Líneas";
 }
 
-<h2>Inicio</h2>
-
+<div layout="column">
+    <span class="md-subhead text-muted" style="letter-spacing: 5px;">ADMINISTRACIÓN DE</span>
+    <h1 class="md-display-2 text-primary-blue" style="padding: 0 !important; margin: 0 !important;">
+        @ViewBag.Title.ToString().ToUpper()
+    </h1>
+</div>

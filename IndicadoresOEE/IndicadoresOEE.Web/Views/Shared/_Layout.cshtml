@@ -13,6 +13,7 @@
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/mdbootstrap/4.5.15/css/mdb.css">
     <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons" />
+    <link rel="stylesheet" href="https://rawgit.com/daniel-nagy/md-data-table/master/dist/md-data-table.css">
     @Scripts.Render("~/bundles/modernizr")
 
 </head>
@@ -69,12 +70,23 @@
                     </div>
                 </li>
 
-                <!-- Dropdown -->
+
                 <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle" id="reporteMenu" data-toggle="dropdown" aria-haspopup="true"
                        aria-expanded="false">Administración</a>
-                    <div class="dropdown-menu dropdown-primary" aria-labelledby="reporteMenu">
-                        @Html.ActionLink("Indicador de tiempo", "Inicio", "IndicadorTiempo", null, new { @class = "dropdown-item" })
+                    <div class="dropdown-menu dropdown-primary" aria-labelledby="adminMenu" style="width: 15rem !important;">
+                        @Html.ActionLink("Usuarios", "Inicio", "Usuario", null, new { @class = "dropdown-item" })
+                        @Html.ActionLink("Perfiles", "Inicio", "Perfil", null, new { @class = "dropdown-item" })
+                        @Html.ActionLink("Centros", "Inicio", "Centro", null, new { @class = "dropdown-item" })
+                        @Html.ActionLink("Departamentos", "Inicio", "Departamento", null, new { @class = "dropdown-item" })
+                        @Html.ActionLink("Lineas", "Inicio", "Linea", null, new { @class = "dropdown-item" })
+                        @Html.ActionLink("Procesos", "Inicio", "Proceso", null, new { @class = "dropdown-item" })
+                        @Html.ActionLink("Velocidades", "Inicio", "Velocidad", null, new { @class = "dropdown-item" })
+                        @Html.ActionLink("Paros", "Inicio", "Paro", null, new { @class = "dropdown-item" })
+                        @Html.ActionLink("Paros planificados", "ParosPlanificados", "Paro", null, new { @class = "dropdown-item" })
+                        @Html.ActionLink("Rechazos", "Inicio", "Rechazo", null, new { @class = "dropdown-item" })
+                        @Html.ActionLink("Reloj", "Inicio", "IndicadorTiempo", null, new { @class = "dropdown-item" })
+                        @Html.ActionLink("Mensajes", "Inicio", "Mensajes", null, new { @class = "dropdown-item" })
                     </div>
                 </li>
             </ul>
@@ -106,7 +118,8 @@
                 </div>
             </div>
         </div>*@
-    <md-content layout="column" layout-align="center center" layout-padding style="background: #FFF !important;min-width: 60rem !important;">
+    <md-content layout-padding style="background: #FFF !important;">
+
         @RenderBody()
     </md-content>
 
@@ -124,6 +137,7 @@
     @Scripts.Render("~/bundles/angularjs")
 
     <script src="https://ajax.googleapis.com/ajax/libs/angular_material/1.1.8/angular-material.min.js"></script>
+    <script src="https://rawgit.com/daniel-nagy/md-data-table/master/dist/md-data-table.js"></script>
 
     @Scripts.Render("~/bundles/linq")
     @Scripts.Render("~/bundles/angularapp")

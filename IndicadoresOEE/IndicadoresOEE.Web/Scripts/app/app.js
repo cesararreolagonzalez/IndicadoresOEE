@@ -1,12 +1,16 @@
 ﻿(function () {
     'use strict';
     
-    angular.module('indicadoresoeeapp', ['ngMaterial', 'ngMessages', 'ngSanitize', 'angularMoment'])
+    angular.module('indicadoresoeeapp', ['ngMaterial', 'ngMessages', 'ngSanitize', 'angularMoment', 'md.data.table'])
 
         .config(['$mdIconProvider', '$mdDateLocaleProvider', '$mdThemingProvider',
             function ($mdIconProvider, $mdDateLocaleProvider, $mdThemingProvider)
             {
-                //==============================================================================
+                $mdThemingProvider.theme('default')
+                    .primaryPalette('indigo')
+                    .accentPalette('blue', {
+                        'default': '700' 
+                    });
 
                 $mdIconProvider.icon('md-close', '../Content/Icons/quitar.svg', 24);
                 $mdIconProvider.icon('md-exit', '../Content/Icons/exit_to_app.svg', 24);

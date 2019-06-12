@@ -186,20 +186,25 @@
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="App_Start\Startup.Auth.cs" />
     <Compile Include="Controllers\AccountController.cs" />
+    <Compile Include="Controllers\AdministracionController.cs" />
     <Compile Include="Controllers\BitacoraController.cs" />
     <Compile Include="Controllers\CentroController.cs" />
     <Compile Include="Controllers\CuentaController.cs" />
+    <Compile Include="Controllers\DefaultController.cs" />
     <Compile Include="Controllers\DepartamentoController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\IndicadorController.cs" />
     <Compile Include="Controllers\IndicadorTiempoController.cs" />
     <Compile Include="Controllers\LineaController.cs" />
     <Compile Include="Controllers\ManageController.cs" />
+    <Compile Include="Controllers\MensajesController.cs" />
     <Compile Include="Controllers\ParoController.cs" />
+    <Compile Include="Controllers\PerfilController.cs" />
     <Compile Include="Controllers\PrincipalController.cs" />
     <Compile Include="Controllers\ProcesoController.cs" />
     <Compile Include="Controllers\RechazoController.cs" />
     <Compile Include="Controllers\SAPController.cs" />
+    <Compile Include="Controllers\UsuarioController.cs" />
     <Compile Include="Controllers\VelocidadController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
@@ -218,7 +223,6 @@
     <Content Include="Content\Icons\add.svg" />
     <Content Include="Content\Icons\add_circle.svg" />
     <Content Include="Content\Icons\add_circle_outline.svg" />
-    <Content Include="Content\Icons\add_one.svg" />
     <Content Include="Content\Icons\arrow-back.svg" />
     <Content Include="Content\Icons\arrow-forward.svg" />
     <Content Include="Content\Icons\cancel.svg" />
@@ -226,9 +230,6 @@
     <Content Include="Content\Icons\close.svg" />
     <Content Include="Content\Icons\edit.svg" />
     <Content Include="Content\Icons\error.svg" />
-    <Content Include="Content\Icons\estado_encontrado.svg" />
-    <Content Include="Content\Icons\estado_no_encontrado.svg" />
-    <Content Include="Content\Icons\estado_sin_busqueda.svg" />
     <Content Include="Content\Icons\exit_to_app.svg" />
     <Content Include="Content\Icons\navigate-before.svg" />
     <Content Include="Content\Icons\navigate-next.svg" />
@@ -260,28 +261,30 @@
     <Content Include="Scripts\angular.min.js" />
     <Content Include="Scripts\app\app.js" />
     <Content Include="Scripts\app\constants\AplicacionConstant.js" />
+    <Content Include="Scripts\app\controllers\AdministracionController.js" />
     <Content Include="Scripts\app\controllers\CapturaMasivaIndicadorController.js" />
-    <Content Include="Scripts\app\controllers\IndicadorTiempoController.js" />
     <Content Include="Scripts\app\controllers\ReporteIndicadorController.js" />
     <Content Include="Scripts\app\controllers\CapturaIndicadorController.js" />
     <Content Include="Scripts\app\controllers\CuentaController.js" />
+    <Content Include="Scripts\app\controllers\UsuariosController.js" />
     <Content Include="Scripts\app\directives\FormatoNumericoDirective.js" />
     <Content Include="Scripts\app\directives\LimiteCantidadDirective.js" />
     <Content Include="Scripts\app\directives\valorValidoMayorCeroDirective.js" />
     <Content Include="Scripts\app\directives\SoloDigitosDirective.js" />
-    <Content Include="Scripts\app\factories\RechazoService.js" />
-    <Content Include="Scripts\app\factories\ParoService.js" />
-    <Content Include="Scripts\app\factories\UtilFactory.js" />
-    <Content Include="Scripts\app\factories\SAPService.js" />
-    <Content Include="Scripts\app\factories\VelocidadService.js" />
-    <Content Include="Scripts\app\factories\IndicadorService.js" />
-    <Content Include="Scripts\app\factories\ProcesoService.js" />
-    <Content Include="Scripts\app\factories\LineaService.js" />
-    <Content Include="Scripts\app\factories\DepartamentoService.js" />
-    <Content Include="Scripts\app\factories\CentroService.js" />
-    <Content Include="Scripts\app\services\IndicadorTiempoService.js" />
     <Content Include="Scripts\app\services\ModalService.js" />
-    <Content Include="Scripts\app\services\ModalService1.js" />
+    <Content Include="Scripts\app\services\PerfilService.js" />
+    <Content Include="Scripts\app\services\RechazoService.js" />
+    <Content Include="Scripts\app\services\ParoService.js" />
+    <Content Include="Scripts\app\factories\UtilFactory.js" />
+    <Content Include="Scripts\app\services\SAPService.js" />
+    <Content Include="Scripts\app\services\UsuarioService.js" />
+    <Content Include="Scripts\app\services\VelocidadService.js" />
+    <Content Include="Scripts\app\services\IndicadorService.js" />
+    <Content Include="Scripts\app\services\ProcesoService.js" />
+    <Content Include="Scripts\app\services\LineaService.js" />
+    <Content Include="Scripts\app\services\DepartamentoService.js" />
+    <Content Include="Scripts\app\services\CentroService.js" />
+    <Content Include="Scripts\app\templates\Usuario\Editar.html" />
     <Content Include="Scripts\app\templates\OpcionesGuardar.html" />
     <Content Include="Scripts\app\templates\AgregarParos.html" />
     <Content Include="Scripts\app\templates\AgregarRechazos.html" />
@@ -366,13 +369,34 @@
     <Content Include="Views\Indicador\Captura.cshtml" />
     <Content Include="Views\Indicador\Captura2.cshtml" />
     <Content Include="Views\Indicador\CapturaMasiva - Copia.cshtml" />
+    <Content Include="Views\Administracion\Inicio.cshtml" />
+    <Content Include="Views\Administracion\Usuarios.cshtml" />
+    <Content Include="Views\Administracion\Perfiles.cshtml" />
+    <Content Include="Views\Administracion\Centros.cshtml" />
+    <Content Include="Views\Administracion\Departamentos.cshtml" />
+    <Content Include="Views\Administracion\Lineas.cshtml" />
+    <Content Include="Views\Administracion\Procesos.cshtml" />
+    <Content Include="Views\Administracion\Velocidades.cshtml" />
+    <Content Include="Views\Administracion\Paros.cshtml" />
+    <Content Include="Views\Administracion\Rechazos.cshtml" />
+    <Content Include="Views\Administracion\IndicadorTiempo.cshtml" />
+    <Content Include="Views\Administracion\ParosPlanificados.cshtml" />
+    <Content Include="Views\Administracion\Mensajes.cshtml" />
+    <Content Include="Views\Administracion\BitacoraErrores.cshtml" />
+    <Content Include="Views\Administracion\BitacoraAccesos.cshtml" />
+    <Content Include="Views\Paro\Inicio.cshtml" />
+    <Content Include="Views\Paro\ParosPlanificados.cshtml" />
+    <Content Include="Views\Rechazo\Inicio.cshtml" />
     <Content Include="Views\IndicadorTiempo\Inicio.cshtml" />
+    <Content Include="Views\Usuario\Inicio.cshtml" />
+    <Content Include="Views\Perfil\Inicio.cshtml" />
+    <Content Include="Views\Mensajes\Inicio.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
+    <Folder Include="Views\Administracion\Content\" />
+    <Folder Include="Views\Default\" />
     <Folder Include="Views\Inicio\" />
-    <Folder Include="Views\Paro\" />
-    <Folder Include="Views\Rechazo\" />
     <Folder Include="Views\SAP\" />
   </ItemGroup>
   <ItemGroup>
@@ -396,10 +420,6 @@
     <ProjectReference Include="..\IndicadoresOEE.Domain\IndicadoresOEE.Domain.csproj">
       <Project>{3a8ea748-111f-4075-b660-372dbef8148d}</Project>
       <Name>IndicadoresOEE.Domain</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\IndicadoresOEE.SAP\IndicadoresOEE.SAP.csproj">
-      <Project>{4d13ed49-de59-4db0-a40e-753f3bed13db}</Project>
-      <Name>IndicadoresOEE.SAP</Name>
     </ProjectReference>
   </ItemGroup>
   <PropertyGroup>
