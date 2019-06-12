@@ -2,6 +2,36 @@
     font-family: 'Roboto', sans-serif, Arial;
 }
 
+md-input-container label {
+    font-size: 18px !important;
+}
+
+.text-primary-blue {
+    color: rgb(63, 81, 181) !important;
+}
+
+md-toolbar.md-table-toolbar form > input {
+    width: 100%;
+    margin: 0;
+    border-style: none !important;
+    border-color: #FFFFFF;
+    border-width: 1px;
+    color: rgba(0, 0, 0, 0.87);
+}
+
+    md-toolbar.md-table-toolbar form > input:focus {
+        outline: none;
+    }
+
+
+.text-purple {
+    color: #673ab7 !important;
+}
+
+.texto-alineado {
+    text-align: left !important;
+}
+
 .body-content {
     margin-top: 2rem !important;
 }

@@ -1,25 +1,31 @@
-﻿<md-dialog aria-label="Editar usuario" class="fullscreen-dialog">
-    <form ng-cloak>
+﻿<md-dialog id="dialoguser" aria-label="Editar usuario" class="fullscreen-dialog"  ng-cloak>
         <md-dialog-content style="background-color: #FFF !important; padding-left: 2rem; padding-right: 2rem;">
             <div class="md-dialog-content" style="margin-top: 5rem !important;">
-                <h2 class="md-display-3"><span>Editar usuario</span></h2>
+                <h3 class="md-display-2 text-primary-blue">Editar usuario</h3>
                 <br />
-                <md-tabs md-selected="selectedIndex" md-border-bottom md-autoselect md-swipe-content md-dynamic-height>
+                <md-tabs md-selected="TabSeleccionada" md-stretch-tabs md-border-bottom md-autoselect md-swipe-content md-dynamic-height>
                     <md-tab label="DATOS DEL USUARIO">
                         <div class="" style="background: #FFF !important;">
 
-                            <div layout="column" layout-gt-xs="row" flex-gt-sm flex-gt-xs style="margin-top: 2rem !important;">
-                                <md-input-container class="md-input-has-value">
-                                    <label>Tipo de usuario</label>
-                                    <md-radio-group ng-model="selected" layout="row">
-                                        <md-radio-button ng-value="1" aria-label="Usuario de red" ng-click="BuscarUsuario()">
-                                            Directorio activo
-                                        </md-radio-button>
-                                        <md-radio-button ng-value="2" aria-label="Usuario de red">
-                                            Sitio web
-                                        </md-radio-button>
-                                    </md-radio-group>
-                                </md-input-container>
+                            <div layout="row" layout-gt-xs="row" flex-gt-sm flex-gt-xs style="margin-top: 2rem !important;">
+                                <div layout="column" flex-gt-sm flex-gt-xs>
+                                    <md-input-container class="md-input-has-value">
+                                        <label>Tipo de usuario</label>
+                                        <md-radio-group ng-model="TipoUsuario" layout="row">
+                                            <md-radio-button ng-value="{{ 0 }}" aria-label="Usuario de red" ng-click="BuscarUsuario()">
+                                                Directorio activo
+                                            </md-radio-button>
+                                            <md-radio-button ng-value="{{ 1 }}" aria-label="Usuario de red">
+                                                Sitio web
+                                            </md-radio-button>
+                                        </md-radio-group>
+                                    </md-input-container>
+                                </div>
+                                <div layout="column" flex-gt-sm flex-gt-xs>
+                                    <md-switch class="md-primary" name="special" ng-model="Usuario.EstaActivo" required>
+                                        Activo
+                                    </md-switch>
+                                </div>
                             </div>
                             <div layout="column" layout-gt-xs="row" flex-gt-sm flex-gt-xs>
                                 <md-input-container class="md-block" flex-gt-sm style="height: 34px!important;">
@@ -42,16 +48,34 @@
                             <div layout="column" layout-gt-xs="row" flex-gt-sm flex-gt-xs>
                                 <md-input-container flex="50">
                                     <label>Perfil</label>
-                                    <md-select name="type" ng-model="project.type">
-                                        <md-option value="app">Application</md-option>
-                                        <md-option value="web">Website</md-option>
+                                    <md-select ng-model="Usuario.Perfil.Indice" placeholder="">
+                                        <md-option ng-value="Perfil.Indice"
+                                                   ng-repeat="Perfil in ListaPerfiles">
+                                            {{ Perfil.Nombre }}
+                                        </md-option>
                                     </md-select>
                                 </md-input-container>
                             </div>
                             <div layout="column" layout-gt-xs="row" flex-gt-sm flex-gt-xs>
-                                <md-switch class="md-primary" name="special" ng-model="project.special" required>
-                                    Activo
-                                </md-switch>
+                                <md-input-container class="md-block">
+                                    <md-checkbox name="tos" ng-model="CambiarClave">
+                                        ¿Deseas actualizar la contraseña?
+                                    </md-checkbox>
+                                </md-input-container>
+                            </div>
+                            <div layout="column" layout-gt-xs="row" flex-gt-sm flex-gt-xs ng-show="CambiarClave">
+                                <div layout="column" layout-gt-xs="row" flex-gt-sm flex-gt-xs>
+                                    <md-input-container class="md-block" flex-gt-sm style="height: 34px!important;">
+                                        <label>Contraseña</label>
+                                        <input type="password" ng-model="ClaveUsuario" md-no-asterisk>
+                                    </md-input-container>
+                                </div>
+                                <div layout="column" layout-gt-xs="row" flex-gt-sm flex-gt-xs>
+                                    <md-input-container class="md-block" flex-gt-sm style="height: 34px!important;">
+                                        <label>Confirmar contraseña</label>
+                                        <input type="password" ng-model="ClaveUsuarioConfirmacion" md-no-asterisk>
+                                    </md-input-container>
+                                </div>
                             </div>
                         </div>
                     </md-tab>
@@ -163,31 +187,106 @@
                                 <md-button ng-click="Inicializar()" layout-align="start">
                                     Inicializar
                                 </md-button>
-                                <md-button ng-click="AgregarParo()" layout-align="end" class="md-primary">
+                                <md-button ng-click="AgregarProceso()" layout-align="end" class="md-primary">
                                     Agregar
                                 </md-button>
                             </div>
-                            <md-table-container>
-                                <table md-table md-row-select="options.rowSelection" multiple="{{options.multiSelect}}" ng-model="selected" md-progress="promise">
-                                    <thead md-head md-order="query.order" md-on-reorder="logOrder">
-                                        <tr md-row>
-                                            <th class="texto-alineado" md-column md-order-by="Centro"><span>Centro</span></th>
-                                            <th class="texto-alineado" md-column md-order-by="Departamento"><span>Departamento</span></th>
-                                            <th class="texto-alineado" md-column md-order-by="Linea"><span>Linea</span></th>
-                                            <th class="texto-alineado" md-column md-order-by="Proceso"><span>Proceso</span></th>
-                                        </tr>
-                                    </thead>
-                                    <tbody md-body>
-                                        <tr md-row md-select="Usuario" md-on-select="logItem" md-auto-select="options.autoSelect" ng-disabled="" ng-repeat="Proceso in ListaProcesos | filter: filter.search | orderBy: query.order | limitTo: query.limit : (query.page -1) * query.limit">
-                                            <td class="texto-alineado" md-cell>{{ Proceso.Centro }}</td>
-                                            <td class="texto-alineado" md-cell>{{ Proceso.Departamento }}</td>
-                                            <td class="texto-alineado" md-cell>{{ Proceso.Linea }}</td>
-                                            <td class="texto-alineado" md-cell>{{ Proceso.Proceso }}</td>
-                                        </tr>
-                                    </tbody>
-                                </table>
-                            </md-table-container>
-                            <md-table-pagination md-limit="query.limit" md-limit-options="limitOptions" md-page="query.page" md-total="{{ ListaUsuarios.length }}" md-page-select="options.pageSelect" md-boundary-links="options.boundaryLinks" md-on-paginate="logPagination"></md-table-pagination>
+                            <div>
+                                <md-tabs md-selected="TabProcesosSeleccionada" md-stretch-tabs md-border-bottom md-autoselect md-swipe-content md-dynamic-height>
+                                    <md-tab>
+                                        <md-tab-label>
+                                            <md-icon style="margin-right: 1rem !important;">new_releases</md-icon>
+                                            PROCESOS NUEVOS
+                                        </md-tab-label>
+                                        <md-tab-body>
+                                            <div>
+                                                <md-table-container>
+                                                    <table md-table md-row-select="options.rowSelection" multiple="{{options.multiSelect}}" ng-model="selected" md-progress="promise">
+                                                        <thead md-head md-order="query.order" md-on-reorder="logOrder">
+                                                            <tr md-row>
+                                                                <th class="texto-alineado" md-column md-order-by="Centro"><span>Centro</span></th>
+                                                                <th class="texto-alineado" md-column md-order-by="Departamento"><span>Departamento</span></th>
+                                                                <th class="texto-alineado" md-column md-order-by="Linea"><span>Linea</span></th>
+                                                                <th class="texto-alineado" md-column md-order-by="Proceso"><span>Proceso</span></th>
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody md-body>
+                                                            <tr md-row md-select="Usuario" md-on-select="logItem" md-auto-select="options.autoSelect" ng-repeat="Proceso in ProcesosAgregados | filter: filter.search | orderBy: query.order | limitTo: query.limit : (query.page -1) * query.limit">
+                                                                <td class="texto-alineado" md-cell>{{ Proceso.Centro.Nombre }}</td>
+                                                                <td class="texto-alineado" md-cell>{{ Proceso.Departamento.Nombre }}</td>
+                                                                <td class="texto-alineado" md-cell>{{ Proceso.Linea.Nombre }}</td>
+                                                                <td class="texto-alineado" md-cell>{{ Proceso.Proceso.Nombre }}</td>
+                                                            </tr>
+                                                        </tbody>
+                                                    </table>
+                                                </md-table-container>
+                                                <md-table-pagination md-limit="query.limit" md-limit-options="limitOptions" md-page="query.page" md-total="{{ ListaUsuarios.length }}" md-page-select="options.pageSelect" md-boundary-links="options.boundaryLinks" md-on-paginate="logPagination"></md-table-pagination>
+                                            </div>
+                                        </md-tab-body>
+                                    </md-tab>
+                                    <md-tab>
+                                        <md-tab-label>
+                                            PROCESOS EXISTENTES
+                                        </md-tab-label>
+                                        <md-tab-body>
+                                            <div>
+                                                <md-toolbar class="md-table-toolbar md-default" ng-hide="ListaProcesosSeleccionados.length > 0" aria-hidden="true">
+                                                    <div class="md-toolbar-tools">
+                                                        <md-icon class="material-icons" style="margin-right: 5px !important;">search</md-icon>
+                                                        <form flex="" name="filter.form" class="flex">
+                                                            <input type="text" ng-model="filter.search" ng-model-options="filter.options" placeholder="Busca un proceso" aria-invalid="false" style="">
+                                                        </form>
+                                                        <button class="md-icon-button md-button md-ink-ripple" type="button" ng-click="removeFilter()" aria-label="close">
+                                                            <md-icon class="material-icons">close</md-icon>
+                                                            <div class="md-ripple-container"></div>
+                                                        </button>
+                                                    </div>
+                                                </md-toolbar>
+                                                <md-toolbar class="md-table-toolbar md-accent layout-align-space-between-stretch"
+                                                            ng-show="ListaProcesosSeleccionados.length > 0">
+                                                    <div class="md-toolbar-tools">
+                                                        <span class="md-subhead">{{ ListaProcesosSeleccionados.length }} {{ ListaProcesosSeleccionados.length > 1 ? 'procesos seleccionados' : 'proceso seleccionado' }} </span>
+                                                        <div class="flex"></div>
+                                                        <md-button class="md-icon-button md-button md-ink-ripple"
+                                                                   ng-click="EliminarProcesos($event)">
+                                                            <md-icon>delete</md-icon>
+                                                        </md-button>
+                                                    </div>
+                                                </md-toolbar>
+                                                <md-table-container>
+                                                    <table md-table
+                                                           md-row-select="true"
+                                                           multiple="true"
+                                                           ng-model="ListaProcesosSeleccionados"
+                                                           md-progress="promise">
+                                                        <thead md-head>
+                                                            <tr md-row>
+                                                                <th class="texto-alineado" md-column md-order-by="Centro"><span>Centro</span></th>
+                                                                <th class="texto-alineado" md-column md-order-by="Departamento"><span>Departamento</span></th>
+                                                                <th class="texto-alineado" md-column md-order-by="Linea"><span>Linea</span></th>
+                                                                <th class="texto-alineado" md-column md-order-by="Proceso"><span>Proceso</span></th>
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody md-body>
+                                                            <tr md-row
+                                                                md-select="Proceso.Proceso.Indice"
+                                                                md-on-select="logItem"
+                                                                md-auto-select="options.autoSelect"
+                                                                ng-repeat="Proceso in ProcesosExistentes | filter: filter.search | orderBy: query.order | limitTo: query.limit : (query.page -1) * query.limit">
+                                                                <td class="texto-alineado" md-cell>{{ Proceso.Centro.Nombre }}</td>
+                                                                <td class="texto-alineado" md-cell>{{ Proceso.Departamento.Nombre }}</td>
+                                                                <td class="texto-alineado" md-cell>{{ Proceso.Linea.Nombre }}</td>
+                                                                <td class="texto-alineado" md-cell>{{ Proceso.Proceso.Nombre }}</td>
+                                                            </tr>
+                                                        </tbody>
+                                                    </table>
+                                                </md-table-container>
+                                                <md-table-pagination md-limit="query.limit" md-limit-options="limitOptions" md-page="query.page" md-total="{{ ListaUsuarios.length }}" md-page-select="options.pageSelect" md-boundary-links="options.boundaryLinks" md-on-paginate="logPagination"></md-table-pagination>
+                                            </div>
+                                        </md-tab-body>
+                                    </md-tab>
+                                </md-tabs>
+                            </div>
                         </md-content>
                     </md-tab>
                 </md-tabs>
@@ -197,15 +296,15 @@
             <div layout="column" layout-gt-xs="row" layout-align="start center" flex flex-gt-xs>
                 <div flex flex-gt-xs="50" layout-align="start center">
                     <md-button ng-click="Inicializar()" layout-align="start">
-                        Inicializar
+                        <md-icon class="material-icons">arrow_back</md-icon>
+                        Salir
                     </md-button>
                 </div>
                 <div flex flex-gt-xs="50" layout-gt-xs="row" layout-align="end center">
-                    <md-button ng-click="AgregarParo()" layout-align="end" class="md-primary">
+                    <md-button ng-click="Guardar()" layout-align="end" class="md-primary">
                         Guardar
                     </md-button>
                 </div>
             </div>
         </md-dialog-actions>
-    </form>
 </md-dialog>

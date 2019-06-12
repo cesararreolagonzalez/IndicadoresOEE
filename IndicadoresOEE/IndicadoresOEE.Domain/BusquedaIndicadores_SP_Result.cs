@@ -10,21 +10,24 @@
 namespace IndicadoresOEE.Domain
 {
     using System;
-    using System.Collections.Generic;
     
-    public partial class vw_paros
+    public partial class BusquedaIndicadores_SP_Result
     {
         public long IndiceIndicador { get; set; }
-        public long IndiceParo { get; set; }
-        public int Nivel { get; set; }
-        public long IndiceParoPadre { get; set; }
-        public string Descripcion { get; set; }
-        public long IndiceProceso { get; set; }
-        public byte EstaEliminado { get; set; }
-        public long Cantidad { get; set; }
+        public string Material { get; set; }
+        public string Orden { get; set; }
+        public string Lote { get; set; }
+        public int Piezas { get; set; }
+        public string Reales { get; set; }
         public Nullable<System.DateTime> Fecha { get; set; }
         public string Turno { get; set; }
+        public int Ciclo { get; set; }
         public long IndiceVelocidad { get; set; }
-        public int EsHistorico { get; set; }
+        public Nullable<int> Velocidad { get; set; }
+        public long IndiceProceso { get; set; }
+        public string Proceso { get; set; }
+        public Nullable<bool> EsHistorico { get; set; }
+        public Nullable<long> TotalParos { get; set; }
+        public Nullable<long> TotalRechazos { get; set; }
     }
 }

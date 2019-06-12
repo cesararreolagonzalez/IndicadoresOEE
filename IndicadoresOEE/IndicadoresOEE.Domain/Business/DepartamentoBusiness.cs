@@ -57,16 +57,21 @@
             List<DepartamentoModel> ListaDepartamentos = new List<DepartamentoModel>();
             
             ListaDepartamentos = db
-                            .vw_usuarios_procesos
-                            .Where(columna => columna.id_usuario == IndiceUsuario && ListaIndicesCentros.Contains(columna.id_centro))
-                            .Select(columna => new { Indice = columna.id_departamento, Nombre = columna.nombre_depto, IndiceCentro = columna.id_centro, NombreCentro = db.Centro.Where(c => c.id_centro == columna.id_centro).Select(c => c.nombre).FirstOrDefault() })
-                            .Distinct()
-                            .GroupBy(columna => columna.IndiceCentro)
-                            .SelectMany(fila => fila)
-                            .Select(columna => new DepartamentoModel() { Indice = columna.Indice, Nombre = columna.Nombre, IndiceCentro = columna.IndiceCentro, NombreCentro = columna.NombreCentro })
-                            //.Select(columna => new DepartamentoModel() { Indice = columna.Indice, Nombre = "[" + columna.NombreCentro + "] - " + columna.Nombre, IndiceCentro = columna.IndiceCentro })
-                            .OrderBy(columna => columna.Nombre)
-                            .ToList();
+                    .vw_usuarios_procesos
+                    .Where(columna => columna.IndiceUsuario == IndiceUsuario && ListaIndicesCentros.Contains(columna.IndiceCentro))
+                    .Select(columna => new {
+                        Indice = columna.IndiceDepartamento,
+                        Nombre = columna.NombreDepartamento,
+                        IndiceCentro = columna.IndiceCentro,
+                        NombreCentro = db.Centro.Where(c => c.id_centro == columna.IndiceCentro).Select(c => c.nombre).FirstOrDefault()
+                    })
+                    .Distinct()
+                    .GroupBy(columna => columna.IndiceCentro)
+                    .SelectMany(fila => fila)
+                    .Select(columna => new DepartamentoModel() { Indice = columna.Indice, Nombre = columna.Nombre, IndiceCentro = columna.IndiceCentro, NombreCentro = columna.NombreCentro })
+                    //.Select(columna => new DepartamentoModel() { Indice = columna.Indice, Nombre = "[" + columna.NombreCentro + "] - " + columna.Nombre, IndiceCentro = columna.IndiceCentro })
+                    .OrderBy(columna => columna.Nombre)
+                    .ToList();
 
             return ListaDepartamentos;
         }

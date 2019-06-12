@@ -55,13 +55,13 @@
 
             ListaLineas = db
                             .vw_usuarios_procesos
-                            .Where(columna => columna.id_usuario == IndiceUsuario && IndiceDepartamento.Contains(columna.id_departamento))
+                            .Where(columna => columna.IndiceUsuario == IndiceUsuario && IndiceDepartamento.Contains(columna.IndiceDepartamento))
                             .Select(columna => new {
-                                IndiceLinea = columna.id_linea,
-                                IndiceDepartamento = columna.id_departamento,
-                                NombreLinea = columna.nombre_linea,
-                                NombreCentro = db.Centro.Where(c => c.id_centro == columna.id_centro).Select(c => c.nombre).FirstOrDefault(),
-                                NombreDepartamento = db.Departamento.Where(c => c.id_departamento == columna.id_departamento).Select(c => c.nombre).FirstOrDefault()
+                                IndiceLinea = columna.IndiceLinea,
+                                IndiceDepartamento = columna.IndiceDepartamento,
+                                NombreLinea = columna.NombreLinea,
+                                NombreCentro = db.Centro.Where(c => c.id_centro == columna.IndiceCentro).Select(c => c.nombre).FirstOrDefault(),
+                                NombreDepartamento = db.Departamento.Where(c => c.id_departamento == columna.IndiceDepartamento).Select(c => c.nombre).FirstOrDefault()
                             })
                             .Distinct()
                             .GroupBy(columna => columna.IndiceDepartamento)

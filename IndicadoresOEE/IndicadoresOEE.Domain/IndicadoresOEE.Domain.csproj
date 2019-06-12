@@ -81,6 +81,9 @@
     <Compile Include="Business\ProcesoBusiness.cs" />
     <Compile Include="Business\UsuarioBusiness.cs" />
     <Compile Include="Business\VelocidadBusiness.cs" />
+    <Compile Include="BusquedaIndicadores_SP_Result.cs">
+      <DependentUpon>IndicadoresOEEModel.tt</DependentUpon>
+    </Compile>
     <Compile Include="Centro.cs">
       <DependentUpon>IndicadoresOEEModel.tt</DependentUpon>
     </Compile>
@@ -115,6 +118,30 @@
       <DependentUpon>IndicadoresOEEModel.tt</DependentUpon>
     </Compile>
     <Compile Include="fn_sumatoria_paro_V2_Result.cs">
+      <DependentUpon>IndicadoresOEEModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="FuncionGraficaIndicadores_Result.cs">
+      <DependentUpon>IndicadoresOEEModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="FuncionGraficaProduccion_Result.cs">
+      <DependentUpon>IndicadoresOEEModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="FuncionParosAcumulados_Result.cs">
+      <DependentUpon>IndicadoresOEEModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="FuncionParosProgramados_Result.cs">
+      <DependentUpon>IndicadoresOEEModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="FuncionProcesosPorUsuario_Result.cs">
+      <DependentUpon>IndicadoresOEEModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="FuncionRechazosParos_Result.cs">
+      <DependentUpon>IndicadoresOEEModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="FuncionSumatoriaParoFolio_Result.cs">
+      <DependentUpon>IndicadoresOEEModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="FuncionSumatoriaParo_Result.cs">
       <DependentUpon>IndicadoresOEEModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Indicador.cs">
@@ -208,6 +235,9 @@
     <Compile Include="Servicio.cs">
       <DependentUpon>IndicadoresOEEModel.tt</DependentUpon>
     </Compile>
+    <Compile Include="SumatoriaParo_SP_Result.cs">
+      <DependentUpon>IndicadoresOEEModel.tt</DependentUpon>
+    </Compile>
     <Compile Include="sysdiagrams.cs">
       <DependentUpon>IndicadoresOEEModel.tt</DependentUpon>
     </Compile>
@@ -227,15 +257,6 @@
     <Compile Include="vw_grafica_indicadores.cs">
       <DependentUpon>IndicadoresOEEModel.tt</DependentUpon>
     </Compile>
-    <Compile Include="vw_grafica_indicadores_paros_programados.cs">
-      <DependentUpon>IndicadoresOEEModel.tt</DependentUpon>
-    </Compile>
-    <Compile Include="vw_grafica_indicadores_paros_programados_V2.cs">
-      <DependentUpon>IndicadoresOEEModel.tt</DependentUpon>
-    </Compile>
-    <Compile Include="vw_grafica_indicadores_V2.cs">
-      <DependentUpon>IndicadoresOEEModel.tt</DependentUpon>
-    </Compile>
     <Compile Include="vw_paros.cs">
       <DependentUpon>IndicadoresOEEModel.tt</DependentUpon>
     </Compile>
@@ -243,9 +264,6 @@
       <DependentUpon>IndicadoresOEEModel.tt</DependentUpon>
     </Compile>
     <Compile Include="vw_paros_programados_V2.cs">
-      <DependentUpon>IndicadoresOEEModel.tt</DependentUpon>
-    </Compile>
-    <Compile Include="vw_paros_V2.cs">
       <DependentUpon>IndicadoresOEEModel.tt</DependentUpon>
     </Compile>
     <Compile Include="vw_usuarios.cs">

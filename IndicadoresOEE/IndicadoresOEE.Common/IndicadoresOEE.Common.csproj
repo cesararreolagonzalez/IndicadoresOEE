@@ -47,6 +47,7 @@
     <Compile Include="Models\BitacoraErroresModel.cs" />
     <Compile Include="Models\CentroModel.cs" />
     <Compile Include="Models\PerfilModel.cs" />
+    <Compile Include="Models\ProcesosUsuarioModel.cs" />
     <Compile Include="Models\RegistroModel.cs" />
     <Compile Include="Models\DepartamentoModel.cs" />
     <Compile Include="Models\IndicadorModel.cs" />
@@ -64,6 +65,7 @@
     <Compile Include="Util\Util.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Folder Include="Helpers\" />
     <Folder Include="Resources\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

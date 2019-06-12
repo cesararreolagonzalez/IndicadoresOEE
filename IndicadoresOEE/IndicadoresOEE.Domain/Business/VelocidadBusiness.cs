@@ -51,7 +51,7 @@ namespace IndicadoresOEE.Domain.Business
                                 NombreCentro = db.Centro.Where(c => c.id_centro == columna.IndiceCentro).Select(c => c.nombre).FirstOrDefault(),
                                 NombreDepartamento = db.Departamento.Where(c => c.id_departamento == columna.IndiceDepartamento).Select(c => c.nombre).FirstOrDefault(),
                                 NombreLinea = db.Linea.Where(c => c.id_linea == columna.IndiceLinea).Select(c => c.nombre).FirstOrDefault(),
-                                NombreProceso = db.vw_usuarios_procesos.Where(c => c.id_proceso == columna.IndiceProceso).Select(c => c.nombre_proceso).FirstOrDefault()
+                                NombreProceso = db.vw_usuarios_procesos.Where(c => c.IndiceProceso == columna.IndiceProceso).Select(c => c.NombreProceso).FirstOrDefault()
                             })
                             .Distinct()
                             .GroupBy(columna => columna.IndiceProceso)

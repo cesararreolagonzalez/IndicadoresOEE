@@ -10,17 +10,18 @@
 namespace IndicadoresOEE.Domain
 {
     using System;
-    using System.Collections.Generic;
     
-    public partial class BitacoraIndicador
+    public partial class FuncionSumatoriaParoFolio_Result
     {
-        public long Indice { get; set; }
-        public long IndiceIndicador { get; set; }
-        public long IndiceUsuario { get; set; }
-        public int IndiceMovimiento { get; set; }
+        public long IndiceParo { get; set; }
+        public int Nivel { get; set; }
+        public long IndiceParoPadre { get; set; }
+        public string Descripcion { get; set; }
+        public long Cantidad { get; set; }
+        public long IndiceProceso { get; set; }
+        public long IndiceDepartamento { get; set; }
+        public long IndiceLinea { get; set; }
+        public string Folio { get; set; }
         public System.DateTime Fecha { get; set; }
-    
-        public virtual BitacoraMovimientosIndicador BitacoraMovimientosIndicador { get; set; }
-        public virtual Usuario Usuario { get; set; }
     }
 }

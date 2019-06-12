@@ -10,15 +10,13 @@
 namespace IndicadoresOEE.Domain
 {
     using System;
-    using System.Collections.Generic;
     
-    public partial class IndicadorRechazo_V2
+    public partial class FuncionParosAcumulados_Result
     {
-        public long IndiceIndicador { get; set; }
-        public long IndiceRechazo { get; set; }
-        public int Cantidad { get; set; }
-    
-        public virtual Indicador_V2 Indicador_V2 { get; set; }
-        public virtual Rechazo Rechazo { get; set; }
+        public long IndiceParo { get; set; }
+        public int Nivel { get; set; }
+        public long IndiceParoPadre { get; set; }
+        public string Descripcion { get; set; }
+        public long Cantidad { get; set; }
     }
 }

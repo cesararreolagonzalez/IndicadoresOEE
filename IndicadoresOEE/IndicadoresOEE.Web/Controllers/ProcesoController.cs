@@ -74,5 +74,83 @@
 
             return Json(new { Estado, Mensaje, ListaProcesos }, JsonRequestBehavior.AllowGet);
         }
+
+        [HttpGet]
+        public JsonResult ObtenerProcesosPorUsuario()
+        {
+            Response Response = null;
+
+            try
+            {
+                long IndiceUsuario = 1;
+
+                Response = new Response()
+                {
+                    Mensaje = procesoBusiness.ObtenerProcesosPorUsuario(IndiceUsuario),
+                    Estado = true
+                };
+            }
+            catch (Exception e)
+            {
+                Response = new Response()
+                {
+                    Mensaje = e.Message
+                };
+            }
+
+            return Json(new { Response }, JsonRequestBehavior.AllowGet);
+        }
+        
+        [HttpPost]
+        public JsonResult EliminarProcesos(long[] ListaIndicesProcesos)
+        {
+            Response Response = null;
+
+            try
+            {
+                long IndiceUsuario = 1;
+
+                Response = new Response()
+                {
+                    Mensaje = procesoBusiness.EliminarProcesos(IndiceUsuario, ListaIndicesProcesos),
+                    Estado = true
+                };
+            }
+            catch (Exception e)
+            {
+                Response = new Response()
+                {
+                    Mensaje = e.Message
+                };
+            }
+
+            return Json(new { Response }, JsonRequestBehavior.AllowGet);
+        }
+        
+        [HttpPost]
+        public JsonResult AsociarProcesosUsuario(long[] ListaIndicesProcesos)
+        {
+            Response Response = null;
+
+            try
+            {
+                long IndiceUsuario = 1;
+
+                Response = new Response()
+                {
+                    Mensaje = procesoBusiness.AsociarProcesosUsuario(IndiceUsuario, ListaIndicesProcesos),
+                    Estado = true
+                };
+            }
+            catch (Exception e)
+            {
+                Response = new Response()
+                {
+                    Mensaje = e.Message
+                };
+            }
+
+            return Json(new { Response }, JsonRequestBehavior.AllowGet);
+        }
     }
 }

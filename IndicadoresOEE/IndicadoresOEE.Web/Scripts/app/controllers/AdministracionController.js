@@ -8,7 +8,7 @@
     AdministracionController.$inject = ['$element', '$scope', '$sce', '$timeout', '$filter',
         '$anchorScroll', '$log', '$window', '$mdDialog', 'moment', 'ESTADO_PAROS',
         'CentroService', 'DepartamentoService', 'LineaService', 'ProcesoService', 'VelocidadService',
-        'IndicadorService', 'SAPService', 'UsuarioService', 'PerfilService', 'UtilFactory'];
+
 
     function AdministracionController($element, $scope, $sce, $timeout, $filter, $anchorScroll,
         $log, $window, $mdDialog, moment, ESTADO_PAROS,

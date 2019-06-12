@@ -15,6 +15,7 @@
         CentroService, DepartamentoService, LineaService,
         ProcesoService, VelocidadService, IndicadorService, SAPService, UtilFactory, ModalService)
     {
+
         // #region Properties
         $scope.EsEdicion = false;
         $scope.Turnos = ['A', 'B', 'C', 'D'];
@@ -66,9 +67,7 @@
         $scope.ListaProcesos = null;
         $scope.ListaRechazosElegidos = [];
         $scope.ListaParosElegidos = [];
-        // #endregion
-        // #region Asynchronous Methods
-        // #endregion
+        // #endregion
         // #region Methods
         async function ObtenerListas(Indicador)
         {
@@ -283,7 +282,7 @@
         // Sirven para desactivar de la lista los paros escogidos
         $scope.ListaIndicesRechazosEnUso = [];
         $scope.ListaIndicesParosEnUso = [];
-
+        // #region Agregar Paros y Rechazos
         $scope.agregarParo = function (ev) {
             $mdDialog.show({
                 locals: { IndiceProceso: $scope.DatosGenerales.IndiceProceso, ListaIndicesParosEnUso: $scope.ListaIndicesParosEnUso },
@@ -528,7 +527,6 @@
             function () { })
             .finally(function () { });
         };
-
         $scope.agregarRechazo = function (ev) {
             $mdDialog.show({
                 locals: { IndiceProceso: $scope.DatosGenerales.IndiceProceso, ListaIndicesRechazosEnUso: $scope.ListaIndicesRechazosEnUso },
@@ -622,7 +620,8 @@
             .finally(function () {
             });
         };
-        
+        // #endregion
+        // #region Watchs
         $scope.ObtenerCentros = function ()
         {
             return CentroService.ObtenerCentros()
@@ -647,7 +646,6 @@
                     $log.info('Método ObtenerCentros() finalizado');
                 });
         };
-
         $scope.ObtenerDepartamentos = function (IndiceCentro)
         {
             IndiceCentro = IndiceCentro ? IndiceCentro : $scope.DatosGenerales.IndiceCentro;
@@ -678,7 +676,6 @@
                     $log.info('Método ObtenerDepartamentos() finalizado');
                 });
         };
-
         $scope.ObtenerLineas = function (IndiceDepartamento)
         {
             IndiceDepartamento = IndiceDepartamento ? IndiceDepartamento : $scope.DatosGenerales.IndiceDepartamento;
@@ -708,7 +705,6 @@
                     $log.info('Método ObtenerLineas() finalizado');
                 });
         };
-
         $scope.ObtenerProcesos = function (IndiceLinea)
         {
             IndiceLinea = IndiceLinea ? IndiceLinea : $scope.DatosGenerales.IndiceLinea;
@@ -738,6 +734,235 @@
                     $log.info('Método ObtenerProcesos() finalizado');
                 });
         };
+        $scope.BusquedaIndicadoresPeriodo = function (IndiceProceso, FechaInicial, FechaFinal) {
+            return IndicadorService.BusquedaIndicadoresPeriodo(IndiceProceso, FechaInicial, FechaFinal)
+                .then(function (response) {
+                    var Estado = response.data.Estado;
+                    if (!Estado) {
+                        var Mensaje = response.data.Mensaje;
+                        $log.info('Se produjo el siguiente error en el método ObtenerProcesos = ' + Mensaje);
+                    }
+                    else {
+                        $scope.ExistenIndicadoresPeriodo = response.data.Existe;
+                    }
+                },
+                    function (response) {
+                        $log.info('Hubo un error: Estatus = ' + response.status + ', Error = ' + response.data);
+                    })
+                .catch(function (response) {
+                    $log.info(response);
+                    throw response;
+                })
+                .finally(function () {
+                    $log.info('Método BusquedaIndicadoresPeriodo() finalizado');
+                });
+        };
+        // #endregion
+        // #region Watchs
+        $scope.$watch('ListaCentros', function (newValue, oldValue) {
+            if (newValue && newValue.length > 0)
+            {
+                if ( !$scope.EsEdicion )
+                    $scope.DatosGenerales.IndiceCentro = $scope.ListaCentros.length === 1 ? $scope.ListaCentros[0].Indice : null;
+            }
+        });
+        $scope.$watch('ListaDepartamentos', function (newValue, oldValue) {
+            if (newValue && newValue.length > 0) {
+                if (!$scope.EsEdicion)
+                    $scope.DatosGenerales.IndiceDepartamento = $scope.ListaDepartamentos.length === 1 ? $scope.ListaDepartamentos[0].Indice : null;
+            }
+        });
+        $scope.$watch('ListaLineas', function (newValue, oldValue) {
+            if (newValue && newValue.length > 0) {
+                if (!$scope.EsEdicion)
+                    $scope.DatosGenerales.IndiceLinea = $scope.ListaLineas.length === 1 ? $scope.ListaLineas[0].Indice : null;
+            }
+        });
+        $scope.$watch('ListaProcesos', function (newValue, oldValue) {
+            if (newValue && newValue.length > 0) {
+                if (!$scope.EsEdicion)
+                    $scope.DatosGenerales.IndiceProceso = $scope.ListaProcesos.length === 1 ? $scope.ListaProcesos[0].Indice : null;
+            }
+        });
+        $scope.$watch('DatosGenerales.IndiceCentro', function (newValue, oldValue)
+        {
+            if (newValue) {
+                if (!$scope.EsEdicion) {
+                    $scope.DatosGenerales.IndiceDepartamento = null;
+                    $scope.DatosGenerales.IndiceLinea = null;
+                    $scope.DatosGenerales.IndiceProceso = null;
+                    $scope.DatosGenerales.Orden = null;
+                    $scope.DatosGenerales.Lote = null;
+                    $scope.DatosGenerales.IndiceVelocidad = null;
+                    $scope.DatosGenerales.Velocidad = null;
+                    $scope.DatosGenerales.Material = null;
+                    $scope.DatosGenerales.DescripcionMaterial = null;
+                    $scope.ResetearDatosIndicador();
+
+                    $scope.ListaDepartamentos = null;
+                    $scope.ListaLineas = null;
+                    $scope.ListaProcesos = null;
+
+                    $scope.ObtenerDepartamentos();
+                }
+            }
+        });
+        $scope.$watch('DatosGenerales.IndiceDepartamento', function (newValue, oldValue)
+        {
+            if (newValue)
+            {
+                if (!$scope.EsEdicion) {
+                    $scope.DatosGenerales.IndiceLinea = null;
+                    $scope.DatosGenerales.IndiceProceso = null;
+                    $scope.DatosGenerales.Orden = null;
+                    $scope.DatosGenerales.Lote = null;
+                    $scope.DatosGenerales.IndiceVelocidad = null;
+                    $scope.DatosGenerales.Velocidad = null;
+                    $scope.DatosGenerales.Material = null;
+                    $scope.DatosGenerales.DescripcionMaterial = null;
+                    $scope.ResetearDatosIndicador();
+
+                    $scope.ListaLineas = null;
+                    $scope.ListaProcesos = null;
+
+                    $scope.ObtenerLineas();
+                }
+            }
+        });
+        $scope.$watch('DatosGenerales.IndiceLinea', function (newValue, oldValue)
+        {
+            if (newValue)
+            {
+                if (!$scope.EsEdicion) {
+                    $scope.DatosGenerales.IndiceProceso = null;
+                    $scope.DatosGenerales.Orden = null;
+                    $scope.DatosGenerales.Lote = null;
+                    $scope.DatosGenerales.IndiceVelocidad = null;
+                    $scope.DatosGenerales.Velocidad = null;
+                    $scope.DatosGenerales.Material = null;
+                    $scope.DatosGenerales.DescripcionMaterial = null;
+                    $scope.ResetearDatosIndicador();
+
+                    $scope.ListaProcesos = null;
+
+                    $scope.ObtenerProcesos();
+                }
+            }
+        });
+        $scope.$watch('DatosGenerales.Orden', function (newValue, oldValue)
+        {
+            // TIP: Añadir una validacion negativa al front para que la caja de texto se vea roja
+
+            if (!!newValue && newValue.length > 0 && $scope.Util.EstadoValidacion === ESTADO_VALIDACION_ORDEN.NO_VALIDADA) {
+                $scope.Util.TextoEstadoValidacionOrden = 'Aún no ha sido validado en SAP';
+            }
+            else {
+                $scope.Util.TextoEstadoValidacionOrden = '';
+                $scope.Util.EstiloEstadoValidacionOrden = {};
+                $scope.Util.EstadoValidacion = ESTADO_VALIDACION_ORDEN.NO_VALIDADA;
+            }
+        });
+        $scope.$watch('DatosGenerales.IndiceProceso', function (newValue, oldValue)
+        {
+            if (newValue)
+            {
+                if (!$scope.EsEdicion) {
+                    $scope.DatosGenerales.Orden = null;
+                    $scope.DatosGenerales.Lote = null;
+                    $scope.DatosGenerales.IndiceVelocidad = null;
+                    $scope.DatosGenerales.Velocidad = null;
+                    $scope.DatosGenerales.Material = null;
+                    $scope.DatosGenerales.DescripcionMaterial = null;
+                    $scope.ResetearDatosIndicador();
+
+                    ObtenerIndicadorPorProceso();
+                }
+            }
+        });
+        $scope.$watch('DatosGenerales.Material', function (newValue, oldValue)
+        {
+            if (newValue)
+            {
+                $scope.DatosGenerales.IndiceVelocidad = null;
+                $scope.DatosGenerales.Velocidad = null;
+                
+                ObtenerVelocidad($scope.DatosGenerales.IndiceProceso, newValue);
+            }
+        });
+        $scope.$watch('DatosIndicador.Hora', function (newValue, oldValue) {
+            if (!!newValue || newValue === 0 && newValue !== '') {
+                $scope.DatosIndicador.Fecha.setHours(newValue);
+            }
+        });
+        $scope.$watch('DatosIndicador.Minuto', function (newValue, oldValue) {
+            if (!!newValue || newValue === 0 && newValue !== '') {
+                $scope.DatosIndicador.Fecha.setMinutes(newValue);
+            }
+        });
+        $scope.$watch('Util.Estado', function (newValue, oldValue)
+        {
+            if ((!!newValue || newValue === 0) && newValue !== '')
+            {
+                if ($scope.EsEdicion)
+                    return;
+                
+                $scope.Util.MensajeCalculoHoras = null;
+                $scope.Util.MensajeCalculoHorasParo = null;
+                $scope.Util.EstadoHorasParo = false;
+
+                $scope.Util.CalculoHoras = 0;
+                $scope.Util.CalculoHorasParo = 0;
+                
+                $scope.MensajeCalculoHoras = null;
+                $scope.MensajeCalculoHorasParo = null;
+            }
+        });
+        $scope.$watchGroup(['DatosIndicador.Piezas', 'DatosGenerales.Velocidad', 'DatosIndicador.Ciclo'],
+            function (ValoresActuales, ValoresAnteriores)
+            {
+                if (ValoresActuales === ValoresAnteriores)
+                    return;
+
+                var Piezas = ValoresActuales[0];
+                var Velocidad = ValoresActuales[1];
+                var Ciclo = ValoresActuales[2];
+
+                // !! evalúa si es no nulo
+                var EsValido = !!Piezas && !!Velocidad && !!Ciclo;
+                
+                if (EsValido) 
+                    ObtenerMinutosParos();
+                else
+                    $scope.Util.Estado = ESTADO_PAROS.SIN_ESTADO;
+            }
+        );
+        $scope.$watchGroup(['DatosGenerales.IndiceProceso', 'DatosIndicador.Fecha', 'DatosIndicador.Ciclo'],
+            function (ValoresActuales, ValoresAnteriores)
+            {
+                if (ValoresActuales === ValoresAnteriores)
+                    return;
+
+                var IndiceProceso = ValoresActuales[0];
+                var FechaInicial = ValoresActuales[1];
+                var Ciclo = ValoresActuales[2];
+                
+                var EsValido = !!IndiceProceso && !!FechaInicial && (!!Ciclo || Ciclo > 0);
+
+                if (EsValido)
+                {
+                    var FechaFinal = angular.copy(FechaInicial);
+                    FechaFinal.setMinutes(FechaFinal.getMinutes() + Ciclo);
+
+                    var FechaInicialFormateada = $filter('date')(FechaInicial, "yyyy-MM-dd HH:mm");
+                    var FechaFinalFormateada = $filter('date')(FechaFinal, "yyyy-MM-dd HH:mm");
+
+                    $scope.BusquedaIndicadoresPeriodo(IndiceProceso, FechaInicialFormateada, FechaFinalFormateada);
+                }
+                else
+                    return;
+            }
+        );
+        // #endregion
 
         $scope.ValidarOrden = function (ev)
         {
@@ -820,7 +1045,6 @@
                     $log.info('Método ValidarOrden() finalizado');
                 });
         };
-
         $scope.ObtenerSumatoriaParos = function ()
         {
             var Sumatoria = Enumerable.From($scope.ListaParosElegidos)
@@ -829,7 +1053,6 @@
             
             return parseInt(Sumatoria);
         };
-        
         $scope.ObtenerSumatoriaParosSinCausaAsignada = function ()
         {
             var Sumatoria = Enumerable.From($scope.ListaParosElegidos)
@@ -839,32 +1062,6 @@
             
             return parseInt(Sumatoria);
         };
-
-        $scope.BusquedaIndicadoresPeriodo = function (IndiceProceso, FechaInicial, FechaFinal)
-        {
-            return IndicadorService.BusquedaIndicadoresPeriodo(IndiceProceso, FechaInicial, FechaFinal)
-                .then(function (response) {
-                    var Estado = response.data.Estado;
-                    if (!Estado) {
-                        var Mensaje = response.data.Mensaje;
-                        $log.info('Se produjo el siguiente error en el método ObtenerProcesos = ' + Mensaje);
-                    }
-                    else {
-                        $scope.ExistenIndicadoresPeriodo = response.data.Existe;
-                    }
-                },
-                    function (response) {
-                        $log.info('Hubo un error: Estatus = ' + response.status + ', Error = ' + response.data);
-                    })
-                .catch(function (response) {
-                    $log.info(response);
-                    throw response;
-                })
-                .finally(function () {
-                    $log.info('Método BusquedaIndicadoresPeriodo() finalizado');
-                });
-        };
-
         $scope.ValidacionBotonGuardar = function () {
             var SeDesactiva = true; 
 
@@ -881,7 +1078,6 @@
 
             return SeDesactiva;
         };
-
         // Al obtener el Proceso
         function ObtenerIndicadorPorProceso()
         {
@@ -924,7 +1120,6 @@
                     $log.info('Método ObtenerIndicadorPorProceso() finalizado');
                 });
         }
-
         // Al obtener el Material
         function ObtenerVelocidad(IndiceProceso, Material)
         {
@@ -953,7 +1148,6 @@
                     $log.info('Método ObtenerVelocidad() finalizado');
                 });
         }
-        
         function ObtenerMinutosParos()
         {
             var Velocidad = angular.copy($scope.DatosGenerales.Velocidad);
@@ -1013,233 +1207,9 @@
 
             $log.info('Método ObtenerMinutosParos() finalizado');
         }
-
-        // ==============================================================================================================
-        
-        $scope.$watch('ListaCentros', function (newValue, oldValue) {
-            if (newValue && newValue.length > 0)
-            {
-                if ( !$scope.EsEdicion )
-                    $scope.DatosGenerales.IndiceCentro = $scope.ListaCentros.length === 1 ? $scope.ListaCentros[0].Indice : null;
-            }
-        });
-
-        $scope.$watch('ListaDepartamentos', function (newValue, oldValue) {
-            if (newValue && newValue.length > 0) {
-                if (!$scope.EsEdicion)
-                    $scope.DatosGenerales.IndiceDepartamento = $scope.ListaDepartamentos.length === 1 ? $scope.ListaDepartamentos[0].Indice : null;
-            }
-        });
-
-        $scope.$watch('ListaLineas', function (newValue, oldValue) {
-            if (newValue && newValue.length > 0) {
-                if (!$scope.EsEdicion)
-                    $scope.DatosGenerales.IndiceLinea = $scope.ListaLineas.length === 1 ? $scope.ListaLineas[0].Indice : null;
-            }
-        });
-
-        $scope.$watch('ListaProcesos', function (newValue, oldValue) {
-            if (newValue && newValue.length > 0) {
-                if (!$scope.EsEdicion)
-                    $scope.DatosGenerales.IndiceProceso = $scope.ListaProcesos.length === 1 ? $scope.ListaProcesos[0].Indice : null;
-            }
-        });
-
-        $scope.$watch('DatosGenerales.IndiceCentro', function (newValue, oldValue)
-        {
-            if (newValue) {
-                if (!$scope.EsEdicion) {
-                    $scope.DatosGenerales.IndiceDepartamento = null;
-                    $scope.DatosGenerales.IndiceLinea = null;
-                    $scope.DatosGenerales.IndiceProceso = null;
-                    $scope.DatosGenerales.Orden = null;
-                    $scope.DatosGenerales.Lote = null;
-                    $scope.DatosGenerales.IndiceVelocidad = null;
-                    $scope.DatosGenerales.Velocidad = null;
-                    $scope.DatosGenerales.Material = null;
-                    $scope.DatosGenerales.DescripcionMaterial = null;
-                    $scope.ResetearDatosIndicador();
-
-                    $scope.ListaDepartamentos = null;
-                    $scope.ListaLineas = null;
-                    $scope.ListaProcesos = null;
-
-                    $scope.ObtenerDepartamentos();
-                }
-            }
-        });
-
-        $scope.$watch('DatosGenerales.IndiceDepartamento', function (newValue, oldValue)
-        {
-            if (newValue)
-            {
-                if (!$scope.EsEdicion) {
-                    $scope.DatosGenerales.IndiceLinea = null;
-                    $scope.DatosGenerales.IndiceProceso = null;
-                    $scope.DatosGenerales.Orden = null;
-                    $scope.DatosGenerales.Lote = null;
-                    $scope.DatosGenerales.IndiceVelocidad = null;
-                    $scope.DatosGenerales.Velocidad = null;
-                    $scope.DatosGenerales.Material = null;
-                    $scope.DatosGenerales.DescripcionMaterial = null;
-                    $scope.ResetearDatosIndicador();
-
-                    $scope.ListaLineas = null;
-                    $scope.ListaProcesos = null;
-
-                    $scope.ObtenerLineas();
-                }
-            }
-        });
-
-        $scope.$watch('DatosGenerales.IndiceLinea', function (newValue, oldValue)
-        {
-            if (newValue)
-            {
-                if (!$scope.EsEdicion) {
-                    $scope.DatosGenerales.IndiceProceso = null;
-                    $scope.DatosGenerales.Orden = null;
-                    $scope.DatosGenerales.Lote = null;
-                    $scope.DatosGenerales.IndiceVelocidad = null;
-                    $scope.DatosGenerales.Velocidad = null;
-                    $scope.DatosGenerales.Material = null;
-                    $scope.DatosGenerales.DescripcionMaterial = null;
-                    $scope.ResetearDatosIndicador();
-
-                    $scope.ListaProcesos = null;
-
-                    $scope.ObtenerProcesos();
-                }
-            }
-        });
-
-        $scope.$watch('DatosGenerales.Orden', function (newValue, oldValue)
-        {
-            // TIP: Añadir una validacion negativa al front para que la caja de texto se vea roja
-
-            if (!!newValue && newValue.length > 0 && $scope.Util.EstadoValidacion === ESTADO_VALIDACION_ORDEN.NO_VALIDADA) {
-                $scope.Util.TextoEstadoValidacionOrden = 'Aún no ha sido validado en SAP';
-            }
-            else {
-                $scope.Util.TextoEstadoValidacionOrden = '';
-                $scope.Util.EstiloEstadoValidacionOrden = {};
-                $scope.Util.EstadoValidacion = ESTADO_VALIDACION_ORDEN.NO_VALIDADA;
-            }
-
-        });
-
-        $scope.$watch('DatosGenerales.IndiceProceso', function (newValue, oldValue)
-        {
-            if (newValue)
-            {
-                if (!$scope.EsEdicion) {
-                    $scope.DatosGenerales.Orden = null;
-                    $scope.DatosGenerales.Lote = null;
-                    $scope.DatosGenerales.IndiceVelocidad = null;
-                    $scope.DatosGenerales.Velocidad = null;
-                    $scope.DatosGenerales.Material = null;
-                    $scope.DatosGenerales.DescripcionMaterial = null;
-                    $scope.ResetearDatosIndicador();
-
-                    ObtenerIndicadorPorProceso();
-                }
-            }
-        });
-
-        $scope.$watch('DatosGenerales.Material', function (newValue, oldValue)
-        {
-            if (newValue)
-            {
-                $scope.DatosGenerales.IndiceVelocidad = null;
-                $scope.DatosGenerales.Velocidad = null;
-                
-                ObtenerVelocidad($scope.DatosGenerales.IndiceProceso, newValue);
-            }
-        });
-
-        $scope.$watch('DatosIndicador.Hora', function (newValue, oldValue) {
-            if (!!newValue || newValue === 0 && newValue !== '') {
-                $scope.DatosIndicador.Fecha.setHours(newValue);
-            }
-        });
-        
-        $scope.$watch('DatosIndicador.Minuto', function (newValue, oldValue) {
-            if (!!newValue || newValue === 0 && newValue !== '') {
-                $scope.DatosIndicador.Fecha.setMinutes(newValue);
-            }
-        });
-        
-        $scope.$watch('Util.Estado', function (newValue, oldValue)
-        {
-            if ((!!newValue || newValue === 0) && newValue !== '')
-            {
-                if ($scope.EsEdicion)
-                    return;
-                
-                $scope.Util.MensajeCalculoHoras = null;
-                $scope.Util.MensajeCalculoHorasParo = null;
-                $scope.Util.EstadoHorasParo = false;
-
-                $scope.Util.CalculoHoras = 0;
-                $scope.Util.CalculoHorasParo = 0;
-                
-                $scope.MensajeCalculoHoras = null;
-                $scope.MensajeCalculoHorasParo = null;
-            }
-        });
-
-        $scope.$watchGroup(['DatosIndicador.Piezas', 'DatosGenerales.Velocidad', 'DatosIndicador.Ciclo'],
-            function (ValoresActuales, ValoresAnteriores)
-            {
-                if (ValoresActuales === ValoresAnteriores)
-                    return;
-
-                var Piezas = ValoresActuales[0];
-                var Velocidad = ValoresActuales[1];
-                var Ciclo = ValoresActuales[2];
-
-                // !! evalúa si es no nulo
-                var EsValido = !!Piezas && !!Velocidad && !!Ciclo;
-                
-                if (EsValido) 
-                    ObtenerMinutosParos();
-                else
-                    $scope.Util.Estado = ESTADO_PAROS.SIN_ESTADO;
-            }
-        );
-
-        $scope.$watchGroup(['DatosGenerales.IndiceProceso', 'DatosIndicador.Fecha', 'DatosIndicador.Ciclo'],
-            function (ValoresActuales, ValoresAnteriores)
-            {
-                if (ValoresActuales === ValoresAnteriores)
-                    return;
-
-                var IndiceProceso = ValoresActuales[0];
-                var FechaInicial = ValoresActuales[1];
-                var Ciclo = ValoresActuales[2];
-                
-                var EsValido = !!IndiceProceso && !!FechaInicial && (!!Ciclo || Ciclo > 0);
-
-                if (EsValido)
-                {
-                    var FechaFinal = angular.copy(FechaInicial);
-                    FechaFinal.setMinutes(FechaFinal.getMinutes() + Ciclo);
-
-                    var FechaInicialFormateada = $filter('date')(FechaInicial, "yyyy-MM-dd HH:mm");
-                    var FechaFinalFormateada = $filter('date')(FechaFinal, "yyyy-MM-dd HH:mm");
-
-                    $scope.BusquedaIndicadoresPeriodo(IndiceProceso, FechaInicialFormateada, FechaFinalFormateada);
-                }
-                else
-                    return;
-            }
-        );
-
-
         $scope.ResetearTerminoBusqueda = function () {
             $scope.TerminoBusqueda = '';
         };
-        
         $scope.LimpiarFormulario = function () {
             $scope.DatosGenerales.IndiceCentro = '';
             $scope.DatosGenerales.IndiceDepartamento = '';
@@ -1253,7 +1223,6 @@
             $scope.DatosGenerales.Velocidad = null;
             $scope.DatosGenerales.IndiceVelocidad = null;
         };
-
         $scope.ResetearDatosIndicador = function () {
             $scope.DatosIndicador.Turno = null;
             $scope.DatosIndicador.Ciclo = 0;
@@ -1274,7 +1243,6 @@
             $scope.Util.EstadoHorasParo = false;
             $scope.Util.Estado = ESTADO_PAROS.SIN_ESTADO;
         };
-
         $scope.ValidarHora = function (Index) {
             if (!$scope.DatosGenerales.IndiceProceso || !$scope.DatosIndicador.Fecha)
                 return;
@@ -1294,7 +1262,6 @@
             
             return SeDesactiva;
         };
-        
         $scope.ValidarMinuto = function (Index) {
             if (!$scope.DatosGenerales.IndiceProceso || !$scope.DatosIndicador.Fecha)
                 return;
@@ -1314,7 +1281,6 @@
 
             return SeDesactiva;
         };
-
         $scope.TransformarChipParos = function (chip) {
             return {
                 Nombre: chip.Nombre,
@@ -1322,14 +1288,12 @@
                 Folio: chip.Folio
             };
         };
-
         $scope.TransformarChipRechazos = function (chip) {
             return {
                 Nombre: chip.Nombre,
                 Cantidad: chip.Cantidad
             };
         };
-
         $scope.QuitarRechazo = function (Rechazo)
         {
             var IndiceLista = UtilFactory.FiltrarArreglo($scope.ListaIndicesRechazosEnUso, function (item) { return item === Rechazo.Indice; });
@@ -1339,7 +1303,6 @@
                 $scope.Util.SumaPiezasRechazadas -= Rechazo.Cantidad;
             }
         };
-
         $scope.QuitarParo = function (Paro)
         {
             var IndiceLista = UtilFactory.FiltrarArreglo($scope.ListaIndicesParosEnUso, function (item) { return item === Paro.Indice; });
@@ -1351,7 +1314,6 @@
                 $scope.Util.ParoSinCausaAsignada = CantidadParoSinCausaAsignada > $scope.Util.CalculoHorasParo ? $scope.Util.CalculoHorasParo : CantidadParoSinCausaAsignada; 
             }
         };
-
         $scope.MostrarDialogoError = function (Mensaje) {
             $mdDialog.show(
                 $mdDialog.alert()
@@ -1363,7 +1325,6 @@
                     .ok('Aceptar')
             );
         };
-
         $scope.MostrarMensajeMinutosParos = function ()
         {
             var Mensaje = '';

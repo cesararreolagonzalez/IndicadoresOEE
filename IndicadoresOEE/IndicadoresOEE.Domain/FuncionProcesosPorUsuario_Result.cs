@@ -10,15 +10,17 @@
 namespace IndicadoresOEE.Domain
 {
     using System;
-    using System.Collections.Generic;
     
-    public partial class IndicadorRechazo_V2
+    public partial class FuncionProcesosPorUsuario_Result
     {
-        public long IndiceIndicador { get; set; }
-        public long IndiceRechazo { get; set; }
-        public int Cantidad { get; set; }
-    
-        public virtual Indicador_V2 Indicador_V2 { get; set; }
-        public virtual Rechazo Rechazo { get; set; }
+        public long IndiceUsuario { get; set; }
+        public long IndiceProceso { get; set; }
+        public string Proceso { get; set; }
+        public long IndiceLinea { get; set; }
+        public string Linea { get; set; }
+        public long IndiceDepartamento { get; set; }
+        public string Departamento { get; set; }
+        public long IndiceCentro { get; set; }
+        public string Centro { get; set; }
     }
 }

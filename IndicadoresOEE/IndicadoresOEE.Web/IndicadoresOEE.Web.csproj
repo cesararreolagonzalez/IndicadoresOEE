@@ -266,6 +266,7 @@
     <Content Include="Scripts\app\controllers\ReporteIndicadorController.js" />
     <Content Include="Scripts\app\controllers\CapturaIndicadorController.js" />
     <Content Include="Scripts\app\controllers\CuentaController.js" />
+    <Content Include="Scripts\app\controllers\UsuarioController.js" />
     <Content Include="Scripts\app\controllers\UsuariosController.js" />
     <Content Include="Scripts\app\directives\FormatoNumericoDirective.js" />
     <Content Include="Scripts\app\directives\LimiteCantidadDirective.js" />

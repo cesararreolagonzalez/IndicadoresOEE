@@ -3,13 +3,12 @@
 
     angular
         .module('indicadoresoeeapp')
-        .controller('UsuariossssController', UsuariosController);
+        .controller('UsuariosController', UsuariosController);
 
     UsuariosController.$inject = ['$scope', '$timeout', '$log', '$mdDialog', 'ModalService', 'CentroService', 'DepartamentoService', 'LineaService', 'UsuarioService', 'PerfilService'];
 
     function UsuariosController($scope, $timeout, $log, $mdDialog, ModalService,
-        CentroService, DepartamentoService, LineaService, UsuarioService, PerfilService)
-    {
+        CentroService, DepartamentoService, LineaService, UsuarioService, PerfilService) {
         // #region JavaScript's Methods
         $('.md-datepicker-input').prop('readonly', true);
         // #endregion
@@ -36,14 +35,14 @@
         };
         
         $scope.Parametros =
-        {
-            IndiceCentro: null,
-            IndiceDepartamento: null,
-            IndiceLinea: null,
-            IndiceProceso: null,
-            IndiceVelocidad: null,
-            IndiceMotivo: null
-        };
+            {
+                IndiceCentro: null,
+                IndiceDepartamento: null,
+                IndiceLinea: null,
+                IndiceProceso: null,
+                IndiceVelocidad: null,
+                IndiceMotivo: null
+            };
         $scope.ListaLineas = null;
         $scope.ListaCentros = null;
         $scope.ListaProcesos = null;
@@ -71,20 +70,73 @@
                 $scope.status = 'You decided to keep your debt.';
             });
         };
-        $scope.EditarUsuario = function (IndiceUsuario, ev) {
+        $scope.EditarUsuario = function (IndiceUsuario, Usuario, ev) {
             $mdDialog.show({
-                locals: { IndiceProceso: IndiceUsuario },
-                controller: ['$scope', '$element', '$mdDialog', 'IndiceProceso', 'CentroService', 'DepartamentoService', 'LineaService', 'ProcesoService', 'UsuarioService', 'PerfilService',
-                    function ($scope, $element, $mdDialog, IndiceProceso, CentroService, DepartamentoService, LineaService, ProcesoService, UsuarioService, PerfilService)
+                locals: { IndiceUsuario: IndiceUsuario, Usuario: Usuario, ListaPerfiles: $scope.ListaPerfiles },
+                controller: ['$scope', '$element', '$mdDialog', 'IndiceUsuario', 'Usuario', 'ListaPerfiles', 'CentroService',
+                    'DepartamentoService', 'LineaService', 'ProcesoService', 'UsuarioService', 'PerfilService',
+                    function ($scope, $element, $mdDialog, IndiceUsuario, Usuario, ListaPerfiles, CentroService, DepartamentoService,
+                        LineaService, ProcesoService, UsuarioService, PerfilService)
                     {
+                        $log.info(Usuario);
+                        $scope.TipoUsuario = Usuario.EsDirectorioActivo ? 0 : Usuario.EsLocal ? 1 : -1;
                         // #region Properties
                         $scope.TerminoBusqueda = '';
+                        $scope.TabProcesosSeleccionada = 0;
                         $scope.ListaCentros = null;
                         $scope.ListaDepartamentos = null;
                         $scope.ListaLineas = null;
                         $scope.ListaProcesos = null;
+                        $scope.DatosGenerales = {
+                            IndiceCentro: null,
+                            IndiceDepartamento: null,
+                            IndiceLinea: null,
+                            IndiceProceso: null,
+                            IndiceVelocidad: null
+                        };
+                        $scope.ProcesosExistentes = [];
+                        $scope.ProcesosAgregados = [];
+                        $scope.ListaProcesosSeleccionados = [];
+                        $scope.Usuario = Usuario;
+                        $scope.ListaPerfiles = ListaPerfiles;
                         // #endregion
+                        // #region Methods
+                        
+                        $scope.EliminarProcesos = function (ev) {
+                            $log.info($scope.ListaProcesosSeleccionados);
+                        };
+                        $scope.AgregarProceso = function ()
+                        {
+                            var Centro = Enumerable.From($scope.ListaCentros)
+                                .Where(function (col) { return col.Indice === $scope.DatosGenerales.IndiceCentro; })
+                                .Select(function (col) { return col; })
+                                .FirstOrDefault();
 
+                            var Departamento = Enumerable.From($scope.ListaDepartamentos)
+                                .Where(function (col) { return col.Indice === $scope.DatosGenerales.IndiceDepartamento; })
+                                .Select(function (col) { return col; })
+                                .FirstOrDefault();
+
+                            var Linea = Enumerable.From($scope.ListaLineas)
+                                .Where(function (col) { return col.Indice === $scope.DatosGenerales.IndiceLinea; })
+                                .Select(function (col) { return col; })
+                                .FirstOrDefault();
+
+                            var Proceso = Enumerable.From($scope.ListaProcesos)
+                                .Where(function (col) { return col.Indice === $scope.DatosGenerales.IndiceProceso; })
+                                .Select(function (col) { return col; })
+                                .FirstOrDefault();
+
+                            var Model = {
+                                'Centro': { 'Indice': Centro.Indice, 'Nombre': Centro.Nombre },
+                                'Departamento': { 'Indice': Departamento.Indice, 'Nombre': Departamento.Nombre },
+                                'Linea': { 'Indice': Linea.Indice, 'Nombre': Linea.Nombre },
+                                'Proceso': { 'Indice': Proceso.Indice, 'Nombre': Proceso.Nombre }
+                            };
+                            $scope.ProcesosAgregados.push(Model);
+
+                        };
+                        // #endregion
                         // #region Async Methods
                         $scope.ObtenerCentros = function () {
                             return CentroService.ObtenerCentros()
@@ -192,9 +244,213 @@
                                     $log.info('Método ObtenerProcesos() finalizado');
                                 });
                         };
+                        $scope.ObtenerProcesosPorUsuario = function () {
+                            return ProcesoService.ObtenerProcesosPorUsuario()
+                                .then(function (response) {
+                                    $scope.ProcesosExistentes = response.data.Response.Mensaje;
+                                    $log.info(response);
+                                    //var Estado = response.data.Estado;
+                                    //if (!Estado) {
+                                    //    var Mensaje = response.data.Mensaje;
+                                    //    $log.info('Se produjo el siguiente error en el método ObtenerProcesos = ' + Mensaje);
+                                    //    $scope.MostrarDialogoError('Se produjo un error al intentar obtener la lista de procesos asociados al usuario'));
+                                    //}
+                                    //else {
+                                    //    $scope.ListaProcesos = response.data.ListaProcesos;
+                                    //}
+                                },
+                                    function (response) {
+                                        $log.info('Hubo un error: Estatus = ' + response.status + ', Error = ' + response.data);
+                                    })
+                                .catch(function (response) {
+                                    $scope.MostrarDialogoError('Se produjo una excepción al intentar obtener la lista de procesos asociados al usuario');
+                                    $log.info(response);
+                                    throw response;
+                                })
+                                .finally(function () {
+                                    $log.info('Método ObtenerProcesosPorUsuario() finalizado');
+                                });
+                        };
+                        $scope.EliminarProcesos = function () {
+                            return ProcesoService.EliminarProcesos($scope.ListaProcesosSeleccionados)
+                                .then(function (response)
+                                {
+                                    var Estado = response.data.Response.Estado;
+
+                                    if (!Estado) {
+                                        var Mensaje = response.data.Response.Mensaje;
+                                        $log.info('Se produjo el siguiente error en el método ObtenerProcesos = ' + Mensaje);
+                                        $scope.MostrarDialogoError('Se produjo un error al intentar obtener la lista de procesos asociados al usuario');
+                                    }
+                                    else
+                                    {
+                                        var TotalEliminados = 0;
+                                        angular.forEach($scope.ListaProcesosSeleccionados, function (value, key)
+                                        {
+                                            var IndiceEnLista = -1;
+                                            $scope.ProcesosExistentes.some(function (obj, i) {
+                                                var Indice = obj.Proceso.Indice === value ? i : false;
+                                                if (Indice !== false) {
+                                                    IndiceEnLista = Indice;
+                                                }
+
+                                                return Indice;
+                                            });
+                                            
+                                            if (IndiceEnLista > -1) {
+                                                TotalEliminados = TotalEliminados + 1;
+                                                $scope.ProcesosExistentes.splice(IndiceEnLista, 1);
+                                            }
+                                        });
+
+                                        $scope.ListaProcesosSeleccionados = [];
+
+                                        $mdDialog.show(
+                                            $mdDialog.alert()
+                                                .multiple(true)
+                                                .parent(angular.element(document.querySelector('#dialoguser')))
+                                                .clickOutsideToClose(false)
+                                                .title('')
+                                                .textContent('Se han desvinculado ' + TotalEliminados + ' procesos al usuario')
+                                                .ariaLabel('Procesos eliminado')
+                                                .ok('Aceptar'));
+                                    }
+                                },
+                                function (response) {
+                                    $log.info('Hubo un error: Estatus = ' + response.status + ', Error = ' + response.data);
+                                })
+                                .catch(function (response) {
+                                    $scope.MostrarDialogoError('Se produjo una excepción al intentar obtener la lista de procesos asociados al usuario');
+                                    $log.info(response);
+                                    throw response;
+                                })
+                                .finally(function () {
+                                    $log.info('Método ObtenerProcesosPorUsuario() finalizado');
+                                });
+                        };
+                        $scope.AsociarProcesosUsuario = function () {
+                            return ProcesoService.AsociarProcesosUsuario($scope.ProcesosAgregados)
+                                .then(function (response) {
+                                    var Estado = response.data.Response.Estado;
+
+                                    if (!Estado) {
+                                        var Mensaje = response.data.Response.Mensaje;
+                                        $log.info('Se produjo el siguiente error en el método ObtenerProcesos = ' + Mensaje);
+                                        $scope.MostrarDialogoError('Se produjo un error al intentar obtener guardar la lista de nuevos procesos asociados al usuario');
+                                    }
+                                    else {
+                                        var TotalEliminados = 0;
+                                        angular.forEach($scope.ListaProcesosSeleccionados, function (value, key) {
+                                            var IndiceEnLista = -1;
+                                            $scope.ProcesosExistentes.some(function (obj, i) {
+                                                var Indice = obj.Proceso.Indice === value ? i : false;
+                                                if (Indice !== false) {
+                                                    IndiceEnLista = Indice;
+                                                }
+
+                                                return Indice;
+                                            });
+
+                                            if (IndiceEnLista > -1) {
+                                                TotalEliminados = TotalEliminados + 1;
+                                                $scope.ProcesosExistentes.splice(IndiceEnLista, 1);
+                                            }
+                                        });
+
+                                        $scope.ListaProcesosSeleccionados = [];
+
+                                        $mdDialog.show(
+                                            $mdDialog.alert()
+                                                .multiple(true)
+                                                .parent(angular.element(document.querySelector('#dialoguser')))
+                                                .clickOutsideToClose(false)
+                                                .title('')
+                                                .textContent('Se han desvinculado ' + TotalEliminados + ' procesos al usuario')
+                                                .ariaLabel('Procesos eliminado')
+                                                .ok('Aceptar'));
+                                    }
+                                },
+                                    function (response) {
+                                        $log.info('Hubo un error: Estatus = ' + response.status + ', Error = ' + response.data);
+                                    })
+                                .catch(function (response) {
+                                    $scope.MostrarDialogoError('Se produjo una excepción al intentar obtener guardar la lista de nuevos procesos asociados al usuario');
+                                    $log.info(response);
+                                    throw response;
+                                })
+                                .finally(function () {
+                                    $log.info('Método Guardar() finalizado');
+                                });
+                        };
+                        $scope.Guardar = function () {
+                            $scope.AsociarProcesosUsuario();
+                        };
                         // #endregion
+                        // #region Watchs
+                        $scope.$watch('TabSeleccionada', function (newValue, oldValue) {
+                            if (newValue) {
+                                $scope.ObtenerProcesosPorUsuario();
+                            }
+                        });
+                        $scope.$watch('ListaCentros', function (newValue, oldValue) {
+                            if (newValue && newValue.length > 0) {
+                                $scope.DatosGenerales.IndiceCentro = $scope.ListaCentros.length === 1 ? $scope.ListaCentros[0].Indice : null;
+                            }
+                        });
+                        $scope.$watch('ListaDepartamentos', function (newValue, oldValue) {
+                            if (newValue && newValue.length > 0) {
+                                $scope.DatosGenerales.IndiceDepartamento = $scope.ListaDepartamentos.length === 1 ? $scope.ListaDepartamentos[0].Indice : null;
+                            }
+                        });
+                        $scope.$watch('ListaLineas', function (newValue, oldValue) {
+                            if (newValue && newValue.length > 0) {
+                                $scope.DatosGenerales.IndiceLinea = $scope.ListaLineas.length === 1 ? $scope.ListaLineas[0].Indice : null;
+                            }
+                        });
+                        $scope.$watch('ListaProcesos', function (newValue, oldValue) {
+                            if (newValue && newValue.length > 0) {
+                                $scope.DatosGenerales.IndiceProceso = $scope.ListaProcesos.length === 1 ? $scope.ListaProcesos[0].Indice : null;
+                            }
+                        });
+                        $scope.$watch('DatosGenerales.IndiceCentro', function (newValue, oldValue) {
+                            if (newValue) {
+                                if (!$scope.EsEdicion) {
+                                    $scope.DatosGenerales.IndiceDepartamento = null;
+                                    $scope.DatosGenerales.IndiceLinea = null;
+                                    $scope.DatosGenerales.IndiceProceso = null;
 
+                                    $scope.ListaDepartamentos = null;
+                                    $scope.ListaLineas = null;
+                                    $scope.ListaProcesos = null;
 
+                                    $scope.ObtenerDepartamentos();
+                                }
+                            }
+                        });
+
+                        $scope.$watch('DatosGenerales.IndiceDepartamento', function (newValue, oldValue) {
+                            if (newValue) {
+                                if (!$scope.EsEdicion) {
+                                    $scope.DatosGenerales.IndiceLinea = null;
+                                    $scope.DatosGenerales.IndiceProceso = null;
+
+                                    $scope.ListaLineas = null;
+                                    $scope.ListaProcesos = null;
+
+                                    $scope.ObtenerLineas();
+                                }
+                            }
+                        });
+
+                        $scope.$watch('DatosGenerales.IndiceLinea', function (newValue, oldValue) {
+                            if (newValue) {
+                                if (!$scope.EsEdicion) {
+                                    $scope.DatosGenerales.IndiceProceso = null;
+                                    $scope.ObtenerProcesos();
+                                }
+                            }
+                        });
+                        // #endregion
                     }],
                 templateUrl: '../Scripts/app/templates/Usuario/Editar.html',
                 parent: angular.element(document.body),
@@ -222,8 +478,7 @@
                 .parent(angular.element(document.querySelector('body')))
                 .ok('Aceptar')
                 .cancel('Cancelar');
-            $mdDialog.show(confirm).then(function ()
-            {
+            $mdDialog.show(confirm).then(function () {
                 ModalService.showWait();
                 return UsuarioService.EliminarUsuario(IndiceUsuario)
                     .then(function (response) {
@@ -243,8 +498,7 @@
                                     .title('')
                                     .textContent('     El usuario ' + NombreUsuario + ' ha sido eliminado.     ')
                                     .ariaLabel('Usuario Eliminado')
-                                    .ok('Aceptar')
-                            );
+                                    .ok('Aceptar'));
                         }
                     })
                     .catch(function (response) {
@@ -662,7 +916,7 @@
                 return;
 
             $scope.Tiempo.FechaLimite = null;
-            
+
             ActualizarFecha(angular.copy(FechaLimiteInferior));
 
             switch (IndiceMotivo) {

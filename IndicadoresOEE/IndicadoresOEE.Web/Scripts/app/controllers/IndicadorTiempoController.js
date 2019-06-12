@@ -52,10 +52,10 @@
         $scope.ListaVelocidades = null;
         $scope.ListaDepartamentos = null;
         // #endregion
-        // #region Async Methods
-        $scope.ObtenerCentros = async function () {
+        // #region Methods
+        $scope.ObtenerCentros = function () {
             return CentroService.ObtenerCentros()
-                .then(async function (response) {
+                .then(function (response) {
                     var Estado = response.data.Estado;
 
                     if (!Estado) {
@@ -75,12 +75,12 @@
                     $log.info('Método ObtenerCentros() finalizado');
                 });
         };
-        $scope.ObtenerDepartamentos = async function () {
+        $scope.ObtenerDepartamentos = function () {
             if ($scope.ListaDepartamentos)
                 return;
 
             return DepartamentoService.ObtenerDepartamentosPorCentro($scope.Parametros.IndiceCentro)
-                .then(async function (response) {
+                .then(function (response) {
                     var status = response.status;
                     var statusText = response.statusText;
 
@@ -103,9 +103,9 @@
                     $log.info('Método ObtenerDepartamentos() finalizado');
                 });
         };
-        $scope.ObtenerLineas = async function () {
+        $scope.ObtenerLineas = function () {
             return LineaService.ObtenerLineasPorDepartamento($scope.Parametros.IndiceDepartamento)
-                .then(async function (response) {
+                .then(function (response) {
                     var Estado = response.data.Estado;
                     if (!Estado) {
                         var Mensaje = response.data.Mensaje;
@@ -129,9 +129,9 @@
                     $log.info('Método ObtenerLineas() finalizado');
                 });
         };
-        $scope.ObtenerProcesos = async function () {
+        $scope.ObtenerProcesos = function () {
             return ProcesoService.ObtenerProcesosPorLinea($scope.Parametros.IndiceLinea)
-                .then(async function (response) {
+                .then(function (response) {
                     var Estado = response.data.Estado;
                     if (!Estado) {
                         var Mensaje = response.data.Mensaje;
@@ -155,9 +155,9 @@
                     $log.info('Método ObtenerProcesos() finalizado');
                 });
         };
-        $scope.ObtenerUltimoIndicadorTiempo = async function () {
+        $scope.ObtenerUltimoIndicadorTiempo = function () {
             return IndicadorTiempoService.ObtenerUltimoIndicadorTiempo($scope.Parametros.IndiceProceso)
-                .then(async function (response) {
+                .then(function (response) {
                     var Estado = response.data.Estado;
 
                     if (!Estado) {
@@ -509,7 +509,7 @@
                 $scope.ListaProcesos = null;
             }
         });
-        $scope.$watch('Parametros.IndiceProceso', async function (newValue, oldValue) {
+        $scope.$watch('Parametros.IndiceProceso', function (newValue, oldValue) {
             if (newValue) {
                 $scope.Parametros.IndiceMotivo = null;
                 InicializarParametroFechas();
@@ -585,7 +585,7 @@
                 $scope.Tiempo.IndicadorTiempoActual.setMinutes(newValue);
             }
         });
-        $scope.$watch('ListaCentros', async function (newValue, oldValue) {
+        $scope.$watch('ListaCentros', function (newValue, oldValue) {
             if (newValue) {
                 if (!newValue)
                     return;
@@ -596,12 +596,13 @@
                     ListaCentros.length === 1 ? ListaCentros[0].Indice : null;
 
                 if (ListaCentros.length === 1) {
-                    await $scope.ObtenerDepartamentos();
+                    var PromiseDepartamento = DepartamentoService.ObtenerDepartamentosPorCentro($scope.Parametros.IndiceCentro);
+                    Promise.all([PromiseDepartamento]);
                 }
 
             }
         });
-        $scope.$watch('ListaDepartamentos', async function (newValue, oldValue) {
+        $scope.$watch('ListaDepartamentos', function (newValue, oldValue) {
             if (newValue) {
                 if (!newValue)
                     return;
@@ -612,12 +613,13 @@
                     ListaDepartamentos.length === 1 ? ListaDepartamentos[0].Indice : null;
 
                 if (ListaDepartamentos.length === 1) {
-                    await $scope.ObtenerLineas();
+                    var PromiseLineas = LineaService.ObtenerLineasPorDepartamento($scope.Parametros.IndiceDepartamento);
+                    Promise.all([PromiseLineas]);
                 }
 
             }
         });
-        $scope.$watch('ListaLineas', async function (newValue, oldValue) {
+        $scope.$watch('ListaLineas', function (newValue, oldValue) {
             if (newValue) {
                 if (!newValue)
                     return;
@@ -628,11 +630,12 @@
                     ListaLineas.length === 1 ? ListaLineas[0].Indice : null;
 
                 if (ListaLineas.length === 1) {
-                    await $scope.ObtenerProcesos();
+                    var PromiseProcesos = ProcesoService.ObtenerProcesosPorLinea($scope.Parametros.IndiceLinea);
+                    Promise.all([PromiseProcesos]);
                 }
             }
         });
-        $scope.$watch('ListaProcesos', async function (newValue, oldValue) {
+        $scope.$watch('ListaProcesos', function (newValue, oldValue) {
             if (newValue) {
                 if (!newValue)
                     return;
@@ -643,7 +646,8 @@
                     ListaProcesos.length === 1 ? ListaProcesos[0].Indice : null;
 
                 if (ListaProcesos.length === 1) {
-                    await $scope.ObtenerUltimoIndicadorTiempo();
+                    var PromiseProcesos = IndicadorTiempoService.ObtenerUltimoIndicadorTiempo($scope.Parametros.IndiceProceso);
+                    Promise.all([PromiseProcesos]);
                 }
             }
         });

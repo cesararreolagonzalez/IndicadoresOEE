@@ -10,26 +10,25 @@
 namespace IndicadoresOEE.Domain
 {
     using System;
-    using System.Collections.Generic;
     
-    public partial class vw_grafica_indicadores
+    public partial class FuncionGraficaProduccion_Result
     {
         public string Agrupador { get; set; }
         public System.DateTime Frecuencia { get; set; }
-        public Nullable<int> Ciclo { get; set; }
-        public Nullable<int> PiezasSTD { get; set; }
-        public Nullable<int> PiezasProducidasReales { get; set; }
-        public Nullable<int> PiezasProducidas { get; set; }
-        public Nullable<int> ParosTotales { get; set; }
-        public Nullable<int> RechazosTotales { get; set; }
+        public long Ciclo { get; set; }
+        public long PiezasSTD { get; set; }
+        public long PiezasProducidasReales { get; set; }
+        public long PiezasProducidas { get; set; }
+        public long ParosTotales { get; set; }
+        public long RechazosTotales { get; set; }
         public string Turno { get; set; }
         public string Orden { get; set; }
         public string Lote { get; set; }
-        public int IndiceCentro { get; set; }
+        public long IndiceCentro { get; set; }
         public long IndiceDepartamento { get; set; }
         public long IndiceLinea { get; set; }
         public long IndiceProceso { get; set; }
         public long IndiceVelocidad { get; set; }
-        public int Velocidad { get; set; }
+        public long Velocidad { get; set; }
     }
 }
