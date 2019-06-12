@@ -1,8 +1,11 @@
 ﻿namespace IndicadoresOEE.Domain.Business
 {
     using IndicadoresOEE.Common.Models;
+    using System;
     using System.Collections.Generic;
+    using System.Data.Entity;
     using System.Linq;
+    using System.Threading.Tasks;
 
     public class CentroBusiness
     {
@@ -12,6 +15,7 @@
         {
             db = new PrimaryConnection();
         }
+        
 
         public List<CentroModel> ObtenerCentros(long IndiceUsuario)
         {

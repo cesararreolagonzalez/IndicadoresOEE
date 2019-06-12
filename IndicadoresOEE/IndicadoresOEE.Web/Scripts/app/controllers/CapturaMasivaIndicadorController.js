@@ -6,19 +6,255 @@
         .controller('CapturaMasivaIndicadorController', CapturaMasivaIndicadorController);
     
     CapturaMasivaIndicadorController.$inject = ['$element', '$scope', '$sce', '$timeout', '$filter',
-        '$anchorScroll', '$log', '$window', '$mdDialog', 'moment', 'ESTADO_PAROS',
+        '$anchorScroll', '$log', '$window', '$mdDialog', 'moment', 'ESTADO_PAROS', 'ESTADO_VALIDACION_ORDEN',
         'CentroService', 'DepartamentoService', 'LineaService', 'ProcesoService', 'VelocidadService',
-        'IndicadorService', 'SAPService', 'UtilFactory'];
+        'IndicadorService', 'SAPService', 'UtilFactory', 'ModalService'];
 
     function CapturaMasivaIndicadorController($element, $scope, $sce, $timeout, $filter, $anchorScroll,
-        $log, $window, $mdDialog, moment, ESTADO_PAROS,
+        $log, $window, $mdDialog, moment, ESTADO_PAROS, ESTADO_VALIDACION_ORDEN,
         CentroService, DepartamentoService, LineaService,
-        ProcesoService, VelocidadService, IndicadorService, SAPService, UtilFactory)
+        ProcesoService, VelocidadService, IndicadorService, SAPService, UtilFactory, ModalService)
     {
+        // #region Properties
         $scope.EsEdicion = false;
+        $scope.Turnos = ['A', 'B', 'C', 'D'];
+        var FechaHoy = new Date();
 
-        //var imagePath = '//www.gravatar.com/avatar/4788047fc93a88beed76f388e0613a2a?s=50&d=retro';
-        var imagePath = '../../Content/Numbers/Numero01.png';
+        $scope.DatosGenerales = {
+            IndiceCentro: null,
+            IndiceDepartamento: null,
+            IndiceLinea: null,
+            IndiceProceso: null,
+            IndiceVelocidad: null,
+            Orden: null,
+            Lote: null,
+            Material: null,
+            DescripcionMaterial: null,
+            Velocidad: null
+        };
+        $scope.DatosIndicador = {
+            Turno: null,
+            Ciclo: 0,
+            Piezas: 0,
+            Fecha: new Date(FechaHoy.getFullYear(), FechaHoy.getMonth(), FechaHoy.getDate(), 0, 0, 0),
+            Hora: 0,
+            Minuto: 0
+        };
+        $scope.Util = {
+            FechaLimite: new Date(FechaHoy.getFullYear(), FechaHoy.getMonth(), FechaHoy.getDate(), 0, 0, 0),
+            CalculoHoras: null,
+            CalculoHorasParo: null,
+            MensajeCalculoHoras: null,
+            MensajeCalculoHorasParo: null,
+            SumaParos: 0,
+            SumaPiezasRechazadas: 0,
+            ParoSinCausaAsignada: 0,
+            EstadoHorasParo: false,
+            EstadoValidacionOrden: 0,
+            ExistenIndicadoresPeriodo: false,
+            Estado: ESTADO_PAROS.SIN_ESTADO,
+            Estados: ESTADO_PAROS,
+            EstadoValidacion: ESTADO_VALIDACION_ORDEN.NO_VALIDADA,
+            IconoEstadoValidacionOrden: '../Content/Icons/estado_sin_busqueda.svg',
+            TextoEstadoValidacionOrden: '',
+            EnProcesoValidacion: false
+        };
+        $scope.TerminoBusqueda = '';
+        $scope.ListaCentros = null;
+        $scope.ListaDepartamentos = null;
+        $scope.ListaLineas = null;
+        $scope.ListaProcesos = null;
+        $scope.ListaRechazosElegidos = [];
+        $scope.ListaParosElegidos = [];
+        // #endregion
+        // #region Asynchronous Methods
+        // #endregion
+        // #region Methods
+        async function ObtenerListas(Indicador)
+        {
+
+            $log.info('ObtenerListas() finalizado');
+        }
+
+        $scope.Editar = async function (ev, indice) {
+            ModalService.showWait();
+
+            $scope.EsEdicion = true;
+
+            var Indicador = $scope.ListaIndicadoresCompletados[indice];
+
+            $log.info(JSON.stringify(Indicador));
+
+            $scope.DatosGenerales.IndiceCentro = Indicador.IndiceCentro;
+            $scope.DatosGenerales.IndiceDepartamento = Indicador.IndiceDepartamento;
+            $scope.DatosGenerales.IndiceLinea = Indicador.IndiceLinea;
+            $scope.DatosGenerales.IndiceProceso = Indicador.IndiceProceso;
+
+
+            await $scope.ObtenerCentros();
+            await $scope.ObtenerDepartamentos();
+            await $scope.ObtenerLineas();
+            await $scope.ObtenerProcesos();
+
+            //ObtenerListas(Indicador);
+            //$scope.ObtenerCentros();
+
+            //$timeout(function () {
+            //    $scope.ObtenerDepartamentos(Indicador.IndiceCentro);
+            //}, 100);
+
+            //$timeout(function () {
+            //    $scope.ObtenerLineas(Indicador.IndiceDepartamento);
+            //}, 200);
+
+            //$timeout(function () {
+            //    $scope.ObtenerProcesos(Indicador.IndiceLinea);
+            //}, 300);
+
+            //$timeout(function () {
+
+            //}, 500);
+
+            $scope.DatosGenerales.Orden = Indicador.Orden;
+            $scope.DatosGenerales.Lote = Indicador.Lote;
+            $scope.DatosGenerales.Material = Indicador.Material;
+            $scope.DatosGenerales.DescripcionMaterial = Indicador.DescripcionMaterial;
+
+            $scope.DatosIndicador.Turno = Indicador.Turno;
+            $scope.DatosIndicador.Piezas = Indicador.Piezas;
+            $scope.DatosIndicador.Ciclo = Indicador.Ciclo;
+            
+            var Fecha = new Date(Indicador.Fecha);
+
+            $scope.DatosIndicador.Fecha = Fecha;
+            $scope.Util.FechaLimite = Fecha;
+
+            $scope.DatosIndicador.Hora = Fecha.getHours();
+            $scope.DatosIndicador.Minuto = Fecha.getMinutes();
+
+            $scope.ListaRechazosElegidos = Indicador.ListaRechazos;
+            $scope.ListaParosElegidos = Indicador.ListaParos;
+
+            var ListaIndicesParos = Enumerable.From(Indicador.ListaParos)
+                .Select(function (col) { return col.Indice; })
+                .ToArray();
+
+            var ListaIndicesRechazos = Enumerable.From(Indicador.ListaRechazos)
+                .Select(function (col) { return col.Indice; })
+                .ToArray();
+
+            $scope.ListaIndicesRechazosEnUso = ListaIndicesRechazos;
+            $scope.ListaIndicesParosEnUso = ListaIndicesParos;
+
+            // Sumas de paros y rechazos
+
+            var SumaParos = Enumerable.From(Indicador.ListaParos)
+                .Select(function (col) { return col.Cantidad; })
+                .Sum();
+
+            var SumaParoSinCausaAsignada = Enumerable.From(Indicador.ListaParos)
+                .Where(function (col) { return col.Nombre === 'Sin causa asignada'; })
+                .Select(function (col) { return col.Cantidad; })
+                .Sum();
+
+            var SumaRechazos = Enumerable.From(Indicador.ListaRechazos)
+                .Select(function (col) { return col.Cantidad; })
+                .Sum();
+
+            $scope.Util.SumaPiezasRechazadas = parseInt(SumaRechazos);
+            $scope.Util.SumaParos = parseInt(SumaParos);
+
+            $scope.Util.ParoSinCausaAsignada = SumaParoSinCausaAsignada;
+
+            ModalService.hideWait();
+        };
+        $scope.Guardar = function (ev) {
+            var ListaParos = angular.copy($scope.ListaParosElegidos);
+            var ListaRechazos = angular.copy($scope.ListaRechazosElegidos);
+
+            if ($scope.Util.ParoSinCausaAsignada > 0) {
+                ListaParos.push({ Indice: 0, Nombre: 'Sin causa asignada', Cantidad: $scope.Util.ParoSinCausaAsignada, Folio: null });
+            }
+
+            $scope.Indicador =
+                {
+                    IndiceCentro: angular.copy($scope.DatosGenerales.IndiceCentro),
+                    IndiceDepartamento: angular.copy($scope.DatosGenerales.IndiceDepartamento),
+                    IndiceLinea: angular.copy($scope.DatosGenerales.IndiceLinea),
+                    IndiceProceso: angular.copy($scope.DatosGenerales.IndiceProceso),
+                    IndiceVelocidad: angular.copy($scope.DatosGenerales.IndiceVelocidad),
+                    Velocidad: angular.copy($scope.DatosGenerales.Velocidad),
+                    Orden: angular.copy($scope.DatosGenerales.Orden),
+                    Lote: angular.copy($scope.DatosGenerales.Lote),
+                    Material: angular.copy($scope.DatosGenerales.Material),
+                    DescripcionMaterial: angular.copy($scope.DatosGenerales.DescripcionMaterial),
+                    Piezas: angular.copy($scope.DatosIndicador.Piezas),
+                    Reales: 0,
+                    Ciclo: angular.copy($scope.DatosIndicador.Ciclo),
+                    Turno: angular.copy($scope.DatosIndicador.Turno),
+                    Fecha: angular.copy($scope.DatosIndicador.Fecha),
+                    ListaParos: ListaParos,
+                    ListaRechazos: ListaRechazos
+                };
+
+            $scope.ListaIndicadoresCompletados.push(angular.copy($scope.Indicador));
+
+            // Extraer la información de las listas existentes
+
+            var NombreCentro = Enumerable.From($scope.ListaCentros)
+                .Where(function (col) { return col.Indice === $scope.DatosGenerales.IndiceCentro; })
+                .OrderBy(function (col) { return col.Indice; })
+                .Select(function (col) { return col.Nombre; })
+                .FirstOrDefault();
+
+            var NombreDepartamento = Enumerable.From($scope.ListaDepartamentos)
+                .Where(function (col) { return col.Indice === $scope.DatosGenerales.IndiceDepartamento; })
+                .OrderBy(function (col) { return col.Indice; })
+                .Select(function (col) { return col.Nombre; })
+                .FirstOrDefault();
+
+            var NombreLinea = Enumerable.From($scope.ListaLineas)
+                .Where(function (col) { return col.Indice === $scope.DatosGenerales.IndiceLinea; })
+                .OrderBy(function (col) { return col.Indice; })
+                .Select(function (col) { return col.Nombre; })
+                .FirstOrDefault();
+
+            var NombreProceso = Enumerable.From($scope.ListaProcesos)
+                .Where(function (col) { return col.Indice === $scope.DatosGenerales.IndiceProceso; })
+                .OrderBy(function (col) { return col.Indice; })
+                .Select(function (col) { return col.Nombre; })
+                .FirstOrDefault();
+
+            var IndicadorInformacion = {
+                'Icono': imagePath,
+                'NombreCentro': NombreCentro,
+                'NombreDepartamento': NombreDepartamento,
+                'NombreLinea': NombreLinea,
+                'NombreProceso': NombreProceso,
+                'NumeroPiezas': $scope.DatosIndicador.Piezas,
+                'Ciclo': $scope.DatosIndicador.Ciclo,
+                'NumeroParos': $scope.ListaParosElegidos.length,
+                'NumeroRechazos': $scope.ListaRechazosElegidos.length
+            };
+
+            $log.info(JSON.stringify(IndicadorInformacion));
+
+            $scope.ListaInformativaCapturasIndicadores.push(IndicadorInformacion);
+
+            $scope.ResetearDatosIndicador();
+            $scope.LimpiarFormulario();
+
+            //$log.info($scope.datosIndicadorForm.piezas);
+            //$scope.datosIndicadorForm.piezas.$setDirty(false);
+            //$scope.datosIndicadorForm.piezas.$setPristine();
+            //$scope.datosIndicadorForm.piezas.$setUntouched();
+
+            //$log.info($scope.datosIndicadorForm.piezas);
+        };
+        // #endregion
+        // #region Watchs
+        // #endregion
+
 
         $element.find('input').on('keydown', function (ev) {
             ev.stopPropagation();
@@ -43,57 +279,6 @@
             return $filter('limitTo')($scope.ListaInformativaCapturasIndicadores, Total, IndiceInicio);
         };
         
-        var FechaHoy = new Date();
-
-        $scope.DatosGenerales = {
-            IndiceCentro: null,
-            IndiceDepartamento: null,
-            IndiceLinea: null,
-            IndiceProceso: null,
-            IndiceVelocidad: null,
-            Orden: null,
-            Lote: null,
-            Material: null,
-            DescripcionMaterial: null,
-            Velocidad: null
-        };
-
-        $scope.DatosIndicador = {
-            Turno: null,
-            Ciclo: 0,
-            Piezas: 0,
-            Fecha: new Date(FechaHoy.getFullYear(), FechaHoy.getMonth(), FechaHoy.getDate(), 0, 0, 0),
-            Hora: '0',
-            Minuto: '0'
-        };
-
-        $scope.Util = {
-            FechaLimite: new Date(FechaHoy.getFullYear(), FechaHoy.getMonth(), FechaHoy.getDate(), 0, 0, 0),
-            CalculoHoras: null,
-            CalculoHorasParo: null,
-            MensajeCalculoHoras: null,
-            MensajeCalculoHorasParo: null,
-            SumaParos: 0,
-            SumaPiezasRechazadas: 0,
-            ParoSinCausaAsignada: 0,
-            EstadoHorasParo: false,
-            EstadoValidacionOrden: 0,
-            ExistenIndicadoresPeriodo: false,
-            Estado: ESTADO_PAROS.SIN_ESTADO,
-            Estados: ESTADO_PAROS
-        };
-
-        $scope.Turnos = ['A', 'B', 'C', 'D'];
-
-        $scope.TerminoBusqueda = '';
-
-        $scope.ListaCentros = null;
-        $scope.ListaDepartamentos = null;
-        $scope.ListaLineas = null;
-        $scope.ListaProcesos = null;
-
-        $scope.ListaRechazosElegidos = [];
-        $scope.ListaParosElegidos = [];
 
         // Sirven para desactivar de la lista los paros escogidos
         $scope.ListaIndicesRechazosEnUso = [];
@@ -147,7 +332,7 @@
                                     var Estado = response.data.Estado;
                                     if (!Estado) {
                                         var Mensaje = response.data.Mensaje;
-                                        $log.info('Se produjo el siguiente error en el método ObtenerCentros = ' + Mensaje);
+                                        $log.info('Se produjo el siguiente error en el método ObtenerParos = ' + Mensaje);
                                     }
                                     else {
                                         var ListaParos = response.data.ListaParos;
@@ -376,7 +561,7 @@
                                     if (!Estado)
                                     {
                                         var Mensaje = response.data.Mensaje;
-                                        $log.info('Se produjo el siguiente error en el método ObtenerCentros = ' + Mensaje);
+                                        $log.info('Se produjo el siguiente error en el método ObtenerRechazos = ' + Mensaje);
                                     }
                                     else
                                     {
@@ -390,7 +575,7 @@
                                 })
                                 .finally(function ()
                                 {
-                                    $log.info('Método ObtenerCentros() finalizado');
+                                    $log.info('Método ObtenerRechazos() finalizado');
                                 });
                         };
 
@@ -448,12 +633,14 @@
                     if (!Estado) {
                         var Mensaje = response.data.Mensaje;
                         $log.info('Se produjo el siguiente error en el método ObtenerCentros = ' + Mensaje);
+                        $scope.MostrarDialogoError('Se produjo un error al intentar obtener la lista de Centros');
                     }
                     else {
                         $scope.ListaCentros = response.data.ListaCentros;
                     }
                 })
                 .catch(function (response) {
+                    $scope.MostrarDialogoError('Se produjo una excepción al intentar obtener la lista de Centros');
                     $log.error('Excepcion: ', response.data);
                 })
                 .finally(function () {
@@ -461,42 +648,49 @@
                 });
         };
 
-        $scope.ObtenerDepartamentos = function ()
+        $scope.ObtenerDepartamentos = function (IndiceCentro)
         {
-            if ($scope.ListaDepartamentos)
-                return;
+            IndiceCentro = IndiceCentro ? IndiceCentro : $scope.DatosGenerales.IndiceCentro;
+            $log.info('IndiceCentro = ' + IndiceCentro);
 
-            return DepartamentoService.ObtenerDepartamentosPorCentro($scope.DatosGenerales.IndiceCentro)
+            return DepartamentoService.ObtenerDepartamentosPorCentro(IndiceCentro)
                 .then(function (response)
                 {
+                    var status = response.status;
+                    var statusText = response.statusText;
+
                     var Estado = response.data.Estado;
+
                     if (!Estado) {
                         var Mensaje = response.data.Mensaje;
                         $log.info('Se produjo el siguiente error en el método ObtenerDepartamentos = ' + Mensaje);
+                        $scope.MostrarDialogoError('Se produjo un error al intentar obtener la lista de Departamentos');
                     }
                     else {
                         $scope.ListaDepartamentos = response.data.ListaDepartamentos;
                     }
                 })
                 .catch(function (response) {
-                    $log.error('Excepcion: ', response.data);
+                    $log.error(response);
+                    $scope.MostrarDialogoError('Se produjo una excepción al intentar obtener la lista de Departamentos');
                 })
                 .finally(function () {
                     $log.info('Método ObtenerDepartamentos() finalizado');
                 });
         };
 
-        $scope.ObtenerLineas = function ()
+        $scope.ObtenerLineas = function (IndiceDepartamento)
         {
-            if ($scope.ListaLineas)
-                return;
+            IndiceDepartamento = IndiceDepartamento ? IndiceDepartamento : $scope.DatosGenerales.IndiceDepartamento;
+            $log.info('IndiceDepartamento = ' + IndiceDepartamento);
 
-            return LineaService.ObtenerLineasPorDepartamento($scope.DatosGenerales.IndiceDepartamento)
+            return LineaService.ObtenerLineasPorDepartamento(IndiceDepartamento)
                 .then(function (response) {
                     var Estado = response.data.Estado;
                     if (!Estado) {
                         var Mensaje = response.data.Mensaje;
                         $log.info('Se produjo el siguiente error en el método ObtenerLineas = ' + Mensaje);
+                        $scope.MostrarDialogoError('Se produjo un error al intentar obtener la lista de Lineas');
                     }
                     else {
                         $scope.ListaLineas = response.data.ListaLineas;
@@ -506,7 +700,8 @@
                     $log.info('Hubo un error: Estatus = ' + response.status + ', Error = ' + response.data);
                 })
                 .catch(function (response) {
-                    $log.info('Excepcion: ', response);
+                    $log.info(response);
+                    $scope.MostrarDialogoError('Se produjo una excepción al intentar obtener la lista de Lineas');
                     throw response;
                 })
                 .finally(function () {
@@ -514,17 +709,18 @@
                 });
         };
 
-        $scope.ObtenerProcesos = function ()
+        $scope.ObtenerProcesos = function (IndiceLinea)
         {
-            if ($scope.ListaProcesos)
-                return;
+            IndiceLinea = IndiceLinea ? IndiceLinea : $scope.DatosGenerales.IndiceLinea;
+            $log.info('IndiceLinea = ' + IndiceLinea);
 
-            return ProcesoService.ObtenerProcesosPorLinea($scope.DatosGenerales.IndiceLinea)
+            return ProcesoService.ObtenerProcesosPorLinea(IndiceLinea)
                 .then(function (response) {
                     var Estado = response.data.Estado;
                     if (!Estado) {
                         var Mensaje = response.data.Mensaje;
                         $log.info('Se produjo el siguiente error en el método ObtenerProcesos = ' + Mensaje);
+                        $scope.MostrarDialogoError('Se produjo un error al intentar obtener la lista de Procesos');
                     }
                     else {
                         $scope.ListaProcesos = response.data.ListaProcesos;
@@ -534,7 +730,8 @@
                     $log.info('Hubo un error: Estatus = ' + response.status + ', Error = ' + response.data);
                 })
                 .catch(function (response) {
-                    $log.info('Excepcion: ', response);
+                    $scope.MostrarDialogoError('Se produjo una excepción al intentar obtener la lista de Procesos');
+                    $log.info(response);
                     throw response;
                 })
                 .finally(function () {
@@ -546,46 +743,77 @@
         {
             if (!$scope.DatosGenerales.Orden)
                 return;
+
+            $scope.Util.EnProcesoValidacion = true;
+            $scope.Util.EstiloEstadoValidacionOrden = {};
+            $scope.Util.EstadoValidacion = ESTADO_VALIDACION_ORDEN.NO_VALIDADA;
+            $scope.Util.TextoEstadoValidacionOrden = 'En proceso de validación';
+            $scope.Util.IconoEstadoValidacionOrden = '../Content/Icons/estado_sin_busqueda.svg';
             
-            return IndicadorService.ValidarOrden($scope.DatosGenerales.Orden)
-                .then(function (response) {
-                    var Estado = response.data.Estado;
-                    if (!Estado) {
-                        var Mensaje = response.data.Mensaje;
-                        $log.info('Se produjo el siguiente error en el método ObtenerProcesos = ' + Mensaje);
-                    }
-                    else {
-                        var Indicador = response.data.Indicador;
-                        if (Indicador !== null) {
-                            $scope.DatosGenerales.Lote = Indicador.Lote;
-                            $scope.DatosGenerales.Material = Indicador.Material;
-                            $scope.DatosGenerales.DescripcionMaterial = Indicador.Descripcion;
-                            $scope.Util.EstadoValidacionOrden = 1;
-                        }
-                        else {
+            return SAPService.ValidacionOrden($scope.DatosGenerales.Orden)
+                .then(function (response)
+                {
+                    $scope.Util.EnProcesoValidacion = false;
+                    var Modelo = response.data.Modelo;
+
+                    switch (Modelo.EstatusValidacionOrden)
+                    {
+                        case ESTADO_VALIDACION_ORDEN.ERROR:
+                            $scope.Util.EstiloEstadoValidacionOrden = {};
+                            $scope.Util.EstadoValidacion = ESTADO_VALIDACION_ORDEN.NO_VALIDADA;
+                            $scope.Util.TextoEstadoValidacionOrden = 'No pudo ser validado en SAP';
+                            $scope.Util.IconoEstadoValidacionOrden = '../Content/Icons/estado_sin_busqueda.svg';
+
                             $mdDialog.show(
                                 $mdDialog.alert()
                                     .clickOutsideToClose(false)
-                                    .title('Orden no válida')
-                                    .textContent('La orden no fue encontrada en SAP')
-                                    .ariaLabel('Validando orden')
+                                    .title('No se pudo validar la orden')
+                                    .textContent('Hubo un problema al intentar establecer comunicación con SAP.')
+                                    .ariaLabel('Excepcion')
                                     .ok('Entendido')
-                                    .targetEvent(ev)
-                            );
+                                    .targetEvent(ev));
+                            break;
 
-                            $scope.DatosGenerales.Lote = null;
-                            $scope.DatosGenerales.Material = null;
-                            $scope.DatosGenerales.DescripcionMaterial = null;
+                        case ESTADO_VALIDACION_ORDEN.VALIDA:
+                            $scope.Util.EstiloEstadoValidacionOrden = { "color": "#087f23" };
+                            $scope.Util.EstadoValidacion = Modelo.EstatusValidacionOrden;
+                            $scope.Util.TextoEstadoValidacionOrden = 'Órden válida';
+                            $scope.Util.IconoEstadoValidacionOrden = '../Content/Icons/estado_encontrado.svg';
 
-                            $scope.Util.EstadoValidacionOrden = -1;
-                        }
+                            $scope.DatosGenerales.Lote = Modelo.Lote;
+                            $scope.DatosGenerales.Material = Modelo.Material;
+                            $scope.DatosGenerales.DescripcionMaterial = Modelo.Descripcion;
+                            break;
+
+                        case ESTADO_VALIDACION_ORDEN.NO_ENCONTRADA:
+                            $scope.Util.EstiloEstadoValidacionOrden = { "color": "#ba000d" };
+                            $scope.Util.EstadoValidacion = Modelo.EstatusValidacionOrden;
+                            $scope.Util.TextoEstadoValidacionOrden = 'Órden inválida';
+                            $scope.Util.IconoEstadoValidacionOrden = '../Content/Icons/estado_no_encontrado.svg';
+
+                            $mdDialog.show(
+                                $mdDialog.alert()
+                                    .clickOutsideToClose(false)
+                                    .title('Orden no encontrada')
+                                    .textContent('No se encontró la orden en SAP.')
+                                    .ariaLabel('Excepcion')
+                                    .ok('Entendido')
+                                    .targetEvent(ev));
+
+                            $scope.DatosGenerales.Lote = '';
+                            $scope.DatosGenerales.Material = '';
+                            $scope.DatosGenerales.DescripcionMaterial = '';
+                            break;
+
+                        default: break;
                     }
                 },
                 function (response) {
                     $log.info('Hubo un error: Estatus = ' + response.status + ', Error = ' + response.data);
                 })
                 .catch(function (response) {
-                    $log.info('Excepcion: ', response);
+                    $log.info(response);
+                    $scope.MostrarDialogoError('Se produjo una excepción al intentar validar la Orden en SAP');
                     throw response;
                 })
                 .finally(function () {
@@ -593,157 +821,23 @@
                 });
         };
 
-        $scope.Editar = function (ev, indice)
+        $scope.ObtenerSumatoriaParos = function ()
         {
-            $scope.EsEdicion = true;
-
-            var Indicador = $scope.ListaIndicadoresCompletados[indice];
-
-            $log.info(JSON.stringify(Indicador));
-
-            $scope.ObtenerCentros();
-            $scope.DatosGenerales.IndiceCentro = Indicador.IndiceCentro;
-
-            $scope.ObtenerDepartamentos();
-            $scope.DatosGenerales.IndiceDepartamento = Indicador.IndiceDepartamento;
-
-            $scope.ObtenerLineas();
-            $scope.DatosGenerales.IndiceLinea = Indicador.IndiceLinea;
-
-            $scope.ObtenerProcesos();
-            $scope.DatosGenerales.IndiceProceso = Indicador.IndiceProceso;
-
-            $timeout(function () {
-                $scope.DatosGenerales.IndiceCentro = Indicador.IndiceCentro;
-                $scope.DatosGenerales.IndiceDepartamento = Indicador.IndiceDepartamento;
-                $scope.DatosGenerales.IndiceLinea = Indicador.IndiceLinea;
-                $scope.DatosGenerales.IndiceProceso = Indicador.IndiceProceso;
-
-            }, 500);
-
-            //$timeout(function () {
-            //    $scope.DatosGenerales.IndiceDepartamento = Indicador.IndiceDepartamento;
-            //    $scope.DatosGenerales.IndiceLinea = Indicador.IndiceLinea;
-            //    $scope.DatosGenerales.IndiceProceso = Indicador.IndiceProceso;
-            //    $scope.DatosGenerales.IndiceVelocidad = Indicador.IndiceVelocidad;
-            //    $scope.DatosGenerales.Velocidad = Indicador.Velocidad;
-            //    $scope.DatosGenerales.Orden = Indicador.Orden;
-            //    $scope.DatosGenerales.Lote = Indicador.Lote;
-            //    $scope.DatosGenerales.Material = Indicador.Material;
-            //    $scope.DatosGenerales.DescripcionMaterial = Indicador.DescripcionMaterial;
-
-            //    $scope.DatosIndicador.Turno = Indicador.Turno;
-            //    $scope.DatosIndicador.Ciclo = Indicador.Ciclo;
-            //    $scope.DatosIndicador.Fecha = Indicador.Fecha;
-            //    $scope.DatosIndicador.Hora = Indicador.Hora;
-            //    $scope.DatosIndicador.Minuto = Indicador.Minuto;
-
-            //    $scope.DatosIndicador.Piezas = Indicador.Piezas;
-            //    $log.info($scope.DatosIndicador.Piezas);
-            //}, 600);
-
-            //$scope.ListaRechazosElegidos = Indicador.ListaRechazos;
-            //$scope.ListaParosElegidos = Indicador.ListaParos;
-
-            //var ListaIndicesParos = Enumerable.From(Indicador.ListaRechazos)
-            //    .Select(function (col) { return col.Nombre; });
-
-            //var ListaIndicesRechazos = Enumerable.From(Indicador.ListaParos)
-            //    .Select(function (col) { return col.Nombre; });
-
-            //$log.info(ListaIndicesParos);
-            //$log.info(ListaIndicesRechazos);
-
-            //$scope.ListaIndicesRechazosEnUso = ListaIndicesRechazos;
-            //$scope.ListaIndicesParosEnUso = ListaIndicesParos;
-
-            //$timeout(function () {
-            //}, 1000);
+            var Sumatoria = Enumerable.From($scope.ListaParosElegidos)
+                .Select(function (col) { return col.Cantidad; })
+                .Sum();
+            
+            return parseInt(Sumatoria);
         };
-
-        $scope.Guardar = function (ev)
+        
+        $scope.ObtenerSumatoriaParosSinCausaAsignada = function ()
         {
-            var ListaParos = angular.copy($scope.ListaParosElegidos);
-            var ListaRechazos = angular.copy($scope.ListaRechazosElegidos);
-
-            if ($scope.Util.ParoSinCausaAsignada > 0) {
-                ListaParos.push({ Indice: 0, Nombre: 'Sin causa asignada', Cantidad: $scope.Util.ParoSinCausaAsignada, Folio: null });
-            }
+            var Sumatoria = Enumerable.From($scope.ListaParosElegidos)
+                .Where(function (col) { return col.Nombre === 'Sin causa asignada'; })
+                .Select(function (col) { return col.Cantidad; })
+                .Sum();
             
-            $scope.Indicador =
-            {
-                IndiceCentro: angular.copy($scope.DatosGenerales.IndiceCentro),
-                IndiceDepartamento: angular.copy($scope.DatosGenerales.IndiceDepartamento),
-                IndiceLinea: angular.copy($scope.DatosGenerales.IndiceLinea),
-                IndiceProceso: angular.copy($scope.DatosGenerales.IndiceProceso),
-                IndiceVelocidad: angular.copy($scope.DatosGenerales.IndiceVelocidad),
-                Velocidad: angular.copy($scope.DatosGenerales.Velocidad),
-                Orden: angular.copy($scope.DatosGenerales.Orden),
-                Lote: angular.copy($scope.DatosGenerales.Lote),
-                Material: angular.copy($scope.DatosGenerales.Material),
-                DescripcionMaterial: angular.copy($scope.DatosGenerales.DescripcionMaterial),
-                Piezas: angular.copy($scope.DatosIndicador.Piezas),
-                Reales: 0,
-                Ciclo: angular.copy($scope.DatosIndicador.Ciclo),
-                Turno: angular.copy($scope.DatosIndicador.Turno),
-                Fecha: angular.copy($scope.DatosIndicador.Fecha),
-                ListaParos: ListaParos,
-                ListaRechazos: ListaRechazos
-            };
-            
-            $scope.ListaIndicadoresCompletados.push(angular.copy($scope.Indicador));
-
-            // Extraer la información de las listas existentes
-
-            var NombreCentro = Enumerable.From($scope.ListaCentros)
-                .Where(function (col) { return col.Indice === $scope.DatosGenerales.IndiceCentro; })
-                .OrderBy(function (col) { return col.Indice; })
-                .Select(function (col) { return col.Nombre; })
-                .FirstOrDefault();
-
-            var NombreDepartamento = Enumerable.From($scope.ListaDepartamentos)
-                .Where(function (col) { return col.Indice === $scope.DatosGenerales.IndiceDepartamento; })
-                .OrderBy(function (col) { return col.Indice; })
-                .Select(function (col) { return col.Nombre; })
-                .FirstOrDefault();
-
-            var NombreLinea = Enumerable.From($scope.ListaLineas)
-                .Where(function (col) { return col.Indice === $scope.DatosGenerales.IndiceLinea; })
-                .OrderBy(function (col) { return col.Indice; })
-                .Select(function (col) { return col.Nombre; })
-                .FirstOrDefault();
-
-            var NombreProceso = Enumerable.From($scope.ListaProcesos)
-                .Where(function (col) { return col.Indice === $scope.DatosGenerales.IndiceProceso; })
-                .OrderBy(function (col) { return col.Indice; })
-                .Select(function (col) { return col.Nombre; })
-                .FirstOrDefault();
-
-            var IndicadorInformacion = {
-                'Icono': imagePath,
-                'NombreCentro': NombreCentro,
-                'NombreDepartamento': NombreDepartamento,
-                'NombreLinea': NombreLinea,
-                'NombreProceso': NombreProceso,
-                'NumeroPiezas': $scope.DatosIndicador.Piezas,
-                'Ciclo': $scope.DatosIndicador.Ciclo,
-                'NumeroParos': $scope.ListaParosElegidos.length,
-                'NumeroRechazos': $scope.ListaRechazosElegidos.length
-            };
-
-            $log.info(JSON.stringify(IndicadorInformacion));
-
-            $scope.ListaInformativaCapturasIndicadores.push(IndicadorInformacion);
-            
-            $scope.ResetearDatosIndicador();
-            $scope.LimpiarFormulario();
-
-            //$log.info($scope.datosIndicadorForm.piezas);
-            //$scope.datosIndicadorForm.piezas.$setDirty(false);
-            //$scope.datosIndicadorForm.piezas.$setPristine();
-            //$scope.datosIndicadorForm.piezas.$setUntouched();
-
-            //$log.info($scope.datosIndicadorForm.piezas);
+            return parseInt(Sumatoria);
         };
 
         $scope.BusquedaIndicadoresPeriodo = function (IndiceProceso, FechaInicial, FechaFinal)
@@ -757,26 +851,13 @@
                     }
                     else {
                         $scope.ExistenIndicadoresPeriodo = response.data.Existe;
-                        
-                        $log.info('Existe = ' + $scope.ExistenIndicadoresPeriodo);
-                        //if ($scope.ExistenIndicadoresPeriodo) {
-                        //    $scope.Util.Estado = ESTADO_PAROS.SIN_ESTADO;
-
-                        //    $mdDialog.show(
-                        //        $mdDialog.alert()
-                        //            .clickOutsideToClose(false)
-                        //            .title('Búsqueda de indicadores')
-                        //            .textContent('Ya existe un indicador en el período que estableciste')
-                        //            .ariaLabel('existencia indicadores')
-                        //            .ok('Entendido'));
-                        //}
                     }
                 },
                     function (response) {
                         $log.info('Hubo un error: Estatus = ' + response.status + ', Error = ' + response.data);
                     })
                 .catch(function (response) {
-                    $log.info('Excepcion: ', response);
+                    $log.info(response);
                     throw response;
                 })
                 .finally(function () {
@@ -804,6 +885,7 @@
         // Al obtener el Proceso
         function ObtenerIndicadorPorProceso()
         {
+            $log.info('ObtenerIndicadorPorProceso');
             return IndicadorService.ObtenerIndicadorPorProceso($scope.DatosGenerales.IndiceProceso)
                 .then(function (response) {
                     var Estado = response.data.Estado;
@@ -835,7 +917,7 @@
                         $log.info('Hubo un error: Estatus = ' + response.status + ', Error = ' + response.data);
                     })
                 .catch(function (response) {
-                    $log.info('Excepcion: ', response);
+                    $log.info(response);
                     throw response;
                 })
                 .finally(function () {
@@ -864,7 +946,7 @@
                     $log.info('Hubo un error: Estatus = ' + response.status + ', Error = ' + response.data);
                 })
                 .catch(function (response) {
-                    $log.info('Excepcion: ', response);
+                    $log.info(response);
                     throw response;
                 })
                 .finally(function () {
@@ -889,18 +971,26 @@
             var CalculoHoras = parseFloat(Piezas / VelocidadReal);
             var CalculoHorasParo = parseInt((1 - CalculoHoras) * Ciclo);
 
-            $scope.Util.CalculoHorasParo = CalculoHorasParo > 0 ? CalculoHorasParo : 0;
             $scope.Util.CalculoHoras = CalculoHoras > 0 ? CalculoHoras : 0;
+            $scope.Util.CalculoHorasParo = CalculoHorasParo > 0 ? parseInt(CalculoHorasParo) : 0;
 
-            $scope.Util.ParoSinCausaAsignada = 0;
+            if (!$scope.EsEdicion) 
+                $scope.Util.ParoSinCausaAsignada = 0;
 
-            if ($scope.Util.CalculoHoras < 1 && $scope.Util.CalculoHorasParo > 0) {
+            if ($scope.Util.CalculoHoras < 1 && $scope.Util.CalculoHorasParo > 0)
+            {
                 $scope.Util.Estado = $scope.Util.Estados.CON_PAROS;
 
                 var Mensaje = $sce.trustAsHtml('Debes capturar <b>' + CalculoHorasParo + '</b> minutos');
                 $scope.Util.MensajeCalculoHoras = 'Minutos de paro';
                 $scope.Util.MensajeCalculoHorasParo = Mensaje;
-                $scope.Util.ParoSinCausaAsignada = CalculoHorasParo;
+
+                $scope.SumaParos = $scope.ObtenerSumatoriaParos();
+                var x = $scope.Util.SumaParos > $scope.Util.CalculoHorasParo;
+                //var SumatoriaExistenteSinCausaAsignada = $scope.ObtenerSumatoriaParosSinCausaAsignada();
+                //$scope.Util.ParoSinCausaAsignada = SumatoriaExistenteSinCausaAsignada > 0 ? SumatoriaExistenteSinCausaAsignada : CalculoHorasParo;
+                if (!$scope.EsEdicion) 
+                    $scope.Util.ParoSinCausaAsignada = CalculoHorasParo;
                 $scope.Util.EstadoHorasParo = true;
             }
             else if ($scope.Util.CalculoHoras >= 0 && $scope.Util.CalculoHoras <= 1.1 && $scope.Util.CalculoHorasParo <= 0) {
@@ -957,24 +1047,25 @@
 
         $scope.$watch('DatosGenerales.IndiceCentro', function (newValue, oldValue)
         {
-            if (newValue)
-            {
-                $scope.DatosGenerales.IndiceDepartamento = null;
-                $scope.DatosGenerales.IndiceLinea = null;
-                $scope.DatosGenerales.IndiceProceso = null;
-                $scope.DatosGenerales.Orden = null;
-                $scope.DatosGenerales.Lote = null;
-                $scope.DatosGenerales.IndiceVelocidad = null;
-                $scope.DatosGenerales.Velocidad = null;
-                $scope.DatosGenerales.Material = null;
-                $scope.DatosGenerales.DescripcionMaterial = null;
-                $scope.ResetearDatosIndicador();
+            if (newValue) {
+                if (!$scope.EsEdicion) {
+                    $scope.DatosGenerales.IndiceDepartamento = null;
+                    $scope.DatosGenerales.IndiceLinea = null;
+                    $scope.DatosGenerales.IndiceProceso = null;
+                    $scope.DatosGenerales.Orden = null;
+                    $scope.DatosGenerales.Lote = null;
+                    $scope.DatosGenerales.IndiceVelocidad = null;
+                    $scope.DatosGenerales.Velocidad = null;
+                    $scope.DatosGenerales.Material = null;
+                    $scope.DatosGenerales.DescripcionMaterial = null;
+                    $scope.ResetearDatosIndicador();
 
-                $scope.ListaDepartamentos = null;
-                $scope.ListaLineas = null;
-                $scope.ListaProcesos = null;
+                    $scope.ListaDepartamentos = null;
+                    $scope.ListaLineas = null;
+                    $scope.ListaProcesos = null;
 
-                $scope.ObtenerDepartamentos();
+                    $scope.ObtenerDepartamentos();
+                }
             }
         });
 
@@ -982,20 +1073,22 @@
         {
             if (newValue)
             {
-                $scope.DatosGenerales.IndiceLinea = null;
-                $scope.DatosGenerales.IndiceProceso = null;
-                $scope.DatosGenerales.Orden = null;
-                $scope.DatosGenerales.Lote = null;
-                $scope.DatosGenerales.IndiceVelocidad = null;
-                $scope.DatosGenerales.Velocidad = null;
-                $scope.DatosGenerales.Material = null;
-                $scope.DatosGenerales.DescripcionMaterial = null;
-                $scope.ResetearDatosIndicador();
-                
-                $scope.ListaLineas = null;
-                $scope.ListaProcesos = null;
+                if (!$scope.EsEdicion) {
+                    $scope.DatosGenerales.IndiceLinea = null;
+                    $scope.DatosGenerales.IndiceProceso = null;
+                    $scope.DatosGenerales.Orden = null;
+                    $scope.DatosGenerales.Lote = null;
+                    $scope.DatosGenerales.IndiceVelocidad = null;
+                    $scope.DatosGenerales.Velocidad = null;
+                    $scope.DatosGenerales.Material = null;
+                    $scope.DatosGenerales.DescripcionMaterial = null;
+                    $scope.ResetearDatosIndicador();
 
-                $scope.ObtenerLineas();
+                    $scope.ListaLineas = null;
+                    $scope.ListaProcesos = null;
+
+                    $scope.ObtenerLineas();
+                }
             }
         });
 
@@ -1003,34 +1096,53 @@
         {
             if (newValue)
             {
-                $scope.DatosGenerales.IndiceProceso = null;
-                $scope.DatosGenerales.Orden = null;
-                $scope.DatosGenerales.Lote = null;
-                $scope.DatosGenerales.IndiceVelocidad = null;
-                $scope.DatosGenerales.Velocidad = null;
-                $scope.DatosGenerales.Material = null;
-                $scope.DatosGenerales.DescripcionMaterial = null;
-                $scope.ResetearDatosIndicador();
+                if (!$scope.EsEdicion) {
+                    $scope.DatosGenerales.IndiceProceso = null;
+                    $scope.DatosGenerales.Orden = null;
+                    $scope.DatosGenerales.Lote = null;
+                    $scope.DatosGenerales.IndiceVelocidad = null;
+                    $scope.DatosGenerales.Velocidad = null;
+                    $scope.DatosGenerales.Material = null;
+                    $scope.DatosGenerales.DescripcionMaterial = null;
+                    $scope.ResetearDatosIndicador();
 
-                $scope.ListaProcesos = null;
+                    $scope.ListaProcesos = null;
 
-                $scope.ObtenerProcesos();
+                    $scope.ObtenerProcesos();
+                }
             }
+        });
+
+        $scope.$watch('DatosGenerales.Orden', function (newValue, oldValue)
+        {
+            // TIP: Añadir una validacion negativa al front para que la caja de texto se vea roja
+
+            if (!!newValue && newValue.length > 0 && $scope.Util.EstadoValidacion === ESTADO_VALIDACION_ORDEN.NO_VALIDADA) {
+                $scope.Util.TextoEstadoValidacionOrden = 'Aún no ha sido validado en SAP';
+            }
+            else {
+                $scope.Util.TextoEstadoValidacionOrden = '';
+                $scope.Util.EstiloEstadoValidacionOrden = {};
+                $scope.Util.EstadoValidacion = ESTADO_VALIDACION_ORDEN.NO_VALIDADA;
+            }
+
         });
 
         $scope.$watch('DatosGenerales.IndiceProceso', function (newValue, oldValue)
         {
             if (newValue)
             {
-                $scope.DatosGenerales.Orden = null;
-                $scope.DatosGenerales.Lote = null;
-                $scope.DatosGenerales.IndiceVelocidad = null;
-                $scope.DatosGenerales.Velocidad = null;
-                $scope.DatosGenerales.Material = null;
-                $scope.DatosGenerales.DescripcionMaterial = null;
-                $scope.ResetearDatosIndicador();
-                
-                ObtenerIndicadorPorProceso();
+                if (!$scope.EsEdicion) {
+                    $scope.DatosGenerales.Orden = null;
+                    $scope.DatosGenerales.Lote = null;
+                    $scope.DatosGenerales.IndiceVelocidad = null;
+                    $scope.DatosGenerales.Velocidad = null;
+                    $scope.DatosGenerales.Material = null;
+                    $scope.DatosGenerales.DescripcionMaterial = null;
+                    $scope.ResetearDatosIndicador();
+
+                    ObtenerIndicadorPorProceso();
+                }
             }
         });
 
@@ -1040,25 +1152,30 @@
             {
                 $scope.DatosGenerales.IndiceVelocidad = null;
                 $scope.DatosGenerales.Velocidad = null;
-
-                ObtenerVelocidad($scope.DatosGenerales.IndiceProceso, $scope.DatosGenerales.Material);
+                
+                ObtenerVelocidad($scope.DatosGenerales.IndiceProceso, newValue);
             }
         });
 
         $scope.$watch('DatosIndicador.Hora', function (newValue, oldValue) {
-            if (newValue !== undefined && newValue !== null && newValue !== '') {
+            if (!!newValue || newValue === 0 && newValue !== '') {
                 $scope.DatosIndicador.Fecha.setHours(newValue);
             }
         });
         
         $scope.$watch('DatosIndicador.Minuto', function (newValue, oldValue) {
-            if (newValue !== undefined && newValue !== null && newValue !== '') {
+            if (!!newValue || newValue === 0 && newValue !== '') {
                 $scope.DatosIndicador.Fecha.setMinutes(newValue);
             }
         });
         
-        $scope.$watch('Util.Estado', function (newValue, oldValue) {
-            if (newValue !== undefined && newValue !== null && newValue !== '' && newValue === 0) {
+        $scope.$watch('Util.Estado', function (newValue, oldValue)
+        {
+            if ((!!newValue || newValue === 0) && newValue !== '')
+            {
+                if ($scope.EsEdicion)
+                    return;
+                
                 $scope.Util.MensajeCalculoHoras = null;
                 $scope.Util.MensajeCalculoHorasParo = null;
                 $scope.Util.EstadoHorasParo = false;
@@ -1071,18 +1188,18 @@
             }
         });
 
-        $scope.$watchGroup(['DatosIndicador.Piezas', 'DatosIndicador.Fecha', 'DatosIndicador.Ciclo'],
-            function (newValues, oldValues)
+        $scope.$watchGroup(['DatosIndicador.Piezas', 'DatosGenerales.Velocidad', 'DatosIndicador.Ciclo'],
+            function (ValoresActuales, ValoresAnteriores)
             {
-                if (newValues === oldValues)
+                if (ValoresActuales === ValoresAnteriores)
                     return;
 
-                var Piezas = newValues[0];
-                var Fecha = newValues[1];
-                var Ciclo = newValues[2];
+                var Piezas = ValoresActuales[0];
+                var Velocidad = ValoresActuales[1];
+                var Ciclo = ValoresActuales[2];
 
-
-                var EsValido = !UtilFactory.EsNuloOVacio(Piezas) && !UtilFactory.EsNuloOVacio(Fecha) && !UtilFactory.EsNuloOVacio(Ciclo);
+                // !! evalúa si es no nulo
+                var EsValido = !!Piezas && !!Velocidad && !!Ciclo;
                 
                 if (EsValido) 
                     ObtenerMinutosParos();
@@ -1091,27 +1208,30 @@
             }
         );
 
-        $scope.$watchGroup(['DatosGenerales.IndiceProceso', 'DatosIndicador.Fecha', 'DatosIndicador.Hora', 'DatosIndicador.Minuto', 'DatosIndicador.Ciclo'],
-            function (newValues, oldValues)
+        $scope.$watchGroup(['DatosGenerales.IndiceProceso', 'DatosIndicador.Fecha', 'DatosIndicador.Ciclo'],
+            function (ValoresActuales, ValoresAnteriores)
             {
-                if (newValues === oldValues)
+                if (ValoresActuales === ValoresAnteriores)
                     return;
 
-                var IndiceProceso = newValues[0];
-                var FechaInicial = newValues[1];
-                var Hora = newValues[2];
-                var Ciclo = newValues[3];
-
-                if (!IndiceProceso || !FechaInicial || !Ciclo)
-                    return;
-
-                var FechaFinal = angular.copy(FechaInicial);
-                FechaFinal.setMinutes(FechaFinal.getMinutes() + Ciclo);
-
-                var FechaInicialFormateada = $filter('date')(FechaInicial, "yyyy-MM-dd HH:mm");
-                var FechaFinalFormateada = $filter('date')(FechaFinal, "yyyy-MM-dd HH:mm");
+                var IndiceProceso = ValoresActuales[0];
+                var FechaInicial = ValoresActuales[1];
+                var Ciclo = ValoresActuales[2];
                 
-                $scope.BusquedaIndicadoresPeriodo(IndiceProceso, FechaInicialFormateada, FechaFinalFormateada);
+                var EsValido = !!IndiceProceso && !!FechaInicial && (!!Ciclo || Ciclo > 0);
+
+                if (EsValido)
+                {
+                    var FechaFinal = angular.copy(FechaInicial);
+                    FechaFinal.setMinutes(FechaFinal.getMinutes() + Ciclo);
+
+                    var FechaInicialFormateada = $filter('date')(FechaInicial, "yyyy-MM-dd HH:mm");
+                    var FechaFinalFormateada = $filter('date')(FechaFinal, "yyyy-MM-dd HH:mm");
+
+                    $scope.BusquedaIndicadoresPeriodo(IndiceProceso, FechaInicialFormateada, FechaFinalFormateada);
+                }
+                else
+                    return;
             }
         );
 
@@ -1167,14 +1287,11 @@
             var LaHoraActualEsMayorQueLaEstablecida = Index > HoraLimite;
             var SeDesactiva = false;
 
-            //$log.info('Fecha1 = ' + Fecha1.getTime() + ', Fecha2 = ' + Fecha2.getTime());
-            //$log.info('FechasIguales = ' + FechasIguales + ', LaHoraActualEsMayorQueLaEstablecida = ' + LaHoraActualEsMayorQueLaEstablecida);
             if (FechasIguales && LaHoraActualEsMayorQueLaEstablecida)
                 SeDesactiva = true;
             else
                 SeDesactiva = false;
-
-            //$log.info('SeDesactiva = ' + SeDesactiva);
+            
             return SeDesactiva;
         };
         
@@ -1233,6 +1350,38 @@
                 var CantidadParoSinCausaAsignada = $scope.Util.ParoSinCausaAsignada + Paro.Cantidad;
                 $scope.Util.ParoSinCausaAsignada = CantidadParoSinCausaAsignada > $scope.Util.CalculoHorasParo ? $scope.Util.CalculoHorasParo : CantidadParoSinCausaAsignada; 
             }
+        };
+
+        $scope.MostrarDialogoError = function (Mensaje) {
+            $mdDialog.show(
+                $mdDialog.alert()
+                    .parent(angular.element(document.querySelector('#CapturaMasivaEncapsulador')))
+                    .clickOutsideToClose(false)
+                    .title('Ha ocurrido un problema')
+                    .textContent(Mensaje)
+                    .ariaLabel('Error')
+                    .ok('Aceptar')
+            );
+        };
+
+        $scope.MostrarMensajeMinutosParos = function ()
+        {
+            var Mensaje = '';
+
+            switch ($scope.Util.Estado) {
+                case $scope.Util.Estados.CON_PAROS:
+                    Mensaje = 'Existen ' + $scope.Util.CalculoHorasParo + ' minutos de paros disponibles para capturar';
+                    break;
+                case $scope.Util.Estados.SIN_PAROS:
+                    Mensaje = 'No hay minutos de paros para agregar';
+                    break;
+                case $scope.Util.Estados.ERROR:
+                    Mensaje = 'Corrige las piezas producidas';
+                    break;
+                default: break;
+            }
+
+            return Mensaje;
         };
     }
 }) ();

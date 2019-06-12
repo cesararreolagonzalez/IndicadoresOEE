@@ -9,6 +9,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IndicadoresOEE.Web", "Indic
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IndicadoresOEE.Common", "IndicadoresOEE.Common\IndicadoresOEE.Common.csproj", "{EA9837E5-261B-4F27-8754-EDD83575A537}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IndicadoresOEE.SAP", "IndicadoresOEE.SAP\IndicadoresOEE.SAP.csproj", "{4D13ED49-DE59-4DB0-A40E-753F3BED13DB}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -27,6 +29,10 @@ Global
 		{EA9837E5-261B-4F27-8754-EDD83575A537}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{EA9837E5-261B-4F27-8754-EDD83575A537}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{EA9837E5-261B-4F27-8754-EDD83575A537}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4D13ED49-DE59-4DB0-A40E-753F3BED13DB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4D13ED49-DE59-4DB0-A40E-753F3BED13DB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4D13ED49-DE59-4DB0-A40E-753F3BED13DB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4D13ED49-DE59-4DB0-A40E-753F3BED13DB}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
