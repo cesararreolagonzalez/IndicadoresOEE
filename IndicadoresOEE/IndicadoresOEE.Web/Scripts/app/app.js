@@ -1,12 +1,16 @@
 ﻿(function () {
     'use strict';
     
-    angular.module('indicadoresoeeapp', ['ngMaterial', 'ngMessages', 'ngSanitize', 'angularMoment'])
+    angular.module('indicadoresoeeapp', ['ngMaterial', 'ngMessages', 'ngSanitize', 'angularMoment', 'md.data.table'])
 
         .config(['$mdIconProvider', '$mdDateLocaleProvider', '$mdThemingProvider',
             function ($mdIconProvider, $mdDateLocaleProvider, $mdThemingProvider)
             {
-                //==============================================================================
+                $mdThemingProvider.theme('default')
+                    .primaryPalette('indigo')
+                    .accentPalette('blue', {
+                        'default': '700' 
+                    });
 
                 $mdIconProvider.icon('md-close', '../Content/Icons/quitar.svg', 24);
                 $mdIconProvider.icon('md-exit', '../Content/Icons/exit_to_app.svg', 24);
@@ -42,30 +46,30 @@
 
                         var nombreMes = '';
                         switch (indiceMes + 1) {
-                            case 1: nombreMes = 'Ene'; break;
-                            case 2: nombreMes = 'Feb'; break;
-                            case 3: nombreMes = 'Mar'; break;
-                            case 4: nombreMes = 'Abr'; break;
-                            case 5: nombreMes = 'May'; break;
-                            case 6: nombreMes = 'Jun'; break;
-                            case 7: nombreMes = 'Jul'; break;
-                            case 8: nombreMes = 'Ago'; break;
-                            case 9: nombreMes = 'Sep'; break;
-                            case 10: nombreMes = 'Oct'; break;
-                            case 11: nombreMes = 'Nov'; break;
-                            case 12: nombreMes = 'Dic'; break;
-                            //case 1: nombreMes = 'Enero'; break;
-                            //case 2: nombreMes = 'Febrero'; break;
-                            //case 3: nombreMes = 'Marzo'; break;
-                            //case 4: nombreMes = 'Abril'; break;
-                            //case 5: nombreMes = 'Mayo'; break;
-                            //case 6: nombreMes = 'Junio'; break;
-                            //case 7: nombreMes = 'Julio'; break;
-                            //case 8: nombreMes = 'Agosto'; break;
-                            //case 9: nombreMes = 'Septiembre'; break;
-                            //case 10: nombreMes = 'Octubre'; break;
-                            //case 11: nombreMes = 'Noviembre'; break;
-                            //case 12: nombreMes = 'Diciembre'; break;
+                            //case 1: nombreMes = 'Ene'; break;
+                            //case 2: nombreMes = 'Feb'; break;
+                            //case 3: nombreMes = 'Mar'; break;
+                            //case 4: nombreMes = 'Abr'; break;
+                            //case 5: nombreMes = 'May'; break;
+                            //case 6: nombreMes = 'Jun'; break;
+                            //case 7: nombreMes = 'Jul'; break;
+                            //case 8: nombreMes = 'Ago'; break;
+                            //case 9: nombreMes = 'Sep'; break;
+                            //case 10: nombreMes = 'Oct'; break;
+                            //case 11: nombreMes = 'Nov'; break;
+                            //case 12: nombreMes = 'Dic'; break;
+                            case 1: nombreMes = 'Enero'; break;
+                            case 2: nombreMes = 'Febrero'; break;
+                            case 3: nombreMes = 'Marzo'; break;
+                            case 4: nombreMes = 'Abril'; break;
+                            case 5: nombreMes = 'Mayo'; break;
+                            case 6: nombreMes = 'Junio'; break;
+                            case 7: nombreMes = 'Julio'; break;
+                            case 8: nombreMes = 'Agosto'; break;
+                            case 9: nombreMes = 'Septiembre'; break;
+                            case 10: nombreMes = 'Octubre'; break;
+                            case 11: nombreMes = 'Noviembre'; break;
+                            case 12: nombreMes = 'Diciembre'; break;
                         }
 
                         return nombreDia + '/' + nombreMes + '/' + año;

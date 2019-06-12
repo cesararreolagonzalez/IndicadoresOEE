@@ -16,11 +16,17 @@
         }
 
         // GET: Paro
-        public ActionResult Index()
+        public ActionResult Inicio()
         {
             return View();
         }
-        
+
+        // GET: Paro
+        public ActionResult ParosPlanificados()
+        {
+            return View();
+        }
+
         /// <summary>
         /// 
         /// </summary>
